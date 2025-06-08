@@ -78,6 +78,27 @@ def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=No
     console.print(table)
 
 
+def determine_ashn_gate_duration(x, y, z, a, b, c):
+    """
+    Determine the optimal 2Q gate duration in the AshN gate scheme.
+        Input (x, y, z) are the Canonical coefficients of an SU(4), where π/4 ≥ x ≥ y ≥ |z|
+        Input (a, b, c) are the normalized coefficients of the coupling Hamiltonian, where a ≥ b ≥ |c|
+    """
+    coupling_strength = np.linalg.norm([a, b, c], ord=1)
+    tau0 = x / a
+    tau_plus = (x + y - z) / (a + b - c)
+    tau_minus = (x + y + z) / (a + b + c)
+    tau1 = max(tau0, tau_plus, tau_minus)
+
+    tau0_prime = (np.pi / 2 - x) / a
+    tau_plus_prime = (np.pi / 2 - x + y + z) / (a + b - c)
+    tau_minus_prime = (np.pi / 2 - x + y - z) / (a + b + c)
+    tau2 = max(tau0_prime, tau_plus_prime, tau_minus_prime)
+
+    tau = min(tau1, tau2)
+    return tau * coupling_strength  # unit is 1/coupling_strength
+
+
 # import cirq
 # import numpy as np
 # from typing import Union
