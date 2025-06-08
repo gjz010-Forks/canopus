@@ -44,6 +44,7 @@ def qiskit_to_tket(circ: qiskit.QuantumCircuit) -> pytket.Circuit:
 - [ ] TK1 和 U3 对应关系是什么？
 - [ ] 给定某个polytope和gate set，有一个对应模板，用数值方法一定能算出结果吗？
 - [ ] 需要用数值方法跟目前的XXdecomposer比一比，看是不是最优
+- [ ] 首先要获取TK2-basis circuit,是应该先用`passes.FullPeepholeOptimise(allow_swaps=False, target_2qb_gate=OpType.TK2).apply(circ)` 还是`passes.FullPeepholeOptimise(allow_swaps=False, target_2qb_gate=OpType.CX).apply(circ)`???前者会不会破坏某些局部 CX chain 的对易性？
 
 
 

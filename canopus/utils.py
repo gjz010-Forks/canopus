@@ -3,6 +3,12 @@ import qiskit
 import pytket.qasm
 import qiskit.qasm2
 import numpy as np
+from typing import Union
+from rich.console import Console
+from rich.table import Table
+
+console = Console()
+
 
 def tket_to_qiskit(circ: pytket.Circuit) -> qiskit.QuantumCircuit:
     """The self-implemented conversion function holds the high-level semantics of some customized Gate instances"""
@@ -34,11 +40,43 @@ def fuzzy_compare(a, b, op, rtol=1e-7, atol=1e-10):
     else:
         raise ValueError("Unsupported operator (options: >=, <=, >, <, ==)")
 
+
 def replace_close_to_zero_with_zero(arr) -> np.ndarray:
     arr = np.array(arr)
     close_to_zero = np.isclose(arr, 0)
     arr[close_to_zero] = 0
     return arr
+
+
+def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=None):
+    """Get information of a quantum circuit from its qasm file."""
+    if isinstance(circ, pytket.Circuit):
+        num_qubits = circ.n_qubits
+        num_gates = circ.n_gates
+        num_nonlocal_gates = circ.n_2qb_gates()
+        depth = circ.depth()
+        depth_nonlocal = circ.depth_2q()
+    elif isinstance(circ, qiskit.QuantumCircuit):
+        num_qubits = circ.num_qubits
+        num_gates = circ.size()
+        num_nonlocal_gates = circ.num_nonlocal_gates()
+        depth = circ.depth()
+        depth_nonlocal = circ.depth(lambda instr: instr.operation.num_qubits > 1)
+    else:
+        raise ValueError('Unsupported circuit type {}'.format(type(circ)))
+
+    # use rich Table
+    table = Table(title=title)
+    table.add_column("num_qubits")
+    table.add_column("num_gates")
+    table.add_column("num_2q_gates")
+    table.add_column("depth")
+    table.add_column("depth_2q")
+    table.add_row(str(num_qubits),
+                  str(num_gates), str(num_nonlocal_gates),
+                  str(depth), str(depth_nonlocal))
+    console.print(table)
+
 
 # import cirq
 # import numpy as np
@@ -52,16 +90,17 @@ def replace_close_to_zero_with_zero(arr) -> np.ndarray:
 
 #     if isinstance(target, (cirq.CXPowGate, cirq.CZPowGate, cirq.ISwapPowGate)):
 #         return 2
-    
+
 #     if isinstance(target, Canonical):
 #         if fuzzy_compare(target.x, target.y + abs(target.z), ">="):
 #             return 2
 #         return 3
-    
+
 #     raise ValueError("Unsupported gate type")
 
 from typing import Union
 from pytket.circuit import Command, Op, OpType
+
 
 def synth_cost_by_sqisw(target: Union[Command, Op]):
     if isinstance(target, Command):
@@ -69,13 +108,13 @@ def synth_cost_by_sqisw(target: Union[Command, Op]):
 
     if isinstance(target, (OpType.CX, OpType.CZ, OpType.XXPhase, OpType.ZZPhase)):
         return 2
-    
+
     if isinstance(target, OpType.ISWAP):
         if target.params[0] == 0.5:
             return 1
         else:
             return 2
-    
+
     if isinstance(target, OpType.TK2):
         a, b, c = target.params
         if not (0.5 >= a >= b >= abs(c)):
@@ -83,5 +122,5 @@ def synth_cost_by_sqisw(target: Union[Command, Op]):
         if fuzzy_compare(target.x, target.y + abs(target.z), ">="):
             return 2
         return 3
-    
+
     raise ValueError("Unsupported gate type")
