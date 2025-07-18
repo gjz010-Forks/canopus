@@ -74,11 +74,21 @@ def qiskit_to_tket(circ: qiskit.QuantumCircuit) -> pytket.Circuit:
     return pytket.qasm.circuit_from_qasm_str(qiskit.qasm2.dumps(circ))
 
 
-def qc_to_unitary(qc: qiskit.QuantumCircuit) -> np.ndarray:
+def qc2mat(qc: qiskit.QuantumCircuit) -> np.ndarray:
     from qiskit.quantum_info import Operator
     return Operator(qc.reverse_bits()).data
 
 
+def remove_1q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
+    new_circuit = qiskit.QuantumCircuit(qc.num_qubits, qc.num_clbits)
+    new_circuit.name = qc.name
+    new_circuit.global_phase = qc.global_phase
+
+    for instr in qc.data:  
+        if instr.num_qubits != 1:
+            new_circuit.append(instr.operation, instr.qubits, instr.clbits)  
+
+    return new_circuit
 
 
 # @njit(fastmath=True)

@@ -6,6 +6,8 @@ from canopus.utils import generate_random_layout, crop_coupling_map
 from qiskit.circuit.library import SwapGate
 from qiskit.utils.parallel import CPU_COUNT
 from qiskit.circuit import Qubit
+from itertools import chain
+from accel_utils import sort_two_objs
 from typing import Dict, List, Tuple
 import numpy as np
 import random
@@ -79,7 +81,7 @@ class SabreMapping(TransformationPass):
         self.property_set['layout'] = best_initial_layout
         self.property_set['final_layout'] = best_final_layout
 
-        best_routed_dag.remove_all_ops_named('u')
+        # best_routed_dag.remove_all_ops_named('u')
 
         return best_routed_dag
 
@@ -150,13 +152,22 @@ class SabreMapping(TransformationPass):
 
         return routed_dag, layout
 
+    def _get_qubit_index(self, qubit: Qubit) -> int:
+        """Get the index of the qubit in the canonical register."""
+        return self._qubit_indices[qubit]
+    
     def _find_best_swap(self, dag, front_layer, layout, required_predecessors) -> Tuple[Qubit, Qubit]:
-        swap_candidates = []
-        from itertools import chain
-        qubits = set(chain.from_iterable([node.qargs for node in front_layer]))
+        swap_candidates = set()
+        # swap_candidates_list = []
+
+        qubits = chain.from_iterable([node.qargs for node in front_layer])
         for v in qubits:
             logical_neighbors = [layout._p2v[p] for p in self.coupling_map.neighbors(layout._v2p[v])]
-            swap_candidates.extend([(v, n) for n in logical_neighbors])  # TODO: use sorted and set
+            for n in logical_neighbors:
+                swap_candidates.add(sort_two_objs(v, n, key=self._get_qubit_index))
+            # swap_candidates_list.extend([(v, n) for n in logical_neighbors])
+        swap_candidates = list(swap_candidates)
+
 
         extended_set = []
         tmp_front_layer = front_layer.copy()

@@ -3,7 +3,7 @@ from qiskit.synthesis import XXDecomposer
 import qiskit.quantum_info as qi
 import numpy as np
 from pytket.utils import compare_unitaries
-from canopus.utils import qiskit_to_tket, tket_to_qiskit, qc_to_unitary
+from canopus.utils import qiskit_to_tket, tket_to_qiskit, circ2mat
 from pytket.circuit import Circuit, Op, OpType
 
 
@@ -14,7 +14,7 @@ u /= np.linalg.det(u) ** (1 / 4)
 monodromy_decomposer = XXDecomposer(euler_basis="U3")
 circuit = monodromy_decomposer(qi.Operator(u).reverse_qargs(), approximate=False)
 
-assert compare_unitaries(u, qc_to_unitary(circuit))
+assert compare_unitaries(u, circ2mat(circuit))
 
 print(circuit.draw())
 

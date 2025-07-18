@@ -2,18 +2,18 @@ OPENQASM 2.0;
 include "qelib1.inc";
 gate ryy(param0) q0,q1 { rx(pi/2) q0; rx(pi/2) q1; cx q0,q1; rz(param0) q1; cx q0,q1; rx(-pi/2) q0; rx(-pi/2) q1; }
 gate can(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041788800(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041789088(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041785440(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041785344(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041789280(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041785968(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13041794992(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13038602048(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13038611984(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13038612032(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13038610880(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13038608720(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12963774384(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12963769392(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12963768096(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12963762384(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12963773664(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12963773328(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12962320016(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12950178608(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12950177504(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12950281808(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12950281472(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_12950282240(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
 qreg q[25];
 can(0.5,0,0) q[1],q[0];
 swap q[1],q[0];
@@ -26,72 +26,65 @@ can(0.5,0,0) q[12],q[13];
 can(0.5,0,0) q[14],q[15];
 can(0.5,0,0) q[16],q[17];
 can(0.5,0,0) q[18],q[19];
-can(0.5,0,0) q[20],q[21];
-can(0.5,0,0) q[22],q[21];
-can(0.5,0,0) q[20],q[21];
-can(0.5,0,0) q[22],q[21];
-swap q[22],q[21];
-can_13041788800(0.25,0,0) q[21],q[20];
-swap q[21],q[20];
 can(0.5,0,0) q[20],q[19];
 can(0.5,0,0) q[18],q[19];
 can(0.5,0,0) q[20],q[19];
 swap q[20],q[19];
-can_13041789088(0.25,0,0) q[19],q[18];
+can_12963774384(0.25,0,0) q[19],q[18];
 swap q[19],q[18];
 can(0.5,0,0) q[18],q[17];
 can(0.5,0,0) q[16],q[17];
 can(0.5,0,0) q[18],q[17];
 swap q[18],q[17];
-can_13041785440(0.25,0,0) q[17],q[16];
+can_12963769392(0.25,0,0) q[17],q[16];
 swap q[17],q[16];
 can(0.5,0,0) q[16],q[15];
 can(0.5,0,0) q[14],q[15];
 can(0.5,0,0) q[16],q[15];
 swap q[16],q[15];
-can_13041785344(0.25,0,0) q[15],q[14];
+can_12963768096(0.25,0,0) q[15],q[14];
 swap q[15],q[14];
 can(0.5,0,0) q[14],q[13];
 can(0.5,0,0) q[12],q[13];
 can(0.5,0,0) q[14],q[13];
 swap q[14],q[13];
-can_13041789280(0.25,0,0) q[13],q[12];
+can_12963762384(0.25,0,0) q[13],q[12];
 swap q[13],q[12];
 can(0.5,0,0) q[12],q[11];
 can(0.5,0,0) q[10],q[11];
 can(0.5,0,0) q[12],q[11];
 swap q[12],q[11];
-can_13041785968(0.25,0,0) q[11],q[10];
+can_12963773664(0.25,0,0) q[11],q[10];
 swap q[11],q[10];
 can(0.5,0,0) q[10],q[9];
 can(0.5,0,0) q[8],q[9];
 can(0.5,0,0) q[10],q[9];
 swap q[10],q[9];
-can_13041794992(0.25,0,0) q[9],q[8];
+can_12963773328(0.25,0,0) q[9],q[8];
 swap q[9],q[8];
 can(0.5,0,0) q[8],q[7];
 can(0.5,0,0) q[6],q[7];
 can(0.5,0,0) q[8],q[7];
 swap q[8],q[7];
-can_13038602048(0.25,0,0) q[7],q[6];
+can_12962320016(0.25,0,0) q[7],q[6];
 swap q[7],q[6];
 can(0.5,0,0) q[6],q[5];
 can(0.5,0,0) q[4],q[5];
 can(0.5,0,0) q[6],q[5];
 swap q[6],q[5];
-can_13038611984(0.25,0,0) q[5],q[4];
+can_12950178608(0.25,0,0) q[5],q[4];
 swap q[5],q[4];
 can(0.5,0,0) q[4],q[3];
 can(0.5,0,0) q[2],q[3];
 can(0.5,0,0) q[4],q[3];
 swap q[4],q[3];
-can_13038612032(0.25,0,0) q[3],q[2];
+can_12950177504(0.25,0,0) q[3],q[2];
 swap q[3],q[2];
 can(0.5,0,0) q[2],q[1];
 can(0.5,0,0) q[0],q[1];
 can(0.5,0,0) q[2],q[1];
 swap q[2],q[1];
-can_13038610880(0.25,0,0) q[1],q[0];
+can_12950281808(0.25,0,0) q[1],q[0];
 swap q[1],q[2];
 can(0.5,0,0) q[0],q[1];
 can(0.5,0,0) q[3],q[4];
@@ -103,10 +96,7 @@ can(0.5,0,0) q[13],q[14];
 can(0.5,0,0) q[15],q[16];
 can(0.5,0,0) q[17],q[18];
 can(0.5,0,0) q[19],q[20];
-can(0.5,0,0) q[21],q[22];
-can(0.5,0,0) q[24],q[23];
-swap q[22],q[23];
-swap q[21],q[22];
+can(0.5,0,0) q[22],q[21];
 swap q[20],q[21];
 swap q[19],q[20];
 swap q[18],q[19];
@@ -126,8 +116,6 @@ swap q[5],q[6];
 swap q[4],q[5];
 swap q[3],q[4];
 can(0.5,0,0) q[2],q[3];
-swap q[24],q[23];
-swap q[22],q[23];
 swap q[22],q[21];
 swap q[20],q[21];
 swap q[20],q[19];
@@ -149,6 +137,50 @@ swap q[4],q[5];
 can(0.5,0,0) q[4],q[3];
 can(0.5,0,0) q[2],q[3];
 swap q[2],q[3];
-can_13038608720(0.25,0,0) q[3],q[4];
+can_12950281472(0.25,0,0) q[3],q[4];
 swap q[3],q[4];
 can(0.5,0,0) q[3],q[2];
+can(0.5,0,0) q[24],q[23];
+swap q[22],q[23];
+swap q[21],q[22];
+swap q[20],q[21];
+swap q[19],q[20];
+swap q[18],q[19];
+swap q[17],q[18];
+swap q[16],q[17];
+swap q[15],q[16];
+swap q[14],q[15];
+swap q[13],q[14];
+swap q[12],q[13];
+swap q[11],q[12];
+swap q[10],q[11];
+swap q[9],q[10];
+swap q[8],q[9];
+swap q[7],q[8];
+swap q[6],q[7];
+swap q[5],q[6];
+can(0.5,0,0) q[4],q[5];
+swap q[24],q[23];
+swap q[22],q[23];
+swap q[22],q[21];
+swap q[20],q[21];
+swap q[20],q[19];
+swap q[18],q[19];
+swap q[18],q[17];
+swap q[16],q[17];
+swap q[16],q[15];
+swap q[14],q[15];
+swap q[14],q[13];
+swap q[12],q[13];
+swap q[12],q[11];
+swap q[10],q[11];
+swap q[10],q[9];
+swap q[8],q[9];
+swap q[8],q[7];
+swap q[6],q[7];
+can(0.5,0,0) q[6],q[5];
+can(0.5,0,0) q[4],q[5];
+swap q[4],q[5];
+can_12950282240(0.25,0,0) q[5],q[6];
+swap q[5],q[6];
+can(0.5,0,0) q[5],q[4];

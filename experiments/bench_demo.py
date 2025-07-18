@@ -48,7 +48,7 @@ qc = tket_to_qiskit(circ)
 console.rule('Original circuit')
 
 print(qc)
-assert compare_unitaries(circ.get_unitary(), qc_to_unitary(qc))
+assert compare_unitaries(circ.get_unitary(), circ2mat(qc))
 
 print(qiskit_to_tket(qc).get_commands())
 

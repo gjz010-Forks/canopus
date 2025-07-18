@@ -9,17 +9,19 @@ from qiskit.transpiler import TranspilerError
 from qiskit.transpiler.passes import VF2Layout
 from qiskit.utils.parallel import CPU_COUNT
 from qiskit.circuit import Qubit
-from accel_utils import sort_two_numbers
+from accel_utils import sort_two_objs
+from itertools import chain
 from typing import Dict, List, Tuple
 import time
 import numpy as np
 import random
 import logging
 from rich.console import Console
+from accel_utils import mirror_weyl_coord
+
 
 console = Console()
 
-from accel_utils import mirror_weyl_coord
 
 logger = logging.getLogger(__name__)
 
@@ -28,19 +30,19 @@ DECAY_STEP = 0.001
 NUM_SEARCHES_TO_RESET = 5
 EXT_WEIGHT = 0.5
 EXT_SIZE = 20
-VF2Layout
+
 
 
 def average_degree(g):
     return np.mean([g.out_degree(idx) for idx in g.node_indices()])
 
 
-DEPTH_DRIVEN_RATES = {
-    ISAType.CX: 0.75,
-    ISAType.SQiSW: 0.75,
-    ISAType.ZZPhase: 0.75,
-    ISAType.Canonical: 0.8  # 经验发现：越powerful的ISA，这个数值需要越大
-}
+# DEPTH_DRIVEN_RATES = {
+#     ISAType.CX: 0.75,
+#     ISAType.SQiSW: 0.75,
+#     ISAType.ZZPhase: 0.75,
+#     ISAType.Canonical: 0.8  # 经验发现：越powerful的ISA，这个数值需要越大
+# }
 
 
 class CanopusMapping(TransformationPass):
@@ -134,7 +136,7 @@ class CanopusMapping(TransformationPass):
         results.append((routed_dag, initial_layout, final_layout))
 
         for _ in range(self.trials - 1):
-            # logger.info(f"迭代 {_ + 1}/{self.trials}")
+            logger.info(f"迭代 {_ + 1}/{self.trials}")
 
             # backward pass
             initial_layout = final_layout
@@ -247,21 +249,25 @@ class CanopusMapping(TransformationPass):
 
         return routed_dag, layout
 
+    def _get_qubit_index(self, qubit: Qubit) -> int:
+        """Get the index of the qubit in the canonical register."""
+        return self._qubit_indices[qubit]
+    
     def _find_best_swap(self, dag, front_layer, last_mapped_layer, wire_durations, layout, required_predecessors) -> Tuple[
         Qubit, Qubit]:
         """Return is a tuple of two physical qubit indices"""
         # console.print('Layout._v2p={}'.format({'q{}'.format(self._qubit_indices[v]): p for v, p in layout._v2p.items()}))
         swap_candidates = set()
-        swap_candidates_list = []
-        from itertools import chain
-        qubits = set(chain.from_iterable([node.qargs for node in front_layer]))
+        # swap_candidates_list = []
+        qubits = chain.from_iterable([node.qargs for node in front_layer])
         for v in qubits:
             logical_neighbors = [layout._p2v[p] for p in self.coupling_map.neighbors(layout._v2p[v])]
-            swap_candidates_list.extend(
-                [tuple(sorted([v, n], key=lambda q: self._qubit_indices[q])) for n in logical_neighbors])
+            # swap_candidates_list.extend([tuple(sorted([v, n], key=lambda q: self._qubit_indices[q])) for n in logical_neighbors])
+            for n in logical_neighbors:
+                swap_candidates.add(sort_two_objs(v, n, key=self._get_qubit_index))
             # swap_candidates.union(set([tuple(sorted([v, n], key=lambda q: self._qubit_indices[q])) for n in logical_neighbors]))
-        swap_candidates = list(set(swap_candidates_list))
-        # swap_candidates = list(swap_candidates)
+        # swap_candidates = list(set(swap_candidates_list))
+        swap_candidates = list(swap_candidates)
 
         extended_set = []
         tmp_front_layer = front_layer.copy()

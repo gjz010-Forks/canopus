@@ -38,11 +38,16 @@ fn fuzzy_less(a: f64, b: f64, atol: Option<f64>) -> bool {
 }
 
 #[pyfunction]
+fn check_weyl_coord(a: f64, b: f64, c: f64) -> bool {
+    fuzzy_greater_equal(0.5, a, None)
+        && fuzzy_greater_equal(a, b, None)
+        && fuzzy_greater_equal(b, c.abs(), None)
+}
+
+#[pyfunction]
 fn optimal_can_gate_duration(a: f64, b: f64, c: f64, gx: f64, gy: f64, gz: f64) -> f64 {
     assert!(
-        fuzzy_greater_equal(0.5, a, None)
-            && fuzzy_greater_equal(a, b, None)
-            && fuzzy_greater_equal(b, c.abs(), None),
+        check_weyl_coord(a, b, c),
         "Weyl coordinate must be normalized to satisfy 0.5 >= a >= b >= |c|"
     );
 
@@ -75,9 +80,7 @@ fn optimal_can_gate_duration(a: f64, b: f64, c: f64, gx: f64, gy: f64, gz: f64) 
 #[pyfunction]
 fn mirror_weyl_coord(a: f64, b: f64, c: f64) -> (f64, f64, f64) {
     assert!(
-        fuzzy_greater_equal(0.5, a, None)
-            && fuzzy_greater_equal(a, b, None)
-            && fuzzy_greater_equal(b, c.abs(), None),
+        check_weyl_coord(a, b, c),
         "Weyl coordinate must be normalized to satisfy 0.5 >= a >= b >= |c|"
     );
 
@@ -89,24 +92,118 @@ fn mirror_weyl_coord(a: f64, b: f64, c: f64) -> (f64, f64, f64) {
 }
 
 #[pyfunction]
-fn sort_two_numbers(a: f64, b: f64) -> (f64, f64) {
-    if a < b { (a, b) } else { (b, a) }
+#[pyo3(signature = (a, b, key=None))]
+fn sort_two_floats(a: f64, b: f64, key: Option<&Bound<'_, PyAny>>) -> PyResult<(f64, f64)> {
+    match key {
+        Some(key_fn) => {
+            let key_a: f64 = key_fn.call1((a,))?.extract()?;
+            let key_b: f64 = key_fn.call1((b,))?.extract()?;
+
+            if key_a < key_b {
+                Ok((a, b))
+            } else {
+                Ok((b, a))
+            }
+        }
+        None => {
+            if a < b {
+                Ok((a, b))
+            } else {
+                Ok((b, a))
+            }
+        }
+    }
 }
 
+#[pyfunction]
+#[pyo3(signature = (a, b, key=None))]
+fn sort_two_ints(a: i32, b: i32, key: Option<&Bound<'_, PyAny>>) -> PyResult<(i32, i32)> {
+    match key {
+        Some(key_fn) => {
+            let key_a: i32 = key_fn.call1((a,))?.extract()?;
+            let key_b: i32 = key_fn.call1((b,))?.extract()?;
+
+            if key_a < key_b {
+                Ok((a, b))
+            } else {
+                Ok((b, a))
+            }
+        }
+        None => {
+            if a < b {
+                Ok((a, b))
+            } else {
+                Ok((b, a))
+            }
+        }
+    }
+}
+
+#[pyfunction]
+#[pyo3(signature = (a, b, key = None))]
+fn sort_two_objs(
+    a: Bound<'_, PyAny>,
+    b: Bound<'_, PyAny>,
+    key: Option<Bound<'_, PyAny>>,
+) -> PyResult<(PyObject, PyObject)> {
+    match key {
+        // --- 情况一：提供了 key 函数 ---
+        Some(key_fn) => {
+            // 1. 检查 key 是否可调用，这是一个良好的实践
+            if !key_fn.is_callable() {
+                return Err(pyo3::exceptions::PyTypeError::new_err(
+                    "key argument must be a callable",
+                ));
+            }
+
+            // 2. 调用 key 函数分别作用于 a 和 b，得到待比较的值
+            let val_a = key_fn.call1((&a,))?;
+            let val_b = key_fn.call1((&b,))?;
+
+            // 3. **核心改动**：使用 Python 的比较方法 `.lt()` (less than)
+            //    这会调用 Python 运行时的 `val_a < val_b`
+            //    它返回一个 PyResult<bool>，因为比较可能失败（例如，类型不兼容）
+            let should_swap: bool = val_b.lt(&val_a)?; // 等价于 `val_b < val_a`
+
+            // 4. 根据比较结果，返回原始的 a 和 b
+            if should_swap {
+                // .to_object() 将借用的 Bound<PyAny> 转换为拥有的 PyObject，以便返回
+                Ok((b.unbind(), a.unbind()))
+            } else {
+                Ok((a.unbind(), b.unbind()))
+            }
+        }
+        // --- 情况二：没有提供 key 函数 ---
+        None => {
+            // 1. **核心改动**：直接对输入的 a 和 b 使用 Python 的比较方法
+            let should_swap: bool = b.lt(&a)?; // 等价于 `b < a`
+
+            // 2. 根据比较结果返回
+            if should_swap {
+                Ok((b.unbind(), a.unbind()))
+            } else {
+                Ok((a.unbind(), b.unbind()))
+            }
+        }
+    }
+}
 
 #[pyfunction]
 fn synth_cost_by_cx(a: f64, b: f64, c: f64) -> i32 {
-    if fuzzy_equal(b, 0.0, None) && fuzzy_equal(c, 0.0, None) {
+    if fuzzy_equal(a, 0.5, None) && fuzzy_equal(b, 0.0, None) && fuzzy_equal(c, 0.0, None) {
         return 1;
     }
     if fuzzy_equal(c, 0.0, None) {
-        return 2;
+        return  2;
     }
     3
 }
 
 #[pyfunction]
 fn synth_cost_by_sqisw(a: f64, b: f64, c: f64) -> i32 {
+    if fuzzy_equal(a, 0.25, None) && fuzzy_equal(b, 0.25, None) && fuzzy_equal(c, 0.0, None) {
+        return 1;
+    }
     if fuzzy_greater_equal(a, b + c.abs(), None) {
         return 2;
     }
@@ -121,9 +218,12 @@ fn accel_utils(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(fuzzy_greater, m)?)?;
     m.add_function(wrap_pyfunction!(fuzzy_less_equal, m)?)?;
     m.add_function(wrap_pyfunction!(fuzzy_less, m)?)?;
+    m.add_function(wrap_pyfunction!(check_weyl_coord, m)?)?;
     m.add_function(wrap_pyfunction!(optimal_can_gate_duration, m)?)?;
     m.add_function(wrap_pyfunction!(mirror_weyl_coord, m)?)?;
-    m.add_function(wrap_pyfunction!(sort_two_numbers, m)?)?;
+    m.add_function(wrap_pyfunction!(sort_two_ints, m)?)?;
+    m.add_function(wrap_pyfunction!(sort_two_floats, m)?)?;
+    m.add_function(wrap_pyfunction!(sort_two_objs, m)?)?;
     m.add_function(wrap_pyfunction!(synth_cost_by_cx, m)?)?;
     m.add_function(wrap_pyfunction!(synth_cost_by_sqisw, m)?)?;
     Ok(())

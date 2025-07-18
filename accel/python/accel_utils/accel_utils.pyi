@@ -2,6 +2,8 @@
 Type stubs for accel_utils Rust extension module.
 This file provides type hints for the Rust-compiled functions.
 """
+from typing import Any, Callable
+
 
 def fuzzy_equal(a: float, b: float, atol: float | None = None) -> bool:
     """
@@ -73,6 +75,23 @@ def fuzzy_less(a: float, b: float, atol: float | None = None) -> bool:
     """
     ...
 
+
+def check_weyl_coord(a: float, b: float, c: float) -> bool:
+    """
+    Check if Weyl coordinates are normalized.
+    
+    Args:
+        a, b, c: Weyl coordinates where 0.5 >= a >= b >= |c|
+        
+    Returns:
+        True if the coordinates are normalized, False otherwise
+        
+    Note:
+        Weyl coordinate must be normalized to satisfy 0.5 >= a >= b >= |c|
+    """
+    ...
+
+
 def optimal_can_gate_duration(
     a: float, 
     b: float, 
@@ -111,13 +130,46 @@ def mirror_weyl_coord(a: float, b: float, c: float) -> tuple[float, float, float
     """
     ...
 
-def sort_two_numbers(a: float, b: float) -> tuple[float, float]:
+
+def sort_two_floats(a: float, b: float, key: callable = None) -> tuple[float, float]:
     """
-    Sort two numbers in ascending order.
+    Sort two float numbers in ascending order (sometimes using a key function).
 
     Args:
-        t: Tuple of two floats
-        
+        a: First float value
+        b: Second float value
+        key: Key function to determine the sort order
+
+    Returns:
+        Tuple sorted in ascending order
+    """
+    ...
+    
+
+def sort_two_ints(a: int, b: int, key: callable = None) -> tuple[int, int]:
+    """
+    Sort two integer numbers in ascending order (sometimes using a key function).
+
+    Args:
+        a: First integer value
+        b: Second integer value
+        key: Key function to determine the sort order
+
+    Returns:
+        Tuple sorted in ascending order
+    """
+    ...
+
+
+def sort_two_objs(a: Any, b: Any, key: Callable = None) -> tuple[Any, Any]:
+    """
+    Sort two objects in ascending order (sometimes using a key function).
+
+    Args:
+        a: First object
+        b: Second object
+        key: Key function to determine the sort order
+
     Returns:
         Tuple sorted in ascending order
     """

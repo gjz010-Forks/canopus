@@ -7,7 +7,7 @@ from qiskit.dagcircuit import DAGCircuit
 from qiskit.converters import dag_to_circuit
 from functools import cached_property
 from canopus.basics import half_pi
-from accel_utils import * 
+from accel_utils import *
 
 
 
@@ -106,7 +106,7 @@ class SynthCostEstimator:
             if instr.operation.num_qubits == 1:
                 continue
 
-            q0, q1 = sort_two_numbers(qubit_indices[instr.qubits[0]], qubit_indices[instr.qubits[1]])
+            q0, q1 = sort_two_ints(qubit_indices[instr.qubits[0]], qubit_indices[instr.qubits[1]])
 
             if instr.operation.name == 'swap':
                 if (q0, q1) in last_mapped_layer:
@@ -135,11 +135,11 @@ class SynthCostEstimator:
             wire_durations[q0] = current_duration
             wire_durations[q1] = current_duration
 
-        # update last_mapped_layer
-        for pair in list(last_mapped_layer.keys()):
-            if q0 in pair or q1 in pair:
-                last_mapped_layer.pop(pair)
-        last_mapped_layer[q0, q1] = (instr.operation.name, instr.operation.params)
+            # update last_mapped_layer
+            for pair in list(last_mapped_layer.keys()):
+                if q0 in pair or q1 in pair:
+                    last_mapped_layer.pop(pair)
+            last_mapped_layer[q0, q1] = (instr.operation.name, instr.operation.params)
 
         return max(wire_durations.values())
 
@@ -157,7 +157,7 @@ class SynthCostEstimator:
             if node.num_qubits == 1:
                 continue
 
-            q0, q1 = sort_two_numbers(qubit_indices[node.qargs[0]], qubit_indices[node.qargs[1]])
+            q0, q1 = sort_two_ints(qubit_indices[node.qargs[0]], qubit_indices[node.qargs[1]])
 
             if node.op.name == 'swap':
                 i += 1

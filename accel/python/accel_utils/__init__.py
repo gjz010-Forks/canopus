@@ -8,9 +8,12 @@ from .accel_utils import (
     fuzzy_greater,
     fuzzy_less_equal,
     fuzzy_less,
+    check_weyl_coord,
     optimal_can_gate_duration,
     mirror_weyl_coord,
-    sort_two_numbers,
+    sort_two_ints,
+    sort_two_floats,
+    sort_two_objs,
     synth_cost_by_cx,
     synth_cost_by_sqisw,
 
@@ -23,9 +26,12 @@ __all__ = [
     'fuzzy_greater',
     'fuzzy_less_equal',
     'fuzzy_less',
+    'check_weyl_coord',
     'optimal_can_gate_duration',
     'mirror_weyl_coord',
-    'sort_two_numbers',
+    'sort_two_ints',
+    'sort_two_floats',
+    'sort_two_objs',
     'synth_cost_by_cx',
     'synth_cost_by_sqisw'
 

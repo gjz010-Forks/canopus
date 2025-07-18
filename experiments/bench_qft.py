@@ -32,13 +32,13 @@ console.rule('Original circuit')
 
 print(qc)
 if qc.num_qubits < 7:
-    assert compare_unitaries(circ.get_unitary(), qc_to_unitary(qc))
+    assert compare_unitaries(circ.get_unitary(), circ2mat(qc))
 
 # print(qiskit_to_tket(qc).get_commands())
 
 coupling_map = CouplingMap.from_line(num_qubits=qc.num_qubits)
 # coupling_map = CouplingMap.from_grid(np.ceil(np.sqrt(qc.num_qubits)).astype(int), np.ceil(np.sqrt(qc.num_qubits)).astype(int))
-backend = CanopusBackend(coupling_map, 'cx', 'xx')
+backend = CanopusBackend(coupling_map, 'sqisw', 'xx')
 
 console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc)))
 

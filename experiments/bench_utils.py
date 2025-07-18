@@ -113,3 +113,8 @@ def is_all2all_coupling_map(coupling_map: CouplingMap) -> bool:
     if coupling_map.size() * (coupling_map.size() - 1) == len(coupling_map.get_edges()):
         return True
     return False
+
+
+def routing_overhead(qc, qc_mapped, evaluator):
+    """Return routing overhead in both """
+    ...
