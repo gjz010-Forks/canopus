@@ -1,8 +1,8 @@
-from qiskit import QuantumCircuit
-from qiskit.transpiler import TransformationPass, Layout
+from qiskit.transpiler import TransformationPass, Layout, TranspilerError
+from qiskit.transpiler.passes import VF2Layout
 from qiskit.dagcircuit import DAGCircuit
 from canopus.backends import CanopusBackend
-from canopus.utils import generate_random_layout, crop_coupling_map
+from canopus.utils import generate_random_layout
 from qiskit.circuit.library import SwapGate
 from qiskit.utils.parallel import CPU_COUNT
 from qiskit.circuit import Qubit
@@ -26,20 +26,25 @@ EXT_SIZE = 20
 
 
 class SabreMapping(TransformationPass):
-    def __init__(self, backend: CanopusBackend, seed=None, trials=None, layout_trials=None):
+    def __init__(self, backend: CanopusBackend, seed=None,
+                 max_iterations=5, trials=None, layout_trials=None):
         super().__init__()
         self.backend = backend
+        self.max_iterations = max_iterations
         self.trials = CPU_COUNT if trials is None else trials
         self.seed = seed
         self.layout_trials = CPU_COUNT if layout_trials is None else layout_trials
 
-        self.coupling_map = None
-        self.distance_matrix = None
+        self.coupling_map = backend.coupling_map
+        self.distance_matrix = self.coupling_map.distance_matrix.astype(int)
 
     def run(self, dag: DAGCircuit):
-        if self.seed is not None:
-            random.seed(self.seed)
-            np.random.seed(self.seed)
+        if dag.num_qubits() != self.coupling_map.size():
+            raise TranspilerError("Only support circuits with the qubit count as the backend coupling map size.")
+
+        # if self.seed is not None:
+        #     random.seed(self.seed)
+        #     np.random.seed(self.seed)
 
         self.property_set["original_qubit_indices"] = {
             bit: index for index, bit in enumerate(dag.qubits)
@@ -60,13 +65,24 @@ class SabreMapping(TransformationPass):
 
         for trial in range(self.layout_trials):
             trial_seed = None if self.seed is None else self.seed + trial
-            self.coupling_map = crop_coupling_map(self.backend.coupling_map, self.canonical_qreg.size,
-                                                  trial_seed)
-            self.distance_matrix = self.coupling_map.distance_matrix.astype(int)
+
+            v2f_pass = VF2Layout(self.coupling_map)
+            v2f_pass.run(dag)
+            if layout := v2f_pass.property_set.get('layout'):
+                self.property_set['layout'] = layout
+                self.property_set['final_layout'] = layout
+                best_routed_dag = dag.copy_empty_like()
+                for node in dag.topological_op_nodes():
+                    best_routed_dag.apply_operation_back(node.op,
+                                                         [self.canonical_qreg[layout._v2p[v]] for v in node.qargs],
+                                                         node.cargs)
+                return best_routed_dag
+
             initial_layout = generate_random_layout(self.canonical_qreg, self.coupling_map, trial_seed)
             logger.info(f'Initial layout for trial {trial + 1}: {initial_layout}')
             routed_dag, initial_layout, final_layout = self._bidirectional_sabre_route(dag, initial_layout, trial_seed)
-            if routed_dag.count_ops().get('swap', 0) < best_metric and routed_dag.depth() < best_depth:  # use rich metrics (e.g., pulse duration)
+            if routed_dag.count_ops().get('swap',
+                                          0) < best_metric and routed_dag.depth() < best_depth:  # use rich metrics (e.g., pulse duration)
                 best_routed_dag, best_initial_layout, best_final_layout = routed_dag, initial_layout, final_layout
                 best_metric = routed_dag.count_ops().get('swap', 0)
                 logger.info(f"Trial {trial + 1}: Found better layout with {best_metric} swaps")
@@ -86,16 +102,13 @@ class SabreMapping(TransformationPass):
         return best_routed_dag
 
     def _bidirectional_sabre_route(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout, Layout]:
-        np.random.seed(seed)
         results = []
 
         # forward pass
         routed_dag, final_layout = self._sabre_route(dag, initial_layout, seed)
         results.append((routed_dag, initial_layout, final_layout))
 
-        for _ in range(self.trials - 1):
-            # logger.info(f"迭代 {_ + 1}/{self.trials}")
-
+        for _ in range(self.max_iterations - 1):
             # backward pass
             initial_layout = final_layout
             _, final_layout = self._sabre_route(dag.reverse_ops(), initial_layout, seed)
@@ -109,6 +122,22 @@ class SabreMapping(TransformationPass):
         return results[best_result_idx]
 
     def _sabre_route(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
+        best_routed_dag = None
+        best_metric = float('inf')
+        best_final_layout = None
+
+        for trial in range(self.trials):
+            trial_seed = None if seed is None else seed + trial
+            routed_dag, final_layout = self._sabre_route_one_trial(dag, initial_layout, trial_seed)
+            if routed_dag.count_ops().get('swap', 0) < best_metric:
+                best_routed_dag = routed_dag
+                best_metric = routed_dag.count_ops().get('swap', 0)
+                best_final_layout = final_layout
+                logger.info(f"Trial {trial + 1}: Found better layout with {best_metric} swaps")
+
+        return best_routed_dag, best_final_layout
+
+    def _sabre_route_one_trial(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
         """Given the DAG and initial layout, perform SABRE routing. Return the routed DAG and the final layout."""
         np.random.seed(seed)
         layout = initial_layout.copy()
@@ -155,7 +184,7 @@ class SabreMapping(TransformationPass):
     def _get_qubit_index(self, qubit: Qubit) -> int:
         """Get the index of the qubit in the canonical register."""
         return self._qubit_indices[qubit]
-    
+
     def _find_best_swap(self, dag, front_layer, layout, required_predecessors) -> Tuple[Qubit, Qubit]:
         swap_candidates = set()
         # swap_candidates_list = []
@@ -167,7 +196,6 @@ class SabreMapping(TransformationPass):
                 swap_candidates.add(sort_two_objs(v, n, key=self._get_qubit_index))
             # swap_candidates_list.extend([(v, n) for n in logical_neighbors])
         swap_candidates = list(swap_candidates)
-
 
         extended_set = []
         tmp_front_layer = front_layer.copy()

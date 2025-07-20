@@ -3,7 +3,7 @@ from qiskit.transpiler import TransformationPass, Layout
 from qiskit.dagcircuit import DAGCircuit
 
 from canopus.backends import CanopusBackend, ISAType
-from canopus.utils import generate_random_layout, crop_coupling_map
+from canopus.utils import generate_random_layout
 from qiskit.circuit.library import SwapGate
 from qiskit.transpiler import TranspilerError
 from qiskit.transpiler.passes import VF2Layout
@@ -19,9 +19,7 @@ import logging
 from rich.console import Console
 from accel_utils import mirror_weyl_coord
 
-
 console = Console()
-
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +28,6 @@ DECAY_STEP = 0.001
 NUM_SEARCHES_TO_RESET = 5
 EXT_WEIGHT = 0.5
 EXT_SIZE = 20
-
 
 
 def average_degree(g):
@@ -46,25 +43,25 @@ def average_degree(g):
 
 
 class CanopusMapping(TransformationPass):
-    def __init__(self, backend: CanopusBackend, seed=None, trials=None, layout_trials=None):
+    def __init__(self, backend: CanopusBackend, seed=None,
+                 max_iterations=5, trials=None, layout_trials=None):
         super().__init__()
         self.backend = backend
         self.trials = CPU_COUNT if trials is None else trials
+        self.max_iterations = max_iterations
         self.seed = seed
         self.layout_trials = CPU_COUNT if layout_trials is None else layout_trials
 
         # self.distance_matrix = self.backend.coupling_map.distance_matrix.astype(int)
-        self.coupling_map = None
-        self.distance_matrix = None
         self.depth_driven_rate = None
-        self.average_degree = None
+        self.coupling_map = backend.coupling_map
+        self.distance_matrix = self.coupling_map.distance_matrix.astype(int)
+        self.average_degree = average_degree(self.coupling_map.graph)
 
     def run(self, dag: DAGCircuit):
+        if dag.num_qubits() != self.coupling_map.size():
+            raise TranspilerError("Only support circuits with the qubit count as the backend coupling map size.")
 
-
-
-        # if dag.num_qubits() != self.backend.coupling_map.size():
-        #     raise TranspilerError("Only support circuits with the qubit count as the backend coupling map size.")
         if self.seed is not None:
             random.seed(self.seed)
             np.random.seed(self.seed)
@@ -85,9 +82,6 @@ class CanopusMapping(TransformationPass):
 
         for trial in range(self.layout_trials):
             trial_seed = None if self.seed is None else self.seed + trial
-            self.coupling_map = crop_coupling_map(self.backend.coupling_map, self.canonical_qreg.size, trial_seed)
-            self.distance_matrix = self.coupling_map.distance_matrix.astype(int)
-            self.average_degree = average_degree(self.coupling_map.graph)
 
             v2f_pass = VF2Layout(self.coupling_map)
             v2f_pass.run(dag)
@@ -96,10 +90,10 @@ class CanopusMapping(TransformationPass):
                 self.property_set['final_layout'] = layout
                 best_routed_dag = dag.copy_empty_like()
                 for node in dag.topological_op_nodes():
-                    best_routed_dag.apply_operation_back(node.op, 
-                                                         [self.canonical_qreg[layout._v2p[v]] for v in node.qargs], node.cargs)
+                    best_routed_dag.apply_operation_back(node.op,
+                                                         [self.canonical_qreg[layout._v2p[v]] for v in node.qargs],
+                                                         node.cargs)
                 return best_routed_dag
-
 
             # self.depth_driven_rate = DEPTH_DRIVEN_RATES[self.backend.isa_type] * (1 + 1 / self.average_degree)
             # print((1 + 1 / self.average_degree), (1 + self.average_degree))
@@ -135,8 +129,9 @@ class CanopusMapping(TransformationPass):
         routed_dag, final_layout = self._canopus_route(dag, initial_layout, seed)
         results.append((routed_dag, initial_layout, final_layout))
 
-        for _ in range(self.trials - 1):
-            logger.info(f"迭代 {_ + 1}/{self.trials}")
+        from tqdm import tqdm
+        for _ in tqdm(range(self.max_iterations - 1)):
+            logger.info(f"迭代 {_ + 1}/{self.max_iterations}")
 
             # backward pass
             initial_layout = final_layout
@@ -153,6 +148,24 @@ class CanopusMapping(TransformationPass):
         return results[best_result_idx]
 
     def _canopus_route(self, dag, initial_layout, seed, reverse=False) -> Tuple[DAGCircuit, Layout]:
+        best_routed_dag = None
+        best_metric = float('inf')
+        best_final_layout = None
+
+        from tqdm import tqdm
+        for trial in (range(self.trials)):
+            trial_seed = None if seed is None else seed + trial
+            routed_dag, final_layout = self._canopus_route_one_pass(dag, initial_layout, trial_seed, reverse)
+            metric = self.backend.cost_estimator.eval_dagcircuit_duration(routed_dag)
+            if metric < best_metric:
+                best_routed_dag = routed_dag
+                best_final_layout = final_layout
+                best_metric = metric
+                logger.info(f"Trial {trial + 1}: Found better layout with {best_metric} swaps")
+
+        return best_routed_dag, best_final_layout
+
+    def _canopus_route_one_pass(self, dag, initial_layout, seed, reverse=False) -> Tuple[DAGCircuit, Layout]:
         """Given the DAG and initial layout, perform SABRE routing. Return the routed DAG and the final layout."""
         np.random.seed(seed)
         self.reverse = reverse
@@ -192,9 +205,11 @@ class CanopusMapping(TransformationPass):
                                 last_mapped_layer.pop(pair)
                         last_mapped_layer[p0, p1] = node.op.name, node.op.params
                         # mapped_2q_dag.apply_operation_back(node.op, node.qargs, node.cargs)
-                        
+
                         # update wire_durations
-                        current_duration = max(wire_durations[p0], wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(*node.op.params)
+                        current_duration = max(wire_durations[p0],
+                                               wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(
+                            *node.op.params)
                         wire_durations[p0] = current_duration
                         wire_durations[p1] = current_duration
 
@@ -232,11 +247,15 @@ class CanopusMapping(TransformationPass):
                 if (p0, p1) in last_mapped_layer:
                     gname, params = last_mapped_layer[p0, p1]
                     if gname.startswith('can'):
-                        current_duration = max(wire_durations[p0], wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(*mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
+                        current_duration = max(wire_durations[p0],
+                                               wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(
+                            *mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
                     else:
-                        current_duration = max(wire_durations[p0], wire_durations[p1]) + self.backend.cost_estimator.swap_cost
+                        current_duration = max(wire_durations[p0],
+                                               wire_durations[p1]) + self.backend.cost_estimator.swap_cost
                 else:
-                    current_duration = max(wire_durations[p0], wire_durations[p1]) + self.backend.cost_estimator.swap_cost
+                    current_duration = max(wire_durations[p0],
+                                           wire_durations[p1]) + self.backend.cost_estimator.swap_cost
                 wire_durations[p0] = current_duration
                 wire_durations[p1] = current_duration
 
@@ -252,9 +271,10 @@ class CanopusMapping(TransformationPass):
     def _get_qubit_index(self, qubit: Qubit) -> int:
         """Get the index of the qubit in the canonical register."""
         return self._qubit_indices[qubit]
-    
-    def _find_best_swap(self, dag, front_layer, last_mapped_layer, wire_durations, layout, required_predecessors) -> Tuple[
-        Qubit, Qubit]:
+
+    def _find_best_swap(self, dag, front_layer, last_mapped_layer, wire_durations, layout, required_predecessors) -> \
+            Tuple[
+                Qubit, Qubit]:
         """Return is a tuple of two physical qubit indices"""
         # console.print('Layout._v2p={}'.format({'q{}'.format(self._qubit_indices[v]): p for v, p in layout._v2p.items()}))
         swap_candidates = set()
@@ -287,23 +307,25 @@ class CanopusMapping(TransformationPass):
         avg_dist_front = self._avg_dist(front_layer, layout)
         avg_dist_extended = self._avg_dist(extended_set, layout)
         costs = np.array([
-            self._heuristic_cost(front_layer, last_mapped_layer, 
+            self._heuristic_cost(front_layer, last_mapped_layer,
                                  extended_set, layout, swap,
-                                 wire_durations, duration, avg_dist_front, avg_dist_extended) for swap in swap_candidates])
+                                 wire_durations, duration, avg_dist_front, avg_dist_extended) for swap in
+            swap_candidates])
         # console.print('swap candidates: {}'.format([(self._qubit_indices[q0], self._qubit_indices[q1]) for q0, q1 in swap_candidates]))
         # console.print('swap costs: {}'.format(costs))
         min_cost = np.min(costs)
         swap = swap_candidates[np.random.choice(np.where(np.isclose(costs, min_cost))[0])]
         # console.print('Best swap: {} with cost {:.4f}'.format((self._qubit_indices[swap[0]], self._qubit_indices[swap[1]]),min_cost))
         return swap
-    
+
     def _avg_dist(self, nodes, layout: Layout):
         if nodes:
-            return np.mean([self.distance_matrix[layout._v2p[node.qargs[0]], layout._v2p[node.qargs[1]]] for node in nodes])
+            return np.mean(
+                [self.distance_matrix[layout._v2p[node.qargs[0]], layout._v2p[node.qargs[1]]] for node in nodes])
         return 0
 
     def _heuristic_cost(self, front_layer, last_mapped_layer, extended_set,
-                        layout: Layout, swap: Tuple[Qubit, Qubit], 
+                        layout: Layout, swap: Tuple[Qubit, Qubit],
                         wire_durations: Dict[int, float],
                         duration: float,
                         avg_dist_front=None, avg_dist_extended=None):
@@ -311,7 +333,6 @@ class CanopusMapping(TransformationPass):
         assert duration == max(wire_durations.values()), "Duration should be the maximum wire duration."
         avg_dist_front = self._avg_dist(front_layer, layout) if avg_dist_front is None else avg_dist_front
         avg_dist_extended = self._avg_dist(extended_set, layout) if avg_dist_extended is None else avg_dist_extended
-
 
         # for pair, (gname, params) in last_mapped_layer.items():
         #     if not pair[0] < pair[1]:
@@ -324,14 +345,17 @@ class CanopusMapping(TransformationPass):
         if (swap_p0, swap_p1) in last_mapped_layer:
             gname, params = last_mapped_layer[swap_p0, swap_p1]
             if gname.startswith('can'):
-                current_duration = max(wire_durations[swap_p0], wire_durations[swap_p1]) + self.backend.cost_estimator.eval_gate_cost(*mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
+                current_duration = max(wire_durations[swap_p0],
+                                       wire_durations[swap_p1]) + self.backend.cost_estimator.eval_gate_cost(
+                    *mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
             else:
-        #         # TODO: 如何解决这个门正好是SWAP的问题
+                #         # TODO: 如何解决这个门正好是SWAP的问题
                 assert gname == 'swap', "Only swap gates should be in the last mapped layer."
                 current_duration = float('inf')
                 # current_duration = max(wire_durations[swap_p0], wire_durations[swap_p1]) + self.backend.cost_estimator.swap_cost
         else:
-            current_duration = max(wire_durations[swap_p0], wire_durations[swap_p1]) + self.backend.cost_estimator.swap_cost
+            current_duration = max(wire_durations[swap_p0],
+                                   wire_durations[swap_p1]) + self.backend.cost_estimator.swap_cost
 
         wire_durations[swap_p0] = current_duration
         wire_durations[swap_p1] = current_duration
@@ -340,10 +364,10 @@ class CanopusMapping(TransformationPass):
         layout.swap(*swap)
         c1 = (self._avg_dist(front_layer, layout) - avg_dist_front) * self.backend.cost_estimator.swap_cost
         c2 = self._avg_dist(extended_set, layout) - avg_dist_extended * self.backend.cost_estimator.swap_cost
-        c_depth = (max(wire_durations.values()) - duration) * (self.average_degree / (2 + self.average_degree)) # TODO: 这里要不要除以 self.average_degree
+        c_depth = (max(wire_durations.values()) - duration) * (
+                self.average_degree / (2 + self.average_degree))  # TODO: 这里要不要除以 self.average_degree
         # 目前这样设置效果还不错
 
-        
         # console.print('self.average_degree={}'.format(self.average_degree))
 
         # c1 = np.mean(

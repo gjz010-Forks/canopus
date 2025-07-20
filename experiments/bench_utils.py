@@ -37,10 +37,10 @@ def read_device_topology(fname: str) -> rx.PyGraph:
     return device
 
 
-Chain = CouplingMap(rx.generators.path_graph(35).to_directed().edge_list())
-Manhattan = CouplingMap(read_device_topology('./configs/manhattan.graphml').to_directed().edge_list())
-Sycamore = CouplingMap(read_device_topology('./configs/sycamore.graphml').to_directed().edge_list())
-All2all = CouplingMap(rx.generators.complete_graph(35).to_directed().edge_list())
+# Chain = CouplingMap(rx.generators.path_graph(35).to_directed().edge_list())
+# Manhattan = CouplingMap(read_device_topology('./configs/manhattan.graphml').to_directed().edge_list())
+# Sycamore = CouplingMap(read_device_topology('./configs/sycamore.graphml').to_directed().edge_list())
+# All2all = CouplingMap(rx.generators.complete_graph(35).to_directed().edge_list())
 
 
 def canopus_pass(circ: pytket.Circuit, isa: str, coupling_map: CouplingMap,

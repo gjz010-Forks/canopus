@@ -88,7 +88,8 @@ def _tk2_to_sqisw(a, b, c) -> pytket.Circuit:
 def _tk2_to_zzphase(a, b, c) -> pytket.Circuit:
     """Optimal decomposition of TK2 gate into [ZZPhase(1/3), ZZPhase(1/2), ZZPhase(1)]."""
     qc = xx_decomposer(
-        qi.Operator(Op.create(OpType.TK2, [a, b, c]).get_unitary()).reverse_qargs(),
-        # basis_fidelity=0.995, approximate=True
+        qi.Operator(canonical_unitary(a, b, c)).reverse_qargs(),
+        # basis_fidelity=0.995, approximate=True,
+        approximate=False,
     )
     return qiskit_to_tket(qc)

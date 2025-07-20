@@ -66,12 +66,15 @@ square_ftqc:
 	@./bench_all.py -t square -isa ftqc
 
 
+canopus:
+	@echo "Testing Canopus for all topologies and ISAs ..."
+	@./run.sh
+
 
 baselines:
 	@echo "Running baseline compilers (SABRE, TOQM, OLSQ, Mirage) ...\n"
 
 	@echo "Running SABRE compiler ..."
-	@echo "For SABRE, chain topology:"
 	@./run_sabre.sh
 
 	@echo "Running TOQM compiler ..."

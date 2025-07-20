@@ -97,11 +97,6 @@ class SynthCostEstimator:
 
     def eval_circuit_duration(self, qc: QuantumCircuit):
         """Evaluate the pulse-level duration of a Qiskit QuantumCircuit instance."""
-        # import pytket
-        # from canopus.utils import tket_to_qiskit
-        # if isinstance(qc, pytket.Circuit):
-        #     qc = tket_to_qiskit(qc)
-
         qubit_indices = {qarg: q for q, qarg in enumerate(qc.qubits)}
         wire_durations = {q: 0.0 for q in range(qc.num_qubits)}
         last_mapped_layer: Dict[Tuple[int, int], Tuple[str, List[float]]] = {}
@@ -202,8 +197,3 @@ class SynthCostEstimator:
             last_mapped_layer[q0, q1] = (node.op.name, node.op.params)
 
         return max(wire_durations.values())
-
-
-
-
-

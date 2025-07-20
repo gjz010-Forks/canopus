@@ -11,7 +11,6 @@ from rich.table import Table
 from pytket.utils.stats import gate_counts
 from qiskit.transpiler import Layout, CouplingMap
 import rustworkx as rx
-from canopus.basics import half_pi
 from accel_utils import sort_two_ints
 
 console = Console()
@@ -218,10 +217,25 @@ def is_equiv_unitary(u: np.ndarray, v: np.ndarray) -> bool:
     return np.allclose(u, v, atol=1e-8)
 
 
+def gene_chain_coupling_map(size):
+    return CouplingMap.from_line(size)
+
+
+def gene_square_coupling_map(size):
+    n = int(np.sqrt(size))
+    m = int(np.ceil(size / n))
+    g = rx.generators.grid_graph(n, m).subgraph(range(size))
+    return CouplingMap(g.edge_list())
+
+
+def gene_hhex_coupling_map(size):
+    return CouplingMap(Manhattan.graph.subgraph(range(size)).edge_list())
+
+
 def crop_coupling_map(coupling_map, crop_size, seed=None):
+    """This function wille be computationally expensive for if the coupling_map.size() is much larger than crop_size"""
     assert crop_size <= coupling_map.size(), "Crop size must be less than or equal to the coupling map size."
     np.random.seed(seed)
-    # all_physical_qubits = list(coupling_map.physical_qubits)
     node_list = rx.connected_subgraphs(coupling_map.graph.to_undirected(), crop_size)
     subgraphs = [coupling_map.graph.subgraph(nodes) for nodes in node_list]
     edge_numbers = [g.num_edges() for g in subgraphs]
@@ -246,6 +260,7 @@ def generate_random_layout(qreg, coupling_map, seed=None) -> Layout:
     # return {logical_qubits[i]: p for i, p in enumerate(physical_qubits)}
     return Layout.from_intlist(physical_qubits, qreg)
 
+
 # from regulus.utils import arch
 # def gene_1d_chain
 
@@ -269,3 +284,152 @@ def generate_random_layout(qreg, coupling_map, seed=None) -> Layout:
 #         return 3
 
 #     raise ValueError("Unsupported gate type")
+
+
+Manhattan_Edges = [
+    (0, 1),
+    (1, 0),
+    (0, 2),
+    (2, 0),
+    (1, 13),
+    (13, 1),
+    (2, 3),
+    (3, 2),
+    (3, 4),
+    (4, 3),
+    (4, 5),
+    (5, 4),
+    (5, 6),
+    (6, 5),
+    (5, 7),
+    (7, 5),
+    (6, 8),
+    (8, 6),
+    (7, 14),
+    (14, 7),
+    (8, 9),
+    (9, 8),
+    (9, 10),
+    (10, 9),
+    (10, 11),
+    (11, 10),
+    (10, 12),
+    (12, 10),
+    (12, 15),
+    (15, 12),
+    (13, 16),
+    (16, 13),
+    (14, 18),
+    (18, 14),
+    (14, 20),
+    (20, 14),
+    (15, 22),
+    (22, 15),
+    (15, 24),
+    (24, 15),
+    (16, 17),
+    (17, 16),
+    (17, 18),
+    (18, 17),
+    (17, 19),
+    (19, 17),
+    (19, 27),
+    (27, 19),
+    (20, 21),
+    (21, 20),
+    (21, 22),
+    (22, 21),
+    (21, 23),
+    (23, 21),
+    (23, 28),
+    (28, 23),
+    (24, 25),
+    (25, 24),
+    (25, 26),
+    (26, 25),
+    (26, 29),
+    (29, 26),
+    (27, 32),
+    (32, 27),
+    (27, 33),
+    (33, 27),
+    (28, 35),
+    (35, 28),
+    (28, 37),
+    (37, 28),
+    (29, 40),
+    (40, 29),
+    (30, 31),
+    (31, 30),
+    (30, 32),
+    (32, 30),
+    (31, 41),
+    (41, 31),
+    (33, 34),
+    (34, 33),
+    (34, 35),
+    (35, 34),
+    (34, 36),
+    (36, 34),
+    (36, 42),
+    (42, 36),
+    (37, 38),
+    (38, 37),
+    (38, 39),
+    (39, 38),
+    (38, 40),
+    (40, 38),
+    (39, 43),
+    (43, 39),
+    (41, 44),
+    (44, 41),
+    (42, 46),
+    (46, 42),
+    (42, 48),
+    (48, 42),
+    (43, 50),
+    (50, 43),
+    (43, 52),
+    (52, 43),
+    (44, 45),
+    (45, 44),
+    (45, 46),
+    (46, 45),
+    (45, 47),
+    (47, 45),
+    (47, 55),
+    (55, 47),
+    (48, 49),
+    (49, 48),
+    (49, 50),
+    (50, 49),
+    (49, 51),
+    (51, 49),
+    (51, 56),
+    (56, 51),
+    (52, 53),
+    (53, 52),
+    (53, 54),
+    (54, 53),
+    (54, 57),
+    (57, 54),
+    (55, 58),
+    (58, 55),
+    (55, 59),
+    (59, 55),
+    (56, 61),
+    (61, 56),
+    (56, 62),
+    (62, 56),
+    (57, 64),
+    (64, 57),
+    (59, 60),
+    (60, 59),
+    (60, 61),
+    (61, 60),
+    (62, 63),
+    (63, 62),
+    (63, 64),
+    (64, 63)]
+
+Manhattan = CouplingMap(Manhattan_Edges)
