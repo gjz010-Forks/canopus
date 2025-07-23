@@ -12,6 +12,9 @@ if not os.path.exists(output_dpath):
 fnames = [os.path.join(benchmark_dpath, fname) for fname in os.listdir(benchmark_dpath) if fname.endswith('.qasm')]
 
 for fname in fnames:
+    if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
+        print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
+        continue
     print(f"Processing {fname}")
     circ = pytket.qasm.circuit_from_qasm(fname)
     circ_opt = canopus.rebase_to_tk2(circ)

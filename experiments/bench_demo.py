@@ -52,10 +52,10 @@ assert compare_unitaries(circ.get_unitary(), qc2mat(qc))
 
 print(qiskit_to_tket(qc).get_commands())
 
-# coupling_map = gene_chain_coupling_map(qc.num_qubits)
+coupling_map = gene_chain_coupling_map(qc.num_qubits)
 # coupling_map = gene_square_coupling_map(qc.num_qubits)
-coupling_map = gene_hhex_coupling_map(qc.num_qubits)
-backend = CanopusBackend(coupling_map, 'sqisw', 'xx')
+# coupling_map = gene_hhex_coupling_map(qc.num_qubits)
+backend = CanopusBackend(coupling_map, 'cx', 'xx')
 
 console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc)))
 

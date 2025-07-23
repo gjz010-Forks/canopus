@@ -13,7 +13,6 @@ from canopus.utils import print_circ_info
 from qiskit.transpiler import PassManager
 from rich.console import Console
 
-
 console = Console()
 
 parser = argparse.ArgumentParser(description="Canopus executable.")
@@ -26,11 +25,9 @@ args = parser.parse_args()
 if args.isa == 'ftqc':
     raise NotImplementedError("FTQC ISA is not supported in this script.")
 
-
-
 benchmark_dpath = './output/logical/'  # Path to benchmark files
-output_dpath = os.path.join('./output/sabre/', args.topology, args.isa,
-                            '' if args.coupling is None else args.coupling)
+output_dpath = os.path.join('./output/sabre/', args.topology,
+                            args.isa + ('' if args.coupling is None else ('_' + args.coupling)))
 if not os.path.exists(output_dpath):
     os.makedirs(output_dpath)
 fnames = [os.path.join(benchmark_dpath, fname) for fname in natsorted(os.listdir(benchmark_dpath)) if
@@ -67,3 +64,4 @@ for fname in fnames:
     console.print(f"Gate counts: {qc_sabre.count_ops()}")
     console.print(f"Circuit cost: {sabre_circ_cost:.2f}; Routing overhead: {sabre_circ_cost / logic_circ_cost:.2f}")
     qasm2.dump(qc_sabre, os.path.join(output_dpath, os.path.basename(fname)))
+    console.print(f"Saved to {os.path.join(output_dpath, os.path.basename(fname))}")

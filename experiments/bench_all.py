@@ -34,11 +34,10 @@ args = parser.parse_args()
 if args.isa == 'ftqc':
     raise NotImplementedError("FTQC ISA is not supported in this script.")
 
-
-
 benchmark_dpath = './output/logical/'  # Path to benchmark files
-output_dpath = os.path.join('./output/canopus/', args.topology, args.isa,
-                            '' if args.coupling is None else args.coupling)
+output_dpath = os.path.join('./output/canopus/', args.topology,
+                            args.isa + ('' if args.coupling is None else ('_' + args.coupling)))
+
 if not os.path.exists(output_dpath):
     os.makedirs(output_dpath)
 fnames = [os.path.join(benchmark_dpath, fname) for fname in natsorted(os.listdir(benchmark_dpath)) if
@@ -50,12 +49,7 @@ for fname in fnames:
         continue
 
     console.rule(f"Processing {fname}")
-    if 'knn' in fname:
-        continue
-    if 'multiplier' in fname:
-        continue
-    # if 'bigadder' not in fname:
-    #     continue
+    
     circ = pytket.qasm.circuit_from_qasm(fname)
     qc = canopus.utils.tket_to_qiskit(circ)
 
@@ -74,9 +68,10 @@ for fname in fnames:
     console.print(f"Gate counts: {qc.count_ops()}")
     console.print(f"Circuit cost: {logic_circ_cost:.2f}")
 
-    qc_canopus = PassManager(canopus.CanopusMapping(backend)).run(qc)
+    qc_canopus = PassManager(canopus.CanopusMapping(backend, max_iterations=8)).run(qc)
     canopus_circ_cost = backend.cost_estimator.eval_circuit_duration(qc_canopus)
     print_circ_info(qc_canopus, title='Mapped circuit')
     console.print(f"Gate counts: {qc_canopus.count_ops()}")
     console.print(f"Circuit cost: {canopus_circ_cost:.2f}; Routing overhead: {canopus_circ_cost / logic_circ_cost:.2f}")
     qasm2.dump(qc_canopus, os.path.join(output_dpath, os.path.basename(fname)))
+    console.print(f"Saved to {os.path.join(output_dpath, os.path.basename(fname))}")

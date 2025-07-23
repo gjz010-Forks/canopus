@@ -224,7 +224,7 @@ def gene_chain_coupling_map(size):
 def gene_square_coupling_map(size):
     n = int(np.sqrt(size))
     m = int(np.ceil(size / n))
-    g = rx.generators.grid_graph(n, m).subgraph(range(size))
+    g = rx.generators.grid_graph(n, m).subgraph(range(size)).to_directed()
     return CouplingMap(g.edge_list())
 
 
@@ -259,6 +259,11 @@ def generate_random_layout(qreg, coupling_map, seed=None) -> Layout:
     np.random.shuffle(physical_qubits)
     # return {logical_qubits[i]: p for i, p in enumerate(physical_qubits)}
     return Layout.from_intlist(physical_qubits, qreg)
+
+
+def generate_trivial_layout(qreg, coupling_map) -> Layout:
+    return Layout.from_intlist(list(coupling_map.physical_qubits), qreg)
+
 
 
 # from regulus.utils import arch

@@ -26,11 +26,11 @@ class CouplingType(Enum):
 
 
 class CanopusBackend:
-    def __init__(self, coupling_map: CouplingMap, isa_type: Union[ISAType, str],
+    def __init__(self, coupling_map: CouplingMap = None, isa_type: Union[ISAType, str]=None,
                  coupling_type: Union[CouplingType, str] = None):
         self.coupling_map = coupling_map
 
-        if isinstance(isa_type, ISAType):
+        if isa_type is None or isinstance(isa_type, ISAType):
             self.isa_type = isa_type
         else:
             self.isa_type = ISAType(isa_type)
@@ -110,14 +110,14 @@ class SynthCostEstimator:
             if instr.operation.name == 'swap':
                 if (q0, q1) in last_mapped_layer:
                     gname, params = last_mapped_layer[q0, q1]
-                    if gname == 'can':
+                    if gname.startswith('can'):
                         gate_duration = self.eval_gate_cost(*mirror_weyl_coord(*params)) - self.eval_gate_cost(*params)
                     else:
                         raise ValueError(f"Unsupported gate type: {gname}")
                         # warinings.warn(f"Unsupported gate type: {gname}, using swap_cost instead.")
                 else:
                     gate_duration = self.swap_cost
-            elif instr.operation.name == 'can':
+            elif instr.operation.name.startswith('can'):
                 gate_duration = self.eval_gate_cost(*instr.operation.params)
             elif instr.operation.name == 'cx':
                 gate_duration = self.cx_cost
@@ -163,7 +163,7 @@ class SynthCostEstimator:
                 # print(i)
                 if (q0, q1) in last_mapped_layer:
                     gname, params = last_mapped_layer[q0, q1]
-                    if gname == 'can':
+                    if gname.startswith('can'):
                         gate_duration = self.eval_gate_cost(*mirror_weyl_coord(*params)) - self.eval_gate_cost(*params)
                     else:
                         qc = dag_to_circuit(dag_)
@@ -173,7 +173,7 @@ class SynthCostEstimator:
                         raise ValueError(f"Unsupported gate type: {gname}")
                 else:
                     gate_duration = self.swap_cost
-            elif node.op.name == 'can':
+            elif node.op.name.startswith('can'):
                 gate_duration = self.eval_gate_cost(*node.op.params)
             elif node.op.name == 'cx':
                 gate_duration = self.cx_cost

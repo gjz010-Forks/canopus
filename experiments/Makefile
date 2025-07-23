@@ -9,6 +9,7 @@ all: init
 
 init:
 	@echo "Preparing logical-level optimized circuits ...\n"
+# 	@cd ../accel && make install
 	@python gene_logic_opt_circuits.py
 
 chain: chain_cx chain_zzphase chain_sqisw chain_can chain_ftqc
@@ -85,10 +86,22 @@ baselines:
 
 	@echo "\n✅ All baseline compilers executed successfully."
 
+sum_result:
+	@echo "Summarizing results for all topologies and ISAs ..."
+	@commands=( \
+		"python sum_result.py --compiler canopus --topology chain" \
+		"python sum_result.py --compiler canopus --topology hhex" \
+		"python sum_result.py --compiler canopus --topology square" \
+		"python sum_result.py --compiler sabre --topology chain" \
+		"python sum_result.py --compiler sabre --topology hhex" \
+		"python sum_result.py --compiler sabre --topology square" \
+	); \
+	printf '%s\n' "$${commands[@]}" | parallel --bar
+
+
 disp_result:
 	@echo "Displaying results for all topologies and ISAs ..."
 	@python disp_result.py
-
 
 clean:
 	@echo "Cleaning up .QASM files..."
