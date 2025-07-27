@@ -7,7 +7,7 @@ import os
 import argparse
 import canopus
 import pytket.qasm
-from qiskit import qasm2
+from qiskit import qasm2, QuantumCircuit
 from natsort import natsorted
 from canopus.utils import print_circ_info
 from qiskit.transpiler import PassManager
@@ -50,8 +50,8 @@ for fname in fnames:
 
     console.rule(f"Processing {fname}")
     
-    circ = pytket.qasm.circuit_from_qasm(fname)
-    qc = canopus.utils.tket_to_qiskit(circ)
+    qc = QuantumCircuit.from_qasm_file(fname)
+    qc = canopus.rebase_to_canonical(qc)
 
     if args.topology == "chain":
         coupling_map = canopus.utils.gene_chain_coupling_map(qc.num_qubits)
@@ -64,7 +64,7 @@ for fname in fnames:
 
     backend = canopus.CanopusBackend(coupling_map, args.isa, args.coupling)
     logic_circ_cost = backend.cost_estimator.eval_circuit_duration(qc)
-    print_circ_info(circ, title='Logical-level optimization')
+    print_circ_info(qc, title='Logical-level optimization')
     console.print(f"Gate counts: {qc.count_ops()}")
     console.print(f"Circuit cost: {logic_circ_cost:.2f}")
 

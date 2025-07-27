@@ -17,5 +17,5 @@ for fname in fnames:
         continue
     print(f"Processing {fname}")
     circ = pytket.qasm.circuit_from_qasm(fname)
-    circ_opt = canopus.rebase_to_tk2(circ)
+    circ_opt = canopus.logical_optimize(circ)
     pytket.qasm.circuit_to_qasm(circ_opt, os.path.join(output_dpath, os.path.basename(fname)))

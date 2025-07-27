@@ -42,14 +42,27 @@ result = pd.DataFrame(columns=[
 # Read QASM files and summarize results
 for fname in fnames:
     qc = canopus.utils.tket_to_qiskit(pytket.qasm.circuit_from_qasm(os.path.join(benchmark_dpath, fname)))
-    qc_cx = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'cx', fname))
-    qc_zzphase = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'zzphase', fname))
-    qc_sqisw = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'sqisw', fname))
-    qc_can_xx = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'can_xx', fname))
-    qc_can_xy = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'can_xy', fname))
-    qc_zzphase_ = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'zzphase_', fname))
-    qc_sqisw_ = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'sqisw_', fname))
-    qc_het = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'het', fname))
+    if args.compiler == 'canopus':
+        qc_cx = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'cx', fname))
+        qc_zzphase = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'zzphase', fname))
+        qc_sqisw = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'sqisw', fname))
+        qc_can_xx = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'can_xx', fname))
+        qc_can_xy = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'can_xy', fname))
+        qc_zzphase_ = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'zzphase_', fname))
+        qc_sqisw_ = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'sqisw_', fname))
+        qc_het = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'het', fname))
+    else:
+        qc_cx = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, fname))
+        if 'cx' in qc_cx.count_ops().keys(): # if it is not rebased to canonical
+            qc_cx = canopus.rebase_to_canonical(qc_cx)
+        qc_zzphase = qc_cx
+        qc_sqisw = qc_cx
+        qc_can_xx = qc_cx
+        qc_can_xy = qc_cx
+        qc_zzphase_ = qc_cx
+        qc_sqisw_ = qc_cx
+        qc_het = qc_cx
+        
     result = pd.concat([result, pd.DataFrame({
         'program': fname.replace('.qasm', ''),
         'num_qubits': qc.num_qubits,

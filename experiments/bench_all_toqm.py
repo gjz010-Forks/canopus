@@ -10,7 +10,7 @@ import pytket.qasm
 from qiskit import qasm2, QuantumCircuit
 from natsort import natsorted
 from canopus.utils import print_circ_info
-from qiskit.transpiler import PassManager
+from qiskit.transpiler import PassManager, passes
 from rich.console import Console
 
 console = Console()
@@ -40,19 +40,31 @@ for fname in fnames:
 
     console.rule(f"Processing {fname}")
 
-    circ = pytket.qasm.circuit_from_qasm(fname)
-    qc = canopus.utils.tket_to_qiskit(circ)
+    qc = QuantumCircuit.from_qasm_file(fname)
 
     if args.topology == "chain":
         coupling_file = '../configs/chain.txt'
+        coupling_map = canopus.utils.gene_chain_coupling_map(qc.num_qubits)
     elif args.topology == "hhex":
         coupling_file = '../configs/hhex.txt'
+        coupling_map = canopus.utils.gene_hhex_coupling_map(qc.num_qubits)
     elif args.topology == "square":
         coupling_file = '../configs/square.txt'
+        coupling_map = canopus.utils.gene_square_coupling_map(qc.num_qubits)
     else:
         raise ValueError(f"Unsupported topology: {args.topology}")
 
     output_fname = os.path.join(output_dpath, os.path.basename(fname))
+
+
+    # Try V2fLayout first
+    from qiskit.converters import circuit_to_dag
+    dag = circuit_to_dag(qc)
+    v2f_pass = passes.VF2Layout(coupling_map)
+    v2f_pass.run(dag)
+    if v2f_pass.property_set.get('layout'):
+        qasm2.dump(qc, output_fname)
+        continue
 
     # Call the TOQM executable
     os.system(f'./mapper {fname} {coupling_file} {TOQM_FLAGS} > {output_fname}')

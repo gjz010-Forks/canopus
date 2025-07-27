@@ -24,9 +24,9 @@ def write_to_txt(graph: rx.PyGraph, fname: str):
             f.write('{} {}\n'.format(src, dst))
 
 chain = rx.generators.path_graph(27)
-hhex = read_device_topology('./configs/manhattan.graphml')
-square = read_device_topology('./configs/sycamore.graphml')
+hhex = read_device_topology('../configs/manhattan.graphml')
+square = read_device_topology('../configs/sycamore.graphml')
 
-write_to_txt(chain, './configs/chain.txt')
-write_to_txt(hhex, './configs/hhex.txt')
-write_to_txt(square, './configs/square.txt')
+write_to_txt(chain, '../configs/chain.txt')
+write_to_txt(hhex, '../configs/hhex.txt')
+write_to_txt(square, '../configs/square.txt')

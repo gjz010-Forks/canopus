@@ -195,4 +195,5 @@ cython_debug/
 *.fls
 
 
-/mirror-gates/
+mirror-gates/
+toqm_old/

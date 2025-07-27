@@ -58,6 +58,25 @@ class CanonicalSynthesis(TransformationPass):
         return dag
 
 
+def logical_optimize(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[
+    pytket.Circuit, qiskit.QuantumCircuit]:
+    if isinstance(circ, pytket.Circuit):
+        return _logical_optimize(circ)
+    elif isinstance(circ, qiskit.QuantumCircuit):
+        return tket_to_qiskit(_logical_optimize(qiskit_to_tket(circ)))
+    else:
+        raise TypeError(f"Unsupported circuit type: {type(circ)}. Expected pytket.Circuit or qiskit.QuantumCircuit.")
+
+
+def _logical_optimize(circ: pytket.Circuit) -> pytket.Circuit:
+    """If optimize is False, some successive TK2 gates might not be coalesced; So we set it to True by default."""
+    circ = circ.copy()
+    pytket.passes.DecomposeBoxes().apply(circ)
+    pytket.passes.FullPeepholeOptimise(allow_swaps=False).apply(circ)
+    return circ
+
+
+
 def rebase_to_sqisw(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _rebase_to_sqisw(circ)

@@ -76,7 +76,9 @@ baselines:
 	@echo "Running baseline compilers (SABRE, TOQM, OLSQ, Mirage) ...\n"
 
 	@echo "Running SABRE compiler ..."
-	@./run_sabre.sh
+	@./bench_all_sabre.py -t chain
+	@./bench_all_sabre.py -t hhex
+	@./bench_all_sabre.py -t square
 
 	@echo "Running TOQM compiler ..."
 	@./bench_all_toqm.py -t chain
@@ -98,6 +100,9 @@ sum_result:
 		"python sum_result.py --compiler sabre --topology chain" \
 		"python sum_result.py --compiler sabre --topology hhex" \
 		"python sum_result.py --compiler sabre --topology square" \
+		"python sum_result.py --compiler toqm --topology chain" \
+		"python sum_result.py --compiler toqm --topology hhex" \
+		"python sum_result.py --compiler toqm --topology square" \
 	); \
 	printf '%s\n' "$${commands[@]}" | parallel --bar
 
