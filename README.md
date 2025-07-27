@@ -1,4 +1,4 @@
-# Canopus: Canonical-Optimized Placement Utility Suite
+# 🧭 Canopus: Canonical-Optimized Placement Utility Suite
 
 **Canopus** (**Can**onical-**O**ptimized **P**lacement **U**tility **S**uite) is a qubit mapping/routing framework tailored to advanced quantum ISAs. Its main function is to optimize the layout and routing of qubits on quantum hardware, uniformly handling optimal synthesis with diverse ISAs, gate commutation relations, and qubit dependencies through two-qubit canonical gate representation, providing guidance for hardware-software co-design.
 
