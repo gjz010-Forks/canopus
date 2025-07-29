@@ -16,6 +16,7 @@ from .accel_utils import (
     sort_two_objs,
     synth_cost_by_cx,
     synth_cost_by_sqisw,
+    only_xx_rot,
     canonical_unitary,
 )
 
@@ -34,6 +35,7 @@ __all__ = [
     'sort_two_objs',
     'synth_cost_by_cx',
     'synth_cost_by_sqisw',
+    'only_xx_rot',
     'canonical_unitary',
 ]
 

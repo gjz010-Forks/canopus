@@ -28,6 +28,11 @@ from canopus.basics import CanonicalGate
 from accel_utils import check_weyl_coord, canonical_unitary, optimal_can_gate_duration
 from monodromy.coverage import gates_to_coverage, coverage_lookup_cost
 
+
+CX_AshN_Time_XY = optimal_can_gate_duration(0.5, 0, 0, 1, 1, 0)
+SQiSW_AshN_Time_XY = optimal_can_gate_duration(0.25, 0.25, 0, 1, 1, 0)
+
+
 Coverage_Dumped_Dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'configs')
 ZZPhase_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'zzphase_coverage.pkl')
 ZZPhase_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'zzphase_with_mirror_coverage.pkl')
@@ -36,14 +41,17 @@ SQiSW_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'sqisw_with_
 Het_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'het_isa_coverage.pkl')
 
 
-@lru_cache(maxsize=1)  # maxsize=1 意味着只缓存最近1次调用的结果
+@lru_cache(maxsize=1)
 def get_zzphase_coverage():
     if os.path.exists(ZZPhase_Coverage_File):
         with open(ZZPhase_Coverage_File, 'rb') as f:
             return pickle.load(f)
     gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2)]
-    infidelities = [1 / 3, 1 / 2, 1]
-    return gates_to_coverage(*gate_set, costs=infidelities)
+    costs = [1 / 3, 1 / 2, 1]
+    cov = gates_to_coverage(*gate_set, costs=costs)
+    with open(ZZPhase_Coverage_File, 'wb') as f:
+        pickle.dump(cov, f)
+    return cov
 
 
 def synth_cost_by_zzphase(a, b, c):
@@ -63,13 +71,16 @@ def get_zzphase_with_mirror_coverage():
             return pickle.load(f)
     gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2), CanonicalGate(0.5, 0.5, 1 / 3),
                 CanonicalGate(0.5, 0.5, 1 / 4), CanonicalGate(0.5, 0.5, 0)]
-    cx_time = optimal_can_gate_duration(0.5, 0, 0, 1, 1, 0)
-    iswap_time = optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0)
-    swap_time = optimal_can_gate_duration(0.5, 0.5, 0.5, 1, 1, 0)
-    costs = [cx_time / 3, cx_time / 2, cx_time,
-             swap_time - (swap_time - iswap_time) / 3, (iswap_time + swap_time) / 2, iswap_time]
+    cx_cost = 1
+    iswap_cost = 1.5 # optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0) / CX_AshN_Time_XY == 1
+    swap_cost = 2 # optimal_can_gate_duration(0.5, 0.5, 0.5, 1, 1, 0) / CX_AshN_Time_XY == 1.5
+    costs = [cx_cost / 3, cx_cost / 2, cx_cost,
+             swap_cost - (swap_cost - iswap_cost) / 3, (iswap_cost + swap_cost) / 2, iswap_cost]
     names = ['RZZ_π_6', 'RZZ_π_4', 'RZZ_π_2', 'pSWAP_π_6', 'pSWAP_π_4', 'pSWAP_π_2']
-    return gates_to_coverage(*gate_set, costs=costs, names=names)
+    cov = gates_to_coverage(*gate_set, costs=costs, names=names)
+    with open(ZZPhase_With_Mirror_Coverage_File, 'wb') as f:
+        pickle.dump(cov, f)
+    return cov
 
 
 def synth_cost_by_zzphase_with_mirror(a, b, c):
@@ -85,13 +96,17 @@ def get_sqisw_with_mirror_coverage():
         with open(SQiSW_With_Mirror_Coverage_File, 'rb') as f:
             return pickle.load(f)
     gate_set = [iSwapGate().power(0.5), iSwapGate(), CanonicalGate(0.5, 0.25, 0.25), CXGate()]
-    costs = [
-        optimal_can_gate_duration(0.25, 0.25, 0, 1, 1, 0),
-        optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0),
-        optimal_can_gate_duration(0.5, 0.25, 0.25, 1, 1, 0),
-        optimal_can_gate_duration(0.5, 0, 0, 1, 1, 0)
-    ]
-    return gates_to_coverage(*gate_set, costs=costs)
+    # costs = [
+    #     1,
+    #     optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0) / SQiSW_AshN_Time_XY,
+    #     optimal_can_gate_duration(0.5, 0.25, 0.25, 1, 1, 0) / SQiSW_AshN_Time_XY,
+    #     optimal_can_gate_duration(0.5, 0, 0, 1, 1, 0) / SQiSW_AshN_Time_XY
+    # ]
+    costs = [0.75, 1.5, 1.25, 1]
+    cov = gates_to_coverage(*gate_set, costs=costs)
+    with open(SQiSW_With_Mirror_Coverage_File, 'wb') as f:
+        pickle.dump(cov, f)
+    return cov
 
 
 def synth_cost_by_sqisw_with_mirror(a, b, c):
@@ -108,7 +123,10 @@ def get_het_isa_coverage():
             return pickle.load(f)
     gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2), iSwapGate().power(0.5), iSwapGate()]
     costs = [1 / 3, 1 / 2, 1, 0.75, 1.5]
-    raise gates_to_coverage(*gate_set, costs=costs)
+    cov = gates_to_coverage(*gate_set, costs=costs)
+    with open(Het_ISA_Coverage_File, 'wb') as f:
+        pickle.dump(cov, f)
+    return cov
 
 
 def synth_cost_by_het_isa(a, b, c):
@@ -312,6 +330,13 @@ def is_equiv_unitary(u: np.ndarray, v: np.ndarray) -> bool:
     """Distinguish whether two unitary operators are equivalent, regardless of the global phase."""
     u, v = match_global_phase(u, v)
     return np.allclose(u, v, atol=1e-8)
+
+
+def replace_close_to_zero_with_zero(arr) -> np.ndarray:
+    arr = np.array(arr)
+    close_to_zero = np.isclose(arr, 0)
+    arr[close_to_zero] = 0
+    return tuple(arr)
 
 
 def gene_chain_coupling_map(size):

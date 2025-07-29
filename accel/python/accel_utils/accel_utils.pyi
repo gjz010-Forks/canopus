@@ -177,14 +177,20 @@ def sort_two_objs(a: Any, b: Any, key: Callable = None) -> tuple[Any, Any]:
     ...
 
 
-def synth_cost_by_cx(a:float, b:float, c:float) -> int:
+def synth_cost_by_cx(a:float, b:float, c:float) -> float:
     """Synthesis cost with the CX ISA"""
     ...
 
 
-def synth_cost_by_sqisw(a: float, b: float, c: float) -> int:
+def synth_cost_by_sqisw(a: float, b: float, c: float) -> float:
     """Synthesis cost with the SQiSW ISA"""
     ...
+
+
+def only_xx_rot(a:float, b:float, c:float) -> bool:
+    """If the canonical gate is only an XX rotation (b and c are zero) """
+    ...
+
 
 
 def canonical_unitary(a: float, b: float, c: float) -> np.ndarray:

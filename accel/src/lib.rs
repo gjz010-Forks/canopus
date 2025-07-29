@@ -8,6 +8,9 @@ use std::f64::consts::{FRAC_PI_2, PI};
 // 类型别名，使用标准的 num_complex
 type C64 = Complex64;
 
+// define the global variable ATOL: f64 = 1e-8;
+const ATOL: f64 = 1e-8;
+
 #[macro_export]
 macro_rules! c {
     ($re:expr, $im:expr) => {
@@ -216,33 +219,52 @@ fn sort_two_objs(
 }
 
 #[pyfunction]
-fn synth_cost_by_cx(a: f64, b: f64, c: f64) -> i32 {
+fn synth_cost_by_cx(a: f64, b: f64, c: f64) -> f64 {
     assert!(
         check_weyl_coord(a, b, c),
         "Weyl coordinate must be normalized to satisfy 0.5 >= a >= b >= |c|"
     );
-    if fuzzy_equal(a, 0.5, None) && fuzzy_equal(b, 0.0, None) && fuzzy_equal(c, 0.0, None) {
-        return 1;
+
+    if c.abs() >= ATOL {
+        return 3.0; // a ≠ 0, b ≠ 0, c ≠ 0
     }
-    if fuzzy_equal(c, 0.0, None) {
-        return 2;
+
+    if b.abs() >= ATOL {
+        return 2.0; // a ≠ 0, b ≠ 0, c = 0
     }
-    3
+
+    if a.abs() < ATOL {
+        return 0.0; // a = 0, b = 0, c = 0
+    } else if (a - 0.5).abs() < ATOL {
+        return 1.0; // a = 0.5, b = 0, c = 0
+    } else {
+        return 2.0; // a ≠ 0, a ≠ 0.5, b = 0, c = 0
+    }
 }
 
 #[pyfunction]
-fn synth_cost_by_sqisw(a: f64, b: f64, c: f64) -> i32 {
+fn synth_cost_by_sqisw(a: f64, b: f64, c: f64) -> f64 {
     assert!(
         check_weyl_coord(a, b, c),
         "Weyl coordinate must be normalized to satisfy 0.5 >= a >= b >= |c|"
     );
-    if fuzzy_equal(a, 0.25, None) && fuzzy_equal(b, 0.25, None) && fuzzy_equal(c, 0.0, None) {
-        return 1;
+    if c.abs() < ATOL {
+        if a.abs() < ATOL && b.abs() < ATOL {
+            return 0.0;
+        }
+        if (a - 0.25).abs() < ATOL && (b - 0.25).abs() < ATOL {
+            return 1.0 * 0.75;
+        }
     }
     if fuzzy_greater_equal(a, b + c.abs(), None) {
-        return 2;
+        return 2.0 * 0.75;
     }
-    3
+    3.0 * 0.75
+}
+
+#[pyfunction]
+fn only_xx_rot(a: f64, b: f64, c: f64) -> bool {
+    return b.abs() < ATOL && c.abs() < ATOL;
 }
 
 #[pyfunction]
@@ -285,6 +307,7 @@ fn accel_utils(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sort_two_objs, m)?)?;
     m.add_function(wrap_pyfunction!(synth_cost_by_cx, m)?)?;
     m.add_function(wrap_pyfunction!(synth_cost_by_sqisw, m)?)?;
+    m.add_function(wrap_pyfunction!(only_xx_rot, m)?)?;
     m.add_function(wrap_pyfunction!(canonical_unitary, m)?)?;
     Ok(())
 }

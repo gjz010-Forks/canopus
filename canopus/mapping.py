@@ -1,6 +1,7 @@
+from platform import node
 from qiskit import QuantumCircuit
 from qiskit.transpiler import TransformationPass, Layout
-from qiskit.dagcircuit import DAGCircuit
+from qiskit.dagcircuit import DAGCircuit, DAGNode
 
 from canopus.backends import CanopusBackend, ISAType
 from canopus.utils import generate_random_layout
@@ -9,9 +10,10 @@ from qiskit.circuit.library import SwapGate
 from qiskit.transpiler import TranspilerError
 from qiskit.transpiler.passes import VF2Layout
 from qiskit.circuit import Qubit
-from accel_utils import sort_two_objs, fuzzy_equal
+from accel_utils import sort_two_objs, sort_two_ints, fuzzy_equal
 from itertools import chain
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
+from qiskit.converters import dag_to_circuit
 import time
 import os
 import numpy as np
@@ -29,6 +31,18 @@ DECAY_STEP = 0.001
 NUM_SEARCHES_TO_RESET = 5
 EXT_WEIGHT = 0.5
 EXT_SIZE = 20
+
+def disp_last_mapped_layer(last_mapped_layer):
+    num_qubits = max(chain.from_iterable(pair for pair in last_mapped_layer.keys())) + 1
+    qc = QuantumCircuit(num_qubits)
+    for pair, (gname, params, _) in  last_mapped_layer.items():
+        if gname.startswith('can'):
+            qc.append(CanonicalGate(*params), pair)
+        elif gname == 'swap':
+            qc.swap(*pair)
+        else:
+            raise ValueError(f"Unknown gate name: {gname}")
+    print(qc)
 
 
 def average_degree(g):
@@ -181,10 +195,12 @@ class BidirectionalMapping(TransformationPass):
 
 class CanopusMapping(BidirectionalMapping):
     def __init__(self, backend: CanopusBackend, seed=None,
-                 max_iterations=5, trials=None, layout_trials=None):
+                 max_iterations=5, trials=None, layout_trials=None,
+                 comm_opt=False):
         super().__init__(backend, seed, max_iterations, trials, layout_trials)
         self.depth_driven_rate = None
         self.average_degree = average_degree(self.coupling_map.graph)
+        self.comm_opt = comm_opt
 
     def _eval_dagcircuit_cost(self, dag):
         return self.backend.cost_estimator.eval_dagcircuit_duration(dag)
@@ -202,9 +218,7 @@ class CanopusMapping(BidirectionalMapping):
         layouts = [layout.copy()]
         executable_ops = []
         front_layer = dag.front_layer()
-        # last_mapped_layer = []  # TODO: any efficient way to track the last mapped layer?
-        last_mapped_layer: Dict[
-            Tuple[int, int], Tuple[str, List[float]]] = {}  # key is physical qubit pair, value is name and params
+        last_mapped_layer: Dict[Tuple[int, int], Tuple[str, List[float], Optional[DAGNode]]] = {}  # {physical qubit pair: (name, params)
         # mapped_2q_dag = dag.copy_empty_like()
         # mapped_2q_dag.remove_all_ops_named('u3')
         routed_dag = dag.copy_empty_like()
@@ -222,18 +236,25 @@ class CanopusMapping(BidirectionalMapping):
 
                     if node.num_qubits == 2:
                         # update last_mapped_layer
-                        p0, p1 = layout._v2p[node.qargs[0]], layout._v2p[node.qargs[1]]
-                        p0, p1 = min(p0, p1), max(p0, p1)  # ensure p0 < p1
-                        for pair in list(last_mapped_layer.keys()):
-                            if p0 in pair or p1 in pair:
-                                last_mapped_layer.pop(pair)
-                        last_mapped_layer[p0, p1] = node.op.name, node.op.params
+                        p0, p1 = sort_two_ints(layout._v2p[node.qargs[0]], layout._v2p[node.qargs[1]])  # ensure p0 < p1
+                        if self.comm_opt:  # use commutative optimization
+                            for pair in list(last_mapped_layer.keys()):
+                                if p0 in pair or p1 in pair:
+                                    if not (last_mapped_layer[pair][0].startswith('can') and
+                                            last_mapped_layer[pair][2].op.is_xx_rot and
+                                            node.op.is_xx_rot and
+                                            last_mapped_layer[pair][2] in dag.op_predecessors(node)):
+                                        last_mapped_layer.pop(pair)
+                        else:
+                            for pair in list(last_mapped_layer.keys()):
+                                if p0 in pair or p1 in pair:
+                                    last_mapped_layer.pop(pair)
+                        last_mapped_layer[p0, p1] = node.op.name, node.op.params, node
                         # mapped_2q_dag.apply_operation_back(node.op, node.qargs, node.cargs)
 
                         # update wire_durations
                         current_duration = max(wire_durations[p0],
-                                               wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(
-                            *node.op.params)
+                                               wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(*node.op.params)
                         wire_durations[p0] = current_duration
                         wire_durations[p1] = current_duration
 
@@ -252,36 +273,46 @@ class CanopusMapping(BidirectionalMapping):
 
                 swap = self._find_best_swap(dag, front_layer, last_mapped_layer,
                                             wire_durations, layout, required_predecessors)
-                routed_dag.apply_operation_back(SwapGate(), [self.canonical_qreg[layout._v2p[v]] for v in swap])
+                p0, p1 = sort_two_ints(layout._v2p[swap[0]], layout._v2p[swap[1]]) # ensure p0 < p1
+                routed_dag.apply_operation_back(SwapGate(), [self.canonical_qreg[p0], self.canonical_qreg[p1]])
 
-                # if not self.reverse:
-                #     print('best swap is', swap)
+                # print(dag_to_circuit(routed_dag))
+                # time.sleep(0.5)
 
                 layout.swap(*swap)
                 layouts.append(layout.copy())
 
-                # update last_mapped_layer
-                p0, p1 = layout._v2p[swap[0]], layout._v2p[swap[1]]
-                p0, p1 = min(p0, p1), max(p0, p1)  # ensure p0 < p1
-                for pair in list(last_mapped_layer.keys()):
-                    if p0 in pair or p1 in pair:
-                        last_mapped_layer.pop(pair)
-                last_mapped_layer[p0, p1] = 'swap', []
                 # update wire_durations
                 if (p0, p1) in last_mapped_layer:
-                    gname, params = last_mapped_layer[p0, p1]
-                    if gname.startswith('can'):
-                        current_duration = max(wire_durations[p0],
-                                               wire_durations[p1]) + self.backend.cost_estimator.eval_gate_cost(
-                            *mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
-                    else:
-                        current_duration = max(wire_durations[p0],
-                                               wire_durations[p1]) + self.backend.cost_estimator.swap_cost
+                    gname, params, _ = last_mapped_layer[p0, p1]
+                    # if not gname.startswith('can'):
+                    #     print('p0={}, p1={}'.format(p0, p1))
+                    #     disp_last_mapped_layer(last_mapped_layer)
+
+                    # TODO: 这里有可能遇到SWAP
+                    assert gname.startswith('can'), "In this case, the gate should be a canonical gate."
+                    current_duration = (max(wire_durations[p0], wire_durations[p1]) +
+                                        self.backend.cost_estimator.eval_gate_cost(*mirror_weyl_coord(*params)) -
+                                        self.backend.cost_estimator.eval_gate_cost(*params))
+                    # else:
+                    # print()
+                    # print('p0={}, p1={}'.format(p0, p1))
+                    # disp_last_mapped_layer(last_mapped_layer)
+                    # time.sleep(1)
+                    #     raise ValueError("This code should not be reached")
+                    #     current_duration = max(wire_durations[p0],
+                    #                            wire_durations[p1]) + self.backend.cost_estimator.swap_cost
                 else:
                     current_duration = max(wire_durations[p0],
                                            wire_durations[p1]) + self.backend.cost_estimator.swap_cost
                 wire_durations[p0] = current_duration
                 wire_durations[p1] = current_duration
+
+                # update last_mapped_layer
+                for pair in list(last_mapped_layer.keys()):
+                    if p0 in pair or p1 in pair:
+                        last_mapped_layer.pop(pair)
+                last_mapped_layer[p0, p1] = 'swap', [], None
 
                 num_searches += 1
                 if num_searches % NUM_SEARCHES_TO_RESET == 0:
@@ -330,11 +361,14 @@ class CanopusMapping(BidirectionalMapping):
                                  extended_set, layout, swap,
                                  wire_durations, duration, avg_dist_front, avg_dist_extended) for swap in
             swap_candidates])
+        # print('swaps:', swap_candidates)
+        # print('costs:', costs)
         # console.print('swap candidates: {}'.format([(self._qubit_indices[q0], self._qubit_indices[q1]) for q0, q1 in swap_candidates]))
         # console.print('swap costs: {}'.format(costs))
         min_cost = np.min(costs)
         swap = swap_candidates[np.random.choice(np.where(np.isclose(costs, min_cost))[0])]
         # console.print('Best swap: {} with cost {:.4f}'.format((self._qubit_indices[swap[0]], self._qubit_indices[swap[1]]),min_cost))
+        # print('min_cost:', min_cost)
         return swap
 
     def _heuristic_cost(self, front_layer, last_mapped_layer, extended_set,
@@ -352,17 +386,15 @@ class CanopusMapping(BidirectionalMapping):
         #         raise ValueError("Physical qubit indices should be sorted.")
 
         # update depth-driven cost (wire_durations)
-        swap_p0, swap_p1 = layout._v2p[swap[0]], layout._v2p[swap[1]]
-        swap_p0, swap_p1 = min(swap_p0, swap_p1), max(swap_p0, swap_p1)  # ensure p0 < p1
+        swap_p0, swap_p1 = sort_two_ints(layout._v2p[swap[0]], layout._v2p[swap[1]])  # ensure p0 < p1
         assert swap_p0 < swap_p1, "Physical qubit indices should be sorted."
         if (swap_p0, swap_p1) in last_mapped_layer:
-            gname, params = last_mapped_layer[swap_p0, swap_p1]
+            gname, params, _ = last_mapped_layer[swap_p0, swap_p1]
             if gname.startswith('can'):
                 current_duration = max(wire_durations[swap_p0],
                                        wire_durations[swap_p1]) + self.backend.cost_estimator.eval_gate_cost(
                     *mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
             else:
-                #         # TODO: 如何解决这个门正好是SWAP的问题
                 assert gname == 'swap', "Only swap gates should be in the last mapped layer."
                 current_duration = float('inf')
                 # current_duration = max(wire_durations[swap_p0], wire_durations[swap_p1]) + self.backend.cost_estimator.swap_cost
@@ -400,11 +432,6 @@ class CanopusMapping(BidirectionalMapping):
                 [self.distance_matrix[layout._v2p[node.qargs[0]], layout._v2p[node.qargs[1]]] for node in nodes])
         return 0
 
-    def _is_xx_rot(self, node):
-        """Check if the node is a XX rotation gate."""
-        return (isinstance(node.op, CanonicalGate) and
-                fuzzy_equal(node.op.params[1], 0) and
-                fuzzy_equal(node.op.params[2], 0))
 
 
 class SabreMapping(BidirectionalMapping):
@@ -447,6 +474,9 @@ class SabreMapping(BidirectionalMapping):
             else:
                 swap = self._find_best_swap(dag, front_layer, layout, required_predecessors)
                 routed_dag.apply_operation_back(SwapGate(), [self.canonical_qreg[layout._v2p[v]] for v in swap])
+
+                # print(dag_to_circuit(routed_dag))
+                # time.sleep(0.5)
 
                 layout.swap(*swap)
                 layouts.append(layout.copy())
