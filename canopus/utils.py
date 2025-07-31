@@ -351,7 +351,11 @@ def gene_square_coupling_map(size):
 
 
 def gene_hhex_coupling_map(size):
-    return CouplingMap(Manhattan.graph.subgraph(range(size)).edge_list())
+    d = 3
+    while (5 * d**2 - 2 * d - 1) // 2 < size:
+        d += 2
+    return CouplingMap(CouplingMap.from_heavy_hex(d).graph.subgraph(range(size)))
+    # return CouplingMap(Manhattan.graph.subgraph(range(size)).edge_list())
 
 
 def crop_coupling_map(coupling_map, crop_size, seed=None):

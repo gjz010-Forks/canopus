@@ -5,20 +5,47 @@
 
 
 
+
+\subsection{2Q synthesis cost modeling}\label{sec:2q_synthesis_cost_modeling}
+
+
+
 \subsection{Routing in canonical form}\label{sec:routing_in_canonical_form}
+
+
+
 
 
 
 - Unified and highly-effective qubit routing approach in canonical form, with properties of quantum ISAs tailored to the routing process
 
 
-\subsection{Gate commutation guided optimization}\label{sec:gate_commutation_guided_optimization}
+\subsection{Enhanced optimization via commutation}\label{sec:gate_commutation_guided_optimization}
 
 - Capture optimization opportunities exposed by gate commutation; while commutation relations can be uniformly described in canonical form
 
 
-\subsection{Qubit dependencies guided optimization}\label{sec:qubit_dependencies_guided_optimization}
-- Capture optimization opportunities exposed by qubit dependencies, which implies optimization in a more global scope
+
+\begin{theorem}[Canonical gate commutation]\label{thm:commutation}
+    Let $\,\Can(a,b,c)_{q_0,q_1}$ and $\,\Can(a',b',c')_{q_1,q_2}$ be two canonical gates acting on qubits ($q_0, q_1$) and ($q_1, q_2$) respectively, with an overlapping qubit $ q_1 $. They are commutative \dquote{if and only if}
+    \begin{align}
+        b=b'=c=c'=0,
+    \end{align}
+    that is, when both consist solely of $\,\XX$ rotations.
+\end{theorem}
+
+
+
+
+
+
+\ZY{Proposition?? Theorem?}
+
+
+
+
+% \subsection{Qubit dependencies guided optimization}\label{sec:qubit_dependencies_guided_optimization}
+% - Capture optimization opportunities exposed by qubit dependencies, which implies optimization in a more global scope
 
 
 

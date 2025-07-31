@@ -7,7 +7,7 @@ import os
 import argparse
 import canopus
 import pytket.qasm
-from qiskit import qasm2, QuantumCircuit
+from qiskit import qasm2
 from natsort import natsorted
 from canopus.utils import print_circ_info
 from qiskit.transpiler import PassManager

@@ -8,7 +8,6 @@ import argparse
 import canopus
 import pytket.qasm
 import numpy as np
-import rustworkx as rx
 from qiskit import qasm2
 from natsort import natsorted
 from canopus.utils import print_circ_info
@@ -17,7 +16,6 @@ import bqskit
 from bqskit.ir.gates import *
 from bqskit.compiler import Compiler
 from canopus.backends import ISAType
-from qiskit.transpiler import passes
 from bqskit.ext.qiskit import bqskit_to_qiskit, qiskit_to_bqskit
 from math import pi
 
@@ -65,9 +63,9 @@ match isa_type:
 cx_synth_cost_estimator = canopus.SynthCostEstimator('cx')
 np.random.seed(42)
 for fname in fnames:
-    # if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
-    #     console.print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
-    #     continue
+    if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
+        console.print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
+        continue
 
     console.rule(f"Processing {fname}")
 
@@ -83,21 +81,7 @@ for fname in fnames:
         coupling_map = canopus.utils.gene_square_coupling_map(qc.num_qubits)
     else:
         raise ValueError(f"Unsupported topology: {args.topology}")
-    
-
-    # Try V2fLayout first
-    from qiskit.converters import circuit_to_dag
-    dag = circuit_to_dag(qc)
-    vf2_pass = passes.VF2Layout(coupling_map)
-    vf2_pass.run(dag)
-    if vf2_pass.property_set.get('layout'):
-        # set edge_list to be all2all
-        console.print('re-re-run', fname)
-        edge_list = list(coupling_map.graph.to_undirected().edge_list())
-        # edge_list = list(rx.generators.complete_graph(circ.num_qudits).edge_list())
-    else:
-        continue
-        edge_list = list(coupling_map.graph.to_undirected().edge_list())
+    edge_list = list(coupling_map.graph.to_undirected().edge_list())
     
     model = bqskit.MachineModel(circ.num_qudits, coupling_graph=edge_list, gate_set=gate_set)
 

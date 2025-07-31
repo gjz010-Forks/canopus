@@ -10,7 +10,7 @@ import pytket.qasm
 from qiskit import qasm2, QuantumCircuit
 from natsort import natsorted
 from canopus.utils import print_circ_info
-from qiskit.transpiler import PassManager, passes
+from qiskit.transpiler import passes
 from rich.console import Console
 
 console = Console()
