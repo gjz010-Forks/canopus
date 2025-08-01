@@ -227,13 +227,12 @@ class CanopusMapping(BidirectionalMapping):
 
         num_searches = 0
         layouts = [layout.copy()]
-        executable_ops = []
         front_layer = dag.front_layer()
         # last_mapped_layer: Dict[Tuple[int, int], Tuple[str, List[float], Optional[DAGNode]]] = {}  # {physical qubit pair: (name, params)
         # qubit_to_pairs: Dict[int, Set[Tuple[int, int]]] = {} # inverse index, i.e., 物理量子比特 -> 包含它的所有配对
         routed_dag = dag.copy_empty_like()
         while front_layer:
-            executable_ops.clear()
+            executable_ops = []
             remaining_ops = []
 
             for node in front_layer:
@@ -508,11 +507,10 @@ class SabreMapping(BidirectionalMapping):
 
         num_searches = 0
         layouts = [layout.copy()]
-        executable_ops = []
         front_layer = dag.front_layer()
         routed_dag = dag.copy_empty_like()
         while front_layer:
-            executable_ops.clear()
+            executable_ops = []
             remaining_ops = []
 
             for node in front_layer:

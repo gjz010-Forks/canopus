@@ -8,7 +8,7 @@ import argparse
 import canopus
 import pytket.qasm
 import numpy as np
-from qiskit import qasm2
+from qiskit import qasm2, QuantumCircuit
 from natsort import natsorted
 from canopus.utils import print_circ_info
 from rich.console import Console
@@ -63,9 +63,9 @@ match isa_type:
 cx_synth_cost_estimator = canopus.SynthCostEstimator('cx')
 np.random.seed(42)
 for fname in fnames:
-    if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
-        console.print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
-        continue
+    # if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
+    #     console.print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
+    #     continue
 
     console.rule(f"Processing {fname}")
 
@@ -100,5 +100,6 @@ for fname in fnames:
     console.print(f"Gate counts: {qc_opt.count_ops()}")
     console.print(f"Circuit cost: {bqskit_circ_cost:.2f}; Routing overhead: {bqskit_circ_cost / logic_circ_cost:.2f}")
 
-    qasm2.dump(qc_opt, os.path.join(output_dpath, os.path.basename(fname)))
-    console.print(f"Saved to {os.path.join(output_dpath, os.path.basename(fname))}", style="bold red")
+    if bqskit_circ_cost < cost_estimator.eval_circuit_duration(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):
+        qasm2.dump(qc_opt, os.path.join(output_dpath, os.path.basename(fname)))
+        console.print(f"Saved to {os.path.join(output_dpath, os.path.basename(fname))}", style="bold red")

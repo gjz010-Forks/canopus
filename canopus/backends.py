@@ -50,9 +50,11 @@ class CanopusBackend:
 class SynthCostEstimator:
     """Evaluate the synthesis cost of Canonical-based circuits in any specific ISA."""
 
-    def __init__(self, isa_type: Union[ISAType, str], coupling_type: Union[CouplingType, str] = None):
+    def __init__(self, isa_type: Union[ISAType, str] = None, coupling_type: Union[CouplingType, str] = None):
         # coupling_type 只有在 Can ISA 中才有用
-        if isinstance(isa_type, ISAType):
+        if isa_type is None: # default to CX ISA
+            self.isa_type = ISAType.CX
+        elif isinstance(isa_type, ISAType):
             self.isa_type = isa_type
         else:
             self.isa_type = ISAType(isa_type)

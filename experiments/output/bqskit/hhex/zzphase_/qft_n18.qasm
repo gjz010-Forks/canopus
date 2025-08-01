@@ -1,1283 +1,1155 @@
 OPENQASM 2.0;
 include "qelib1.inc";
 gate ryy(param0) q0,q1 { rx(pi/2) q0; rx(pi/2) q1; cx q0,q1; rz(param0) q1; cx q0,q1; rx(-pi/2) q0; rx(-pi/2) q1; }
-gate can(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
-gate can_13032022208(param0,param1,param2) q0,q1 { rxx(1*pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13033760592(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(3*pi/8) q0,q1; }
-gate can_13083615232(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-7*pi/16) q0,q1; }
-gate can_13032028256(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726215563700151) q0,q1; }
-gate can_13032227568(param0,param1,param2) q0,q1 { rxx(0.0490873852123066) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13083619792(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/4) q0,q1; }
-gate can_13083610816(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.1780972447973106) q0,q1; }
-gate can_13083826496(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.3744467861732517) q0,q1; }
-gate can_13032227760(param0,param1,param2) q0,q1 { rxx(0.09817477042240697) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13083822896(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.785398162936128) q0,q1; }
-gate can_13077284192(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.178097247091367) q0,q1; }
-gate can_13032230496(param0,param1,param2) q0,q1 { rxx(1*pi/16) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13077296720(param0,param1,param2) q0,q1 { rxx(0.7853981619801935) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13077130192(param0,param1,param2) q0,q1 { rxx(0.024543692606160405) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032238032(param0,param1,param2) q0,q1 { rxx(0.012271846301805667) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13083619216(param0,param1,param2) q0,q1 { rxx(0.006135923151543211) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032227904(param0,param1,param2) q0,q1 { rxx(0.04908738521159606) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032228528(param0,param1,param2) q0,q1 { rxx(0.02454369260717648) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066383008(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.558524480500021) q0,q1; }
-gate can_13032234240(param0,param1,param2) q0,q1 { rxx(0.09817477024468069) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032237984(param0,param1,param2) q0,q1 { rxx(0.049087385212196466) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032239856(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341885674) q0,q1; }
-gate can_13032240960(param0,param1,param2) q0,q1 { rxx(1.5007452588624641) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032236016(param0,param1,param2) q0,q1 { rxx(0.19634954082889067) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032242784(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13066381376(param0,param1,param2) q0,q1 { rxx(0.09817476946730253) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032241680(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5217089415725975) q0,q1; }
-gate can_13076845376(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.7853981631543983) q0,q1; }
-gate can_13076855840(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-3*pi/8) q0,q1; }
-gate can_13066376624(param0,param1,param2) q0,q1 { rxx(0.19634954084763656) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066381760(param0,param1,param2) q0,q1 { rxx(0.0981747702295852) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066375520(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.785398163382165) q0,q1; }
-gate can_13033762656(param0,param1,param2) q0,q1 { rxx(0.3926990813908926) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032236064(param0,param1,param2) q0,q1 { rxx(0.1963495409277041) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066374944(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13077121264(param0,param1,param2) q0,q1 { rxx(1*pi/8) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032241056(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.567728365220928) q0,q1; }
-gate can_13066375088(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/4) q0,q1; }
-gate can_13066371680(param0,param1,param2) q0,q1 { rxx(0.006135923148425704) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066373504(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.7923319591606948) q0,q1; }
-gate can_13066384112(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.546252634185029) q0,q1; }
-gate can_13066387424(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032237264(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.7853136866138248) q0,q1; }
-gate can_13032231504(param0,param1,param2) q0,q1 { rxx(0.0007669903939397926) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032234384(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/4) q0,q1; }
-gate can_13077132544(param0,param1,param2) q0,q1 { rxx(0.000383495147008972) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066382096(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.567728365219125) q0,q1; }
-gate can_13066382144(param0,param1,param2) q0,q1 { rxx(0.006135923149598099) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066371728(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.78539816339475) q0,q1; }
-gate can_13066386752(param0,param1,param2) q0,q1 { rxx(0.01227184630343281) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032241488(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
-gate can_13066374272(param0,param1,param2) q0,q1 { rxx(0.04908738521412381) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13077206208(param0,param1,param2) q0,q1 { rxx(0.09817477042662404) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082949152(param0,param1,param2) q0,q1 { rxx(0.19634953972610703) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082937008(param0,param1,param2) q0,q1 { rxx(0.3926990819202026) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13077216000(param0,param1,param2) q0,q1 { rxx(0.7853981633795595) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029761408(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13066374080(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.546252634189003) q0,q1; }
-gate can_13083822464(param0,param1,param2) q0,q1 { rxx(0.04908738521252509) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032014048(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.4726215563699512) q0,q1; }
-gate can_13066373456(param0,param1,param2) q0,q1 { rxx(0.19634954083959322) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082940224(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13029768752(param0,param1,param2) q0,q1 { rxx(1*pi/8) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029766256(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13077277840(param0,param1,param2) q0,q1 { rxx(0.0015339807878866907) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082936288(param0,param1,param2) q0,q1 { rxx(0.0007669903939451218) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029763184(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5704128316583408) q0,q1; }
-gate can_13029764144(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5677283651739904) q0,q1; }
-gate can_13029761312(param0,param1,param2) q0,q1 { rxx(0.006135923151743938) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029752912(param0,param1,param2) q0,q1 { rxx(0.012271846303086422) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029764096(param0,param1,param2) q0,q1 { rxx(0.0015339807878564926) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13028767504(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.570029336401423) q0,q1; }
-gate can_13029767552(param0,param1,param2) q0,q1 { rxx(0.024543692606169287) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13032026144(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5217089415825065) q0,q1; }
-gate can_13077274144(param0,param1,param2) q0,q1 { rxx(0.098174770424313) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066381520(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.7853981634129122) q0,q1; }
-gate can_13030024224(param0,param1,param2) q0,q1 { rxx(0.1963495408542677) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13067535040(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
-gate can_13070214464(param0,param1,param2) q0,q1 { rxx(0.3926990814609681) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082344336(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066374848(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5677283652191267) q0,q1; }
-gate can_13070210336(param0,param1,param2) q0,q1 { rxx(0.006135923151568079) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029487056(param0,param1,param2) q0,q1 { rxx(0.0015339807878724798) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13067539072(param0,param1,param2) q0,q1 { rxx(0.012271846304797052) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13028762032(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5462526341437552) q0,q1; }
-gate can_13082720976(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.521708941581565) q0,q1; }
-gate can_13028760208(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.567728365219137) q0,q1; }
-gate can_13082712528(param0,param1,param2) q0,q1 { rxx(0.006135923151536105) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082717520(param0,param1,param2) q0,q1 { rxx(0.012271846303084644) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082535376(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5462526342027623) q0,q1; }
-gate can_13082715504(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.4726215563714842) q0,q1; }
-gate can_13029941968(param0,param1,param2) q0,q1 { rxx(1.5706946193208822) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082942336(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.8915383630316712) q0,q1; }
-gate can_13029818736(param0,param1,param2) q0,q1 { rxx(0.3926990816844995) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066379312(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/3) q0,q1; }
-gate can_13029758000(param0,param1,param2) q0,q1 { rxx(1.5707734323567326) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082345392(param0,param1,param2) q0,q1 { rxx(0.0003834951969707845) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029484752(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5700293364022366) q0,q1; }
-gate can_13070210432(param0,param1,param2) q0,q1 { rxx(1.5707554200760505) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082580448(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13029755744(param0,param1,param2) q0,q1 { rxx(0.00038349445393848214) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065385264(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.7853981627253814) q0,q1; }
-gate can_13065384736(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13078850704(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.472621556405821) q0,q1; }
-gate can_13065375232(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5692623460070187) q0,q1; }
-gate can_13065384112(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.570029336400962) q0,q1; }
-gate can_13065385312(param0,param1,param2) q0,q1 { rxx(0.003067961572487121) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065384880(param0,param1,param2) q0,q1 { rxx(0.006135923151360245) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065382960(param0,param1,param2) q0,q1 { rxx(0.012271846303899991) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13072262272(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5462526341887046) q0,q1; }
-gate can_13082037712(param0,param1,param2) q0,q1 { rxx(0.04908738521221956) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13076840576(param0,param1,param2) q0,q1 { rxx(0.0015339807878405054) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065377632(param0,param1,param2) q0,q1 { rxx(0.003067961575796474) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065373840(param0,param1,param2) q0,q1 { rxx(0.006135923151541434) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13030024944(param0,param1,param2) q0,q1 { rxx(0.012271846303001155) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065373888(param0,param1,param2) q0,q1 { rxx(0.19634954025121942) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13078847296(param0,param1,param2) q0,q1 { rxx(1.313356098703217) q0,q1; ryy(0.12303156789473135) q0,q1; rzz(0) q0,q1; }
-gate can_13029767120(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13065379936(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5704128315979204) q0,q1; }
-gate can_13030457520(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13029759872(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.7853981631002673) q0,q1; }
-gate can_13030458720(param0,param1,param2) q0,q1 { rxx(0.024543692606012968) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13030468752(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5700293364848612) q0,q1; }
-gate can_13030468416(param0,param1,param2) q0,q1 { rxx(0.0015339807925016657) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13030471200(param0,param1,param2) q0,q1 { rxx(0.0030679615756898926) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13078087632(param0,param1,param2) q0,q1 { rxx(0.0061359231515556445) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082046880(param0,param1,param2) q0,q1 { rxx(0.09817477043743139) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13078602640(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.3744467874808857) q0,q1; }
-gate can_13082047360(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.1780972450939946) q0,q1; }
-gate can_13078785984(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.7853981632597993) q0,q1; }
-gate can_13078783056(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5585244804917942) q0,q1; }
-gate can_13078093440(param0,param1,param2) q0,q1 { rxx(0.049087385211670664) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13031416576(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.4726215563702674) q0,q1; }
-gate can_13078375088(param0,param1,param2) q0,q1 { rxx(0.1963495408295497) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13031418112(param0,param1,param2) q0,q1 { rxx(0.3926990816799467) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13078780752(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13030464000(param0,param1,param2) q0,q1 { rxx(1.5707963215239786) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13028838384(param0,param1,param2) q0,q1 { rxx(0.024543692603774758) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13082047840(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
-gate can_13066387280(param0,param1,param2) q0,q1 { rxx(0.0007669903903249065) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13065383152(param0,param1,param2) q0,q1 { rxx(0.0015339807876433298) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029501616(param0,param1,param2) q0,q1 { rxx(0.0030679615670283766) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13076584336(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5646604036433516) q0,q1; }
-gate can_13082716032(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
-gate can_13070217584(param0,param1,param2) q0,q1 { rxx(0.04908738521188383) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13078372496(param0,param1,param2) q0,q1 { rxx(0.09817477048246737) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13076583808(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1*pi/3) q0,q1; }
-gate can_13076589136(param0,param1,param2) q0,q1 { rxx(1*pi/16) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13073715168(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/3) q0,q1; }
-gate can_13083309072(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-3*pi/8) q0,q1; }
-gate can_13028851200(param0,param1,param2) q0,q1 { rxx(0.7853981633898286) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13029760784(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
-gate can_13067364224(param0,param1,param2) q0,q1 { rxx(0.012271846302963851) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13066717712(param0,param1,param2) q0,q1 { rxx(0.024543692605684342) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13083306624(param0,param1,param2) q0,q1 { rxx(0.049087385212036594) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13073713536(param0,param1,param2) q0,q1 { rxx(0.09817477042482281) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13072512064(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.3744467859468) q0,q1; }
-gate can_13031133968(param0,param1,param2) q0,q1 { rxx(0.392699081705814) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
-gate can_13031144816(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can(param0,param1,param2) q0,q1 { rxx(pi/4) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6084266992(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(3*pi/8) q0,q1; }
+gate can_6076736400(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1*pi/4) q0,q1; }
+gate can_6085301104(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-7*pi/16) q0,q1; }
+gate can_6085311520(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.1780972459266508) q0,q1; }
+gate can_6077015072(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.7853981633917906) q0,q1; }
+gate can_6085305040(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726215563684233) q0,q1; }
+gate can_6085296688(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.374446785805257) q0,q1; }
+gate can_6060209552(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.178097245955204) q0,q1; }
+gate can_6076743552(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.7853981634432152) q0,q1; }
+gate can_6085301008(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5217089415825065) q0,q1; }
+gate can_6084859312(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.4726215561663238) q0,q1; }
+gate can_6076742880(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.3744467859222205) q0,q1; }
+gate can_6076731360(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(3*pi/8) q0,q1; }
+gate can_6075555072(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.785398170589538) q0,q1; }
+gate can_6084867088(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341889777) q0,q1; }
+gate can_6076734048(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5217089415836451) q0,q1; }
+gate can_6076743072(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.4726215563702183) q0,q1; }
+gate can_6076743456(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.3744467859434124) q0,q1; }
+gate can_6076729584(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.1780972450926843) q0,q1; }
+gate can_6079877280(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.785398163715394) q0,q1; }
+gate can_6084270688(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084866560(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5585251734617058) q0,q1; }
+gate can_6076740672(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5462526341739622) q0,q1; }
+gate can_6076742112(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.52170894157023) q0,q1; }
+gate can_6076738800(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726217696056474) q0,q1; }
+gate can_6076736064(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.3744467859271978) q0,q1; }
+gate can_6076733232(param0,param1,param2) q0,q1 { rxx(0.392699081696124) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6044512528(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6083905872(param0,param1,param2) q0,q1 { rxx(0.785398162206663) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6076741824(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6056244000(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6076727472(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5646604036432414) q0,q1; }
+gate can_6076736640(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6076741104(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5585244804989333) q0,q1; }
+gate can_6076742592(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341842668) q0,q1; }
+gate can_6076736976(param0,param1,param2) q0,q1 { rxx(1.5284211387732576) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6076733088(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6083913696(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726215563701057) q0,q1; }
+gate can_6080642896(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6076739280(param0,param1,param2) q0,q1 { rxx(0.0030679615760078605) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6076735968(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6076732560(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6075550128(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6055183760(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6045175104(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057287200(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080631568(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057294064(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6075562896(param0,param1,param2) q0,q1 { rxx(0.5208591404527461) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6057498848(param0,param1,param2) q0,q1 { rxx(0.003067961575512257) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6081254688(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084685280(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/3) q0,q1; }
+gate can_6080637616(param0,param1,param2) q0,q1 { rxx(0.7976417919127438) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6084687104(param0,param1,param2) q0,q1 { rxx(0.006135923151500577) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6057504608(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
+gate can_6076729968(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6076732800(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5462526341868035) q0,q1; }
+gate can_6044244096(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5217089415824816) q0,q1; }
+gate can_6076732704(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.558524480492288) q0,q1; }
+gate can_6085299664(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.546252634190855) q0,q1; }
+gate can_6075562464(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084266272(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080473152(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6075549744(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6083916240(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080465280(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080640064(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6083906208(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5700293364007951) q0,q1; }
+gate can_6076735920(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6060204080(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079885728(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5692623460070063) q0,q1; }
+gate can_6080077296(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079739904(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/4) q0,q1; }
+gate can_6079538592(param0,param1,param2) q0,q1 { rxx(0.0030679615756632472) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6078931376(param0,param1,param2) q0,q1 { rxx(0.7880686444441203) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6078925856(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078678992(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5585244880857907) q0,q1; }
+gate can_6078963952(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079429136(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078958864(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084680960(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079414496(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6076738992(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.374446785756723) q0,q1; }
+gate can_6076740480(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084857728(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726215563672351) q0,q1; }
+gate can_6080470608(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.521708941587133) q0,q1; }
+gate can_6080277888(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6075547728(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079535856(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.1780972450313634) q0,q1; }
+gate can_6084863920(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6085308256(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.3744467860033542) q0,q1; }
+gate can_6084136880(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.4726215563701928) q0,q1; }
+gate can_6080071056(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6083176608(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078926288(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080277264(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.1780972450280416) q0,q1; }
+gate can_6079542816(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-0.78539820551274) q0,q1; }
+gate can_6080085696(param0,param1,param2) q0,q1 { rxx(0.19634954084414424) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079735728(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079424048(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078685424(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(3*pi/8) q0,q1; }
+gate can_6080467008(param0,param1,param2) q0,q1 { rxx(0.9927593404576882) q0,q1; ryy(0.6908099616948097) q0,q1; rzz(0) q0,q1; }
+gate can_6079881936(param0,param1,param2) q0,q1 { rxx(0) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6080268624(param0,param1,param2) q0,q1 { rxx(1.5707535579125445) q0,q1; ryy(0.8800083012914732) q0,q1; rzz(0.5780653481675797) q0,q1; }
+gate can_6078681632(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079424240(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079416752(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078682784(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078928544(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080077008(param0,param1,param2) q0,q1 { rxx(0.0007669903939344636) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6080282352(param0,param1,param2) q0,q1 { rxx(0.0003834950603547327) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6084142160(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079278608(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079883088(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080471280(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6075550320(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.546252634179103) q0,q1; }
+gate can_6076983648(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.521708941505957) q0,q1; }
+gate can_6058877312(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058351488(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/3) q0,q1; }
+gate can_6076729728(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084278944(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.569262346005994) q0,q1; }
+gate can_6084869824(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080631712(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.570029336400939) q0,q1; }
+gate can_6074120240(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6076733184(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.567728376166858) q0,q1; }
+gate can_6076737552(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079110496(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5692623460071715) q0,q1; }
+gate can_6079546192(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6076740432(param0,param1,param2) q0,q1 { rxx(0.006135923151541434) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079111984(param0,param1,param2) q0,q1 { rxx(0.012271846302034817) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079448608(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079550464(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058883120(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084721984(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341884577) q0,q1; }
+gate can_6058871600(param0,param1,param2) q0,q1 { rxx(0.0030679615757698286) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6063174768(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.564660403643344) q0,q1; }
+gate can_6063171696(param0,param1,param2) q0,q1 { rxx(0.5179512386302374) q0,q1; ryy(0.005983955107778494) q0,q1; rzz(0) q0,q1; }
+gate can_6063169824(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6078970960(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079115776(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079727088(param0,param1,param2) q0,q1 { rxx(0.09817477042098766) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079277984(param0,param1,param2) q0,q1 { rxx(0.5320979312990701) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079533840(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6054980416(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079546624(param0,param1,param2) q0,q1 { rxx(0.3926990816959517) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079453072(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079558432(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058872656(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6063166848(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074111456(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074105984(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6080462976(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074317568(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079451824(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.570412831604398) q0,q1; }
+gate can_6074114528(param0,param1,param2) q0,q1 { rxx(0.000766990393941569) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6058875104(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057288304(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079281824(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074107424(param0,param1,param2) q0,q1 { rxx(0.5417246853424) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079556368(param0,param1,param2) q0,q1 { rxx(0.09817455852446422) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6076741440(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/3) q0,q1; }
+gate can_6063172320(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.374446785950436) q0,q1; }
+gate can_6084708016(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(3*pi/8) q0,q1; }
+gate can_6074308640(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074120864(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074314784(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079275296(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/3) q0,q1; }
+gate can_6074109776(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079460608(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
+gate can_6083910672(param0,param1,param2) q0,q1 { rxx(0.7610734288564807) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6080471568(param0,param1,param2) q0,q1 { rxx(0.7746377112070988) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6080270256(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/4) q0,q1; }
+gate can_6084279808(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726215563801788) q0,q1; }
+gate can_6058818928(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.3744467859501226) q0,q1; }
+gate can_6078931760(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079117504(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6063177312(param0,param1,param2) q0,q1 { rxx(0.0003834949527501408) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6076737168(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084045104(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074310128(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057322080(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079546432(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6079735200(param0,param1,param2) q0,q1 { rxx(0.0015339807841119324) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6084412528(param0,param1,param2) q0,q1 { rxx(1.5700443978358827) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079784832(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057480544(param0,param1,param2) q0,q1 { rxx(0.0030679615757733814) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6058818736(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5646604036431904) q0,q1; }
+gate can_6079775952(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.558524480491751) q0,q1; }
+gate can_6057325392(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5462526341885918) q0,q1; }
+gate can_6079459552(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074304800(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5217089415829517) q0,q1; }
+gate can_6079790496(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.4726215563755218) q0,q1; }
+gate can_6057322704(param0,param1,param2) q0,q1 { rxx(0.0015339807878849143) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079421936(param0,param1,param2) q0,q1 { rxx(0.7727031953369536) q0,q1; ryy(0.0985139206879393) q0,q1; rzz(-0.001457772183602879) q0,q1; }
+gate can_6058809040(param0,param1,param2) q0,q1 { rxx(1.013534275903293) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6057324048(param0,param1,param2) q0,q1 { rxx(1.4540650513437523) q0,q1; ryy(0.030553567205082177) q0,q1; rzz(0) q0,q1; }
+gate can_6057489040(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6057488752(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.178097245075472) q0,q1; }
+gate can_6084040448(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.3744467859706013) q0,q1; }
+gate can_6084036704(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(pi/3) q0,q1; }
+gate can_6044501776(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.1780972450692566) q0,q1; }
+gate can_6084038720(param0,param1,param2) q0,q1 { rxx(1.5015773170115594) q0,q1; ryy(0.5847372224515136) q0,q1; rzz(0) q0,q1; }
+gate can_6057326688(param0,param1,param2) q0,q1 { rxx(0.00038349519679137245) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6057492256(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084049904(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057490528(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5677283652191125) q0,q1; }
+gate can_6084046112(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.564660403643234) q0,q1; }
+gate can_6084037808(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5585244804916778) q0,q1; }
+gate can_6084045680(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6055018576(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341888028) q0,q1; }
+gate can_6058355520(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.521708941582472) q0,q1; }
+gate can_6055022704(param0,param1,param2) q0,q1 { rxx(0.09817477042446754) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6084038576(param0,param1,param2) q0,q1 { rxx(0.0007669903939486743) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6084046784(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6055030432(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6055470112(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058359312(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6084047936(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6055019344(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5692623460071644) q0,q1; }
+gate can_6058358256(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5677283652190557) q0,q1; }
+gate can_6084038192(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5646604036433547) q0,q1; }
+gate can_6057481984(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074304896(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5585244804915135) q0,q1; }
+gate can_6084040352(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057322944(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6045275904(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079738896(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079785504(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6075560208(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6074121824(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058355472(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6057494672(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058360368(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058359072(param0,param1,param2) q0,q1 { rxx(0.19634954076393107) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6058357248(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058351056(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5704128316178085) q0,q1; }
+gate can_6055233776(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059190384(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059186256(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341888356) q0,q1; }
+gate can_6059188080(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059190816(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059187552(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.5700293364009532) q0,q1; }
+gate can_6059191392(param0,param1,param2) q0,q1 { rxx(0.0015339807878849143) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6059190144(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059195136(param0,param1,param2) q0,q1 { rxx(0.003067961575741407) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6059358832(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059348320(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059345968(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.564660403642737) q0,q1; }
+gate can_6059184048(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059184144(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5585244804926734) q0,q1; }
+gate can_6063162096(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6058350528(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058350192(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059190096(param0,param1,param2) q0,q1 { rxx(pi/8) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6055237712(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6055239584(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059182800(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059180784(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5217089415844445) q0,q1; }
+gate can_6059189568(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-1.5462526341887148) q0,q1; }
+gate can_6059187648(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6077355248(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059349760(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6059187936(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059192880(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(1.3744468001363241) q0,q1; }
+gate can_6059344816(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6058360464(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6059354704(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/3) q0,q1; }
+gate can_6059182080(param0,param1,param2) q0,q1 { rxx(0.5229962641416179) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6058358640(param0,param1,param2) q0,q1 { rxx(0.6217708578355552) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6079560976(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/3) q0,q1; }
+gate can_6059196384(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0.7853981634098481) q0,q1; }
+gate can_6059355952(param0,param1,param2) q0,q1 { rxx(0.39269908155857713) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6059344528(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6076734528(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6059183328(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(0) q0,q1; }
+gate can_6080072544(param0,param1,param2) q0,q1 { rxx(0.19634954085490186) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6076500928(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(pi/2) q0,q1; rzz(-pi/2) q0,q1; }
+gate can_6079788528(param0,param1,param2) q0,q1 { rxx(0.39269907818347427) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can_6057478720(param0,param1,param2) q0,q1 { rxx(0.7853981572774629) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
 qreg q[18];
-u(1.5707963267751197,-3.1415926513069605,0) q[0];
-u(0,0,pi) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.57079632703408,4.509538631403132e-09,1.223718139849495) q[2];
-u(pi,-5.195712123609357e-11,-0.9122620444336771) q[3];
-u(pi,0,-3.7648530122405686) q[4];
-u(pi,0,0.3328784965032441) q[5];
-u(0.8453886615462275,-pi/2,-pi/2) q[6];
-u(1.5707963270193477,3.1415926531779164,0) q[7];
-u(1*pi/2,-2*pi,0) q[8];
-can_13032022208(0.24999999999990982,0,0) q[8],q[6];
-u(1.5707963267960663,-5.07654138454117,pi) q[6];
-can_13033760592(0.5,0.5,0.3750000000001056) q[6],q[5];
-u(pi,-3.1415926534602927,-1.443142903540224) q[5];
-can_13083615232(0.5,0.5,-0.4375000000000002) q[5],q[4];
-u(0,0,3.998822277532088) q[4];
-can_13032028256(0.5,0.5,-0.4687499999999362) q[4],q[3];
-u(1.5707963262720988,-9.424777960876504,-2.1079114457447607) q[3];
-can_13032227568(0.015624999999989203,0,0) q[3],q[2];
-u(3.122328513338688,-1.5707962405505138,4.712389066628166) q[2];
-u(1.4553883251953963,-2.568458512791913,3.665173761358871) q[3];
-u(3.1415926325163688,1.192735106631907,5.155527718335019) q[4];
-u(0,0,1.145131579136033) q[5];
-u(pi,0,0.19841336024886536) q[6];
-u(0.785398163389767,-3.271689979206512,-4.712388980380952) q[8];
-can_13083619792(0.5,0.5,-0.25000000000002065) q[8],q[6];
-u(0,0,-4.775207468773379) q[6];
-can_13083610816(0.5,0.5,0.3749999999048693) q[6],q[5];
-u(1.4901161193847656e-08,-4.36030655833175,-3.9744223696833707) q[5];
-can_13083826496(0.5,0.5,-0.43750000007248463) q[5],q[4];
-u(1.9321734651812057,2.968449806609843,-4.7315306913452115) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.8052646337679406,1.1987643886743138,1.653532122436077) q[3];
-can_13032227760(0.03124999999927614,0,0) q[3],q[2];
-u(1.0869223775759778,-1.5707963287621116,4.7123889812672255) q[2];
-u(2.0987384382336405,2.6875993500196587,-5.0261466984453005) q[3];
-u(1.1151912128860644,1.0053352861603846,1.0870743137788579) q[4];
-u(4.4703483581542975e-08,1.7476074471604475,2.9015181891751114) q[5];
-u(0,0,-0.9573951671970504) q[6];
-u(1.5707963293602003,-0.44047558522740626,-5.239553197204005) q[8];
-can_13083822896(0.5,0.5,-0.24999999985315718) q[8],q[6];
-u(1.4901161193847656e-08,-3.481286153269863,1.0294405823423403) q[6];
-can_13077284192(0.5,0.5,0.3750000006350902) q[6],q[5];
-u(0.6343117477964576,1.335728331768125,1.4919709537222052) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.4650413101260662,1.4809030277001107,-3.8926098950640724) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(0.7913696110826606,0.9626888101447121,-2.9627931719097975) q[3];
-can_13032230496(0.06250000000017054,0,0) q[3],q[2];
-u(1.2276984566422173,-2.3250316027038864,-0.05243907202783271) q[2];
-u(2.0665321025817325,-2.8169930423762666,-4.562570606476559) q[3];
-u(2.251441189307929,-2.4575423101670935,5.063790742616939) q[4];
-u(1.7518746441546396,-4.63437416290701,-5.648775934607318) q[5];
-u(1.57079634588779,-3.407212800787818e-08,0.8887433382601764) q[6];
-u(0.41124279245430523,-7.853981634723678,-3.7562398850204115) q[8];
-can_13077296720(0.2499999995488738,0,0) q[8],q[6];
-u(1.539319516542888,1.2177380975047227,-3.721242296293428) q[6];
-u(2.612663567577554,0.10976965030331588,2.261331210473867) q[8];
+u(0.24707026048904104,pi/2,pi/2) q[0];
+u(pi/2,-2*pi,0) q[1];
+can(0.24999999999999406,0,0) q[1],q[0];
+u(1.5707963267963256,-2.4160256374376368,0) q[0];
+u(3*pi/4,-1.2958063612276205,-pi/2) q[1];
+u(0,-pi,4.717623303749844) q[2];
+can_6084266992(0.5,0.5,0.37499999999995576) q[2],q[0];
+u(pi,0,3.375036197526653) q[0];
+can_6076736400(0.5,0.5,-0.2500000000002598) q[1],q[0];
+u(pi,1.9228805620807152e-10,-1.8252381626388972) q[0];
+u(1.5707963269318173,-1.5707970596250773,-2.510215704668175) q[1];
+u(pi,0,1.3847754673793642) q[2];
+u(1.1550219579320569e-10,-pi,4.5267224488489655) q[3];
+can_6085301104(0.5,0.5,-0.43750000000007316) q[3],q[2];
+u(0,0,2.235888894856922) q[2];
+can_6085311520(0.5,0.5,-0.3750000002643495) q[2],q[0];
+u(0,0,-5.388164986605534) q[0];
+can_6077015072(0.5,0.5,-0.2499999999981991) q[1],q[0];
+u(pi,2.930142039828849e-10,-5.322037740856871) q[0];
+u(1.5707963267881873,-1.692748704889077,6.2831857368372175) q[1];
+u(1.4901161193847656e-08,-0.3189808900624354,-0.5750409092069391) q[2];
+u(pi,0,0.9227882539270471) q[3];
+u(3.141592652049115,-pi,5.437469205253409) q[4];
+can_6085305040(0.5,0.5,-0.4687499999994295) q[4],q[3];
+u(pi,-pi,4.071299569753332) q[3];
+can_6085296688(0.5,0.5,-0.4374999999553483) q[3],q[2];
+u(0,0,-4.341077080665183) q[2];
+can_6060209552(0.5,0.5,0.3750000002734382) q[2],q[0];
+u(pi,-2.0642409745916632e-11,-1.937078049558161) q[0];
+can_6076743552(0.5,0.5,0.25000000001456807) q[1],q[0];
+u(0,0,5.48384325845102) q[0];
+u(1.5707963298810863,-0.062363382547557134,3.040170916121385) q[1];
+u(0,0,-2.346781070731424) q[2];
+u(3.141592543079824,1.7987198069563695,3.0012719938539725) q[3];
+u(pi,0.3764296545499921,2.400510247178033) q[4];
+u(pi,-pi,-4.692132608337019) q[5];
+can_6085301008(0.5,0.5,0.48437499999998423) q[5],q[4];
+u(3.141592611442945,-1.8714037727798867,-0.4722395358102156) q[4];
+can_6084859312(0.5,0.5,0.46874999993509925) q[4],q[3];
+u(3.1415925629495685,-6.121712283549064,-2.7638983742759597) q[3];
+can_6076742880(0.5,0.5,-0.43749999999257894) q[3],q[2];
+u(9.424321830774487e-08,-0.7984372059821396,-2.9144671277917444) q[2];
+can_6076731360(0.5,0.5,0.3750000000000127) q[2],q[0];
+u(0,0,-6.293530111093078) q[0];
+can_6075555072(0.5,0.5,0.25000000228931324) q[1],q[0];
+u(pi,1.2135013279260208e-10,1.7126277801801892) q[0];
+u(1.570796328349035,-1.6755065699804135,5.751242536102268) q[1];
+u(0,0,-0.45315235887041316) q[2];
+u(0,0,-0.7446479734268725) q[3];
+u(9.65705618025044e-08,2.8756570346875927,4.57396044341926) q[4];
+u(0,0,0.02220004717951274) q[5];
+u(1.628890512702015e-12,-pi,3.701131971773432) q[6];
+can_6084867088(0.5,0.5,-0.49218750000008005) q[6],q[5];
+u(pi,-pi,0.7222856242246865) q[5];
+can_6076734048(0.5,0.5,-0.48437500000034667) q[5],q[4];
+u(pi,-3.14159265344107,1.9090896677579063) q[4];
+can_6076743072(0.5,0.5,0.4687500000000009) q[4],q[3];
+u(5.372690074837192e-08,-4.710854967443562,-3.0422178391268737) q[3];
+can_6076743456(0.5,0.5,-0.43749999999932454) q[3],q[2];
+u(5.16191365590357e-08,-1.5139594666658953,-1.5881785510484927) q[2];
+can_6076729584(0.5,0.5,0.3749999999988897) q[2],q[0];
+u(pi,0,5.64467836123122) q[0];
+can_6079877280(0.5,0.5,-0.25000000010120527) q[1],q[0];
+u(1.570796326407505,-1.2481369271455378e-09,-1.0128243798396213) q[0];
+u(1.1980665242353854,-0.7204100471163201,4.804911713593339) q[1];
+u(0,0,-0.5972508305958377) q[2];
+u(0.0011982134108957296,2.8293542982581568,1.50087269796816) q[3];
+u(pi,-7.600770605942981e-09,-3.6055791257016994) q[4];
+u(5.16191365590357e-08,1.6999584994235313,0.6786695542662048) q[5];
+u(0.00613556588735133,2.9389191189399515,3.442540044984162) q[6];
+u(1.5707465377836698,0.0004218285135753064,-2.1002425798499758e-08) q[7];
 u(0,0,pi) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.7918332763591411,-0.733522418372171,-0.5763019371684059) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.9001397209850537,-8.087800208725684,-0.9141530400913894) q[6];
-can_13077130192(0.007812499999996864,0,0) q[6],q[5];
-u(1.5900131388173708,1.5707962918284157,1.5707964528818856) q[5];
-u(1.8307301185149818,1.5707963268175549,-3*pi/2) q[6];
-can_13032238032(0.003906249999592734,0,0) q[7],q[5];
-u(1.2096299555428878,-1.2453752649388077,-0.2921120870637428) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(2.06467936030759,0.4456711649525651,-2.4320991505114096) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(2.453269366201743,2.020456374477077,2.791567575023323) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(0.332143699265359,-0.4989963192753768,2.193504389709197) q[2];
-can_13083619216(0.0019531250000002056,0,0) q[2],q[0];
-u(1.5707962731414729,3.0312270109176653,3.1415958065421465) q[0];
-u(2.8526663891891144,0.6245944718037109,0.47638552826192826) q[2];
-u(2.446211724212976,2.865194797566531,4.375958517900398) q[3];
-u(1.4272331708376136,-2.204772401590415,1.3101581824693302) q[4];
-u(2.511555295175004,-2.964265521476759,-3.5370542199617336) q[5];
-can_13032227904(0.015624999999763032,0,0) q[6],q[5];
-u(0.6718390698452926,-4.712388948849857,-1.5707963505259048) q[5];
-u(0.6031404019743424,1.5707963290888491,-1.5707963291715892) q[6];
-u(1.3804575997645612,1.5707963252856554,-1.570796319397671) q[7];
-can_13032228528(0.00781250000032029,0,0) q[7],q[5];
-u(0.744773432456341,-2.2008504710157926,0.15462486511719797) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(0.16116668502244172,1.0231757240528034,2.4092355507026517) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.9713187227769755,0.4475091331850059,-3.069621079824008) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.2695022190563172,-2.903936245760613,7.925749813322506) q[2];
-can_13066383008(0.5,0.5,-0.49609375000261313) q[2],q[0];
-u(1.5707964363279296,-1.7075956204593012e-08,1.7771723027800772) q[0];
-u(3.1415894995028517,-1.9164469083374505,1.698054078089152) q[2];
-u(1.8659794891001718,-2.1077668036414554,-0.9071496556038734) q[3];
-u(1.7297490137232416,2.7385124916658006,-3.749609730737518) q[4];
-u(1.5790050001262337,-3.1531039388584343,-1.3162520922268934) q[5];
-can_13032234240(0.03124999994270411,0,0) q[6],q[5];
-u(1.293722674679643,1.5707963492916537,4.712388982606226) q[5];
-u(1.6625863012006874,0.32294519770433566,0.10252494498067533) q[6];
-u(1.7488632075214732,1.570796333720187,-1.5707963256002184) q[7];
-can_13032237984(0.015624999999954148,0,0) q[7],q[5];
-u(0.36847677741381524,1.0398039436674844,0.4900522977853068) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.6750205546409072,-0.6110790887603078,-2.514203003039103) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(2.186824432059476,-1.3333358910723963,1.8588349507886668) q[3];
-can_13032239856(0.5,0.5,-0.49218749999994943) q[3],q[2];
-u(0.9652598249018052,-0.9439907131328519,2.7262340088182624) q[2];
-u(0,0,0.5979426937738688) q[3];
-u(2.6029926281600146,3.0182052691742705,5.428318662914254) q[4];
-u(2.3233937551553434,0.49910812905002544,3.9476197887741247) q[5];
-u(0.8071766539927264,-7.853981642656143,-1.5707963155850182) q[7];
-u(0.2825478118796627,2.84923082809909,3.3936299985082554) q[8];
-u(0.6139764624540923,-2.6478851997374333,0.25727406801925) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.8461317081353321,1.8983497786426982,-1.126753323136732) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.2048442281576763,-7.305695777244868,4.103897819652461) q[6];
-can_13032240960(0.4777020525393744,0,0) q[6],q[5];
-u(1.9574943388006945,-1.160879739140255,-3.137331667100051) q[5];
-u(2.155511693041346,-4.712388978495355,-1.5707963256796698) q[6];
-u(1.4759078031753528,-0.09966555986630987,-8.09233924898621) q[8];
-can_13032236016(0.06249999999348375,0,0) q[8],q[6];
-u(1.570796326910612,-1.6798839109566157,3.141592653644054) q[6];
-can_13032242784(0.5,0.5,0) q[6],q[5];
-u(1.570796316311113,-2.3423832651303655e-08,1.7710842656045163) q[5];
-u(2.948144677007281,-0.355607331252581,0.6882591006430347) q[6];
-can_13066381376(0.031249999695256957,0,0) q[7],q[5];
-u(1.288376239423646,-2.8697912888928974,4.671683403056895) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.5317041933234787,-2.2986722940418565,4.451937257555798) q[4];
-can_13032241680(0.5,0.5,-0.4843749999968301) q[4],q[3];
-u(1.7402877491144026,-1.5309303084206223,1.3539801949553114) q[3];
-u(1.570796311466307,3.470880693967615e-09,1.3324228425507607) q[4];
-u(1.8115658886507235,2.3904651483662485,2.8432556825473156) q[5];
-u(2.3369282195753893,1.5707963328800214,1.5707963356377013) q[7];
-u(2.3525644484753165,1.3157874870886348,1.1093227247708943) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.2492933252721956,-1.8466392115876915,-6.365167640208552) q[6];
-u(1.5586044883425163,1.7461109027968542,3.0220890477304683) q[8];
-u(1.3546346279246098,-3.5210465907546764,-3.5267342962287955) q[9];
-can_13076845376(0.5,0.5,0.24999999992263477) q[9],q[8];
-u(0,0,-6.44726683270722) q[8];
-can_13076855840(0.5,0.5,-0.37499999999999645) q[8],q[6];
-u(0.18258389844928175,3.094701898238984,2.7648258353366755) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.511995012563759,-0.17295617636436678,1.293190400580475) q[5];
-u(0.2554599038530737,2.147429795700743,2.0441165427329064) q[6];
-can_13066376624(0.06249999999945075,0,0) q[7],q[5];
-u(2.201929049598732,-10.99557429171527,1.5707963142766994) q[5];
-can_13066381760(0.031249999937899068,0,0) q[5],q[4];
-u(2.7696099687456472,1.5707961793129261,1.570796156140611) q[4];
-u(2.4221298180482433,1.7016138938180616,-4.646245096225647) q[5];
-u(2.64095460788795,-7.853981635035669,1.570796331091569) q[7];
-u(pi,3.0116224962265635e-12,1.2423794165123088) q[8];
-u(1.5707963268536367,-3.53089219466141,-0.14510572058853044) q[9];
-can_13066375520(0.5,0.5,0.24999999999513517) q[9],q[8];
-u(1.4297561779524453,-0.3178853540168672,3.4176177953573497) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.5914477278975316,-1.0849919466486944,-4.0728351777831895) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.6391839610436933,-1.8929252672457455,-5.362784015159018) q[5];
-u(1.1685276588603521,1.1559924747780779,4.251056329618624) q[6];
-can_13033762656(0.12499999990201417,0,0) q[7],q[5];
-u(2.6138041637303573,-7.8539816359103725,-4.712388984154737) q[5];
-can_13032236064(0.06250000002493704,0,0) q[5],q[4];
-u(1.9191696520465653,4.712388894860958,4.712388952288229) q[4];
-u(1.0454943995107935,-2.436826503834929,0.047606280559033376) q[5];
-u(1.9999320416088213,-10.995574279403531,-4.712388962544514) q[7];
-u(2.7097094277935168,0.22544237176991697,1.0712606577980375) q[8];
-u(2.2846152433047453,-2.717726151045495,0.9685454323759918) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(2.565206729675875,-3.1137639694502384,-3.3503105350599487) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.755266678207137,-1.8038083306723716,-0.2654233487046891) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(0.43818551248678617,4.051350634855292,-1.0810789679727688) q[5];
-u(0.6791529889844535,0.856977477859359,3.6595774150216718) q[6];
-can_13066374944(0.24999999999999972,0,0) q[7],q[5];
-u(1.0600443653334897,-4.712388980461398,-1.570796326818885) q[5];
-can_13077121264(0.12499999999991815,0,0) q[5],q[4];
-u(0.6321808839144194,-0.4389826755700729,-3.0804787950303654) q[4];
-u(1.5845400239694936,-2.450730316322627,-0.32543131105991874) q[5];
-u(1.6046975854736094,0.06580666327438434,-0.4750395605220952) q[7];
-u(0.44929189366821304,-0.7952878559377421,0.4330691536215834) q[8];
-u(0.9486828732654725,1.8263781534535046,-1.2177721152666476) q[9];
-u(7.46773542410977e-08,-pi,-3.8676042181229557) q[10];
-can_13032241056(0.5,0.5,0.4990234375005738) q[10],q[9];
-u(2.3131703777189188,-0.4900453849757725,0.9606211821644501) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.7859545496210594,2.9059543315883993,-1.092389056576133) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(3.062151963284497,-1.259128270722629,-1.9795565852267722) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.438663772142288,1.6175405684802022,1.8291451875144242) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(2.7019118186808857,2.046441432819115,-0.26196755822958173) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.4722416276781072,-3.5270905922711,1.8529994090637913) q[3];
-can_13066375088(0.5,0.5,-0.2500000000000003) q[3],q[2];
-u(1.5707963074162437,3.14159266063138,5.608216786886743) q[2];
-can_13066371680(0.0019531249990078724,0,0) q[2],q[0];
-u(2.578874830408133,-1.8844757005501809,-2.683198588432151) q[0];
-u(1.5707963454895906,-1.5009322222084676,-3.1415926609521234) q[2];
-u(0.014369347185687763,-0.09673670120416888,-2.1976019402466247) q[3];
-can_13066373504(0.5,0.5,-0.25220709574022065) q[3],q[2];
-u(2.06171700157306,2.4751126204892766,-0.30827081524572497) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(0.8499483336076215,-1.2349419041919825,0.6534112525257258) q[0];
-u(1.6895890474506854,0.09699441478789296,2.6445247954778544) q[2];
-u(3.1415925271492475,-2.2941034874964483,1.654954824548697) q[3];
-u(1.4013049169402076,-0.7445676957957801,4.672522918933623) q[4];
-can_13066384112(0.5,0.5,0.49218749999882305) q[4],q[3];
-u(0.8751512364384653,-2.513240471442673,-1.5993183646531222) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.5958008165829032,1.3081453809076644,0.8121306453368498) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.6867994300814122,-1.834281406578524,-2.1811794957588875) q[0];
-u(1.4148892835699174,4.322200824009371,-0.6189645041694238) q[2];
-u(0.6568760546976357,-1.0097251318763072,0.23986979960386812) q[3];
-u(1.487659058229147,2.5256200201248755,2.1519967657210173) q[4];
-u(1.4424477302622662,0.9339113392919851,5.170067421166618) q[5];
-u(1.07668262315322,1.4572718287801005,-2.5849175797252855) q[6];
-can_13066387424(0.24999999999999972,0,0) q[7],q[5];
-u(1.2450526446234331,-0.979944032452813,-2.231986342774032) q[5];
-u(1.0393768554618616,-0.537018073789039,-5.352828796246624) q[7];
-u(1.5771826199021743,2.203926688878425,4.563189952162816) q[8];
-u(0.3428964223097966,-0.5533465528110055,-3.5691564031074376) q[9];
-u(3.141592611442945,1.3943346012232012,-0.978960420865918) q[10];
-u(1.570805569844837,7.416552238304064e-05,6.855156442497901e-10) q[11];
-u(1.6266602360427929,-pi,-5.480225662547443) q[12];
-can_13032237264(0.5,0.5,0.24997311020461965) q[12],q[10];
-u(0.002165993089651262,2.077817117956223,-1.246831312829325e-10) q[10];
-u(1.5707963154535713,3.1415926497200957,1.6055081069560564) q[12];
+can_6084270688(0.5,0.5,-0.5) q[9],q[8];
+u(2.920514312665422e-05,-3.8715197039602636,-0.26169852407454064) q[8];
+can_6084866560(0.5,0.5,-0.4960939705791682) q[8],q[6];
+u(2.9208317176679265e-05,-4.030839708450787,-2.4091565164656497) q[6];
+can_6076740672(0.5,0.5,0.4921874999953004) q[6],q[5];
+u(3.1415925747402595,-0.4277978618073335,5.646089338219188) q[5];
+can_6076742112(0.5,0.5,0.4843749999960765) q[5],q[4];
+u(3.1415905664695143,-2.6801631567077884,2.1779784105574396) q[4];
+can_6076738800(0.5,0.5,-0.46875006787494605) q[4],q[3];
+u(3.925798515367453e-06,-1.656188973462891,-3.023878364753185) q[3];
+can_6076736064(0.5,0.5,0.4374999999941633) q[3],q[2];
+u(1.5707963322235576,-9.424777958896167,-3.952888670234506) q[2];
+can_6076733232(0.12499999999917234,0,0) q[2],q[0];
+u(1.4965127895545305,1.2545648657080775,3.1578736548199284) q[0];
+can_6044512528(0.5,0.5,-0.5) q[1],q[0];
+u(1.0549412023837186,3.044705576798205,1.742727747768485) q[0];
+u(1.6791803201119577,3.041703199798798,-3.7160546873433162) q[1];
+u(0.05928685439993774,-10.99557425361177,1.5707962917828937) q[2];
+can_6083905872(0.24999999962096128,0,0) q[2],q[0];
+u(1.7516192816865104,1.556889626967708,2.1165819125098033) q[0];
+u(2.9899330839514184,-2.3907362147759716,0.2796879153778742) q[2];
+u(1.9709751987533366,-2.851279402732708,4.759883724727304) q[3];
+u(1.2460229408133325,3.5684737117173713,0.18478767986867595) q[4];
+u(0,0,0.5668553935864193) q[5];
+u(1.0106459234841571e-07,-2.952012557955152,-0.9839751748000038) q[6];
+u(2.2741275387867876,-0.5199015704865724,-0.8745823611016292) q[8];
+u(0.2764475936900011,0.04108903909342462,-3.8205286898206663) q[9];
+can_6076741824(0.5,0.5,-0.5) q[9],q[8];
+u(1.677900434514667,2.771454467673928,-0.6946332929188093) q[8];
+u(0.8645710453062307,-3.1044316174380344,-2.614589572993706) q[9];
+u(0,0,pi) q[11];
+can_6056244000(0.5,0.5,-0.5) q[11],q[10];
+u(0,0,-6.986328108332023) q[10];
+can_6076727472(0.5,0.5,0.4980468749999642) q[10],q[9];
+u(1.1287729416805272,1.8566165250829976,-0.9170249697041244) q[9];
+can_6076736640(0.5,0.5,-0.5) q[9],q[8];
+u(2.012819604471549,-3.399805397483075,1.284976131497658) q[8];
+can_6076741104(0.5,0.5,-0.49609375000226696) q[8],q[6];
+u(3.1415925091176753,-3.7188493354577226,3.524997819454643) q[6];
+can_6076742592(0.5,0.5,-0.4921874999985805) q[6],q[5];
+u(1.5707962929070687,-6.28318532315693,-2.5962803838530353) q[5];
+can_6076736976(0.48651155872381535,0,0) q[5],q[4];
+u(0.1617139408390827,2.859522038295878,0.004718171475611932) q[4];
+can_6076733088(0.5,0.5,-0.5) q[4],q[3];
+u(1.7480658143518102,-1.477838196426737,-2.8838770978152897) q[3];
+u(1.1706174481021054,-0.6899338209025583,-0.2903132489032776) q[4];
+u(1.5707963267927365,-1.7263792363414268,-pi) q[5];
+can_6083913696(0.5,0.5,-0.46874999999996503) q[5],q[4];
+u(pi,-0.5181565746689336,-1.7469322189765262) q[4];
+can_6080642896(0.5,0.5,0) q[4],q[3];
+u(1.9551120599492153,1.271282962462716,-1.0006348650183674) q[3];
+u(1.83129880930897,0.6152668386453649,3.138608964464322) q[4];
+u(1.9165927210813567,0.9616522477991343,2.5892812349273804) q[5];
+u(0.9524900590207567,-0.5050950671151417,3.1638438135850944) q[6];
+u(2.090572429045349,-2.6660296891389086,-4.651542066210959) q[8];
+u(1.6836496214635064,1.1316975360318242,6.485526241990627) q[9];
+u(1.570796287507705,3.141592625546742,2.6877057823586523) q[10];
+u(1.5707963302780514,-6.283185306917545,-3.5934907577877016) q[11];
+can_6076739280(0.0009765625000753052,0,0) q[11],q[10];
+u(0.5946183473807676,-5.234273820697068,-1.5707963565580085) q[10];
+can_6076735968(0.5,0.5,0) q[10],q[9];
+u(2.111174472796042,0.9852868192962648,-1.1468410596104792) q[9];
+can_6076732560(0.5,0.5,-0.5) q[9],q[8];
+u(2.368914737413035,-2.3996750381473415,-3.221026423520828) q[8];
+u(0.07263108025194616,-1.7151169074727297,-2.3722610368572195) q[9];
+u(1.4866040784649486,-2.557980576845511,2.4421323239481443) q[10];
+can_6075550128(0.5,0.5,-0.5) q[10],q[9];
+u(1.2612132536845622,1.6592015067376158,7.243372072083309) q[9];
+can_6055183760(0.5,0,0) q[9],q[8];
+u(0.6832383850687332,-0.9560702759934773,1.3567934506744217) q[8];
+can_6045175104(0.5,0.5,-0.5) q[8],q[6];
+u(1.5800354000612802,-1.641607926652172,3.4629847013872057) q[6];
+can_6057287200(0.5,0.5,-0.5) q[6],q[5];
+u(0.13381131681081201,-2.4320389980166897,-5.238337005942533) q[5];
+can_6080631568(0.5,0.5,-0.5) q[5],q[4];
+u(2.409443673991986,-5.9132029243949695,1.336768921657291) q[4];
+u(2.8709850135794976,-0.5893140554171113,-1.9667328788150034) q[5];
+u(1.7965140135684856,-1.2025368739306033,-1.0483098812267806) q[6];
+can_6057294064(0.5,0.5,-0.5) q[6],q[5];
+u(2.9955757493060804,-0.19483998291260632,-4.486703938327776) q[5];
+u(1.6200159350728875,2.637998024707068,-0.4461468748606655) q[6];
+u(1.680572678536602,-1.2270520544462995,1.753830026388618) q[8];
+u(1.955351429389042,1.5707963241381915,7.853981532670938) q[9];
+u(2.3159319679641497,-0.8677444717962308,-0.5409555065200812) q[10];
+u(2.550861993349059,-10.890137258723776,0.5465822293007423) q[11];
+can_6075562896(0.16579461371530063,0,0) q[11],q[10];
+u(2.5533785388873267,-10.995585493523256,-4.712402377544233) q[10];
+can_6057498848(0.0009765624999175497,0,0) q[10],q[9];
+u(0.47634249584034166,2.3612743286516213,-3.1445004286161917) q[9];
+can_6081254688(0.5,0.5,-0.5) q[9],q[8];
+u(0.7157219608978321,-0.7970697741001029,4.860716160751596) q[8];
+u(2.4607916089062,5.023817477980326,0.8085231791882002) q[9];
+u(1.5707889035598752,-0.5837188103530957,3.1415927138264985) q[10];
+u(1.5649571270152431,-3.256446999381374,-3.150923068919018) q[11];
+can_6084685280(0.5,0.5,-0.333333333333333) q[11],q[10];
+u(2.2469420937339555,-2.1014835711954043,-0.7664814258990988) q[10];
+can_6080637616(0.25389726799918033,0,0) q[10],q[9];
+u(1.7340807690369013,-7.853981634575092,-1.5707963310684387) q[9];
+can_6084687104(0.001953124999986635,0,0) q[9],q[8];
+u(1.6491599055432589,-1.3039311599259755,-4.890426631179965) q[8];
+u(1.5707963310589188,-0.36358665351275504,3.141592653500983) q[9];
+u(1.5697268088869938,-2.814836653695598,0.0004722386027382619) q[10];
+can_6057504608(0.5,0.5,0.25) q[10],q[9];
+u(1.4202085835969651,-1.3307209277630785,1.8835163290979824) q[9];
+can_6076729968(0.5,0.5,-0.5) q[9],q[8];
+u(1.7806574894151588,-1.3209439566883159,4.437937201570248) q[8];
+can_6076732800(0.5,0.5,0.49218749999938793) q[8],q[6];
+u(0,0,-8.877634148279661) q[6];
+can_6044244096(0.5,0.5,0.4843749999999763) q[6],q[5];
+u(2.1607718103824243,-1.1772236722752496,-3.9796325860131114) q[5];
+u(pi,2.2996486293694205e-10,-2.603101435391282) q[6];
+u(pi,0,-2.114062088734563) q[8];
+u(1.3933108671376344,-1.1890159393253588,-3.4225434325913677) q[9];
+can_6076732704(0.5,0.5,-0.4960937500001517) q[9],q[8];
+u(0,0,0.6747072136488439) q[8];
+can_6085299664(0.5,0.5,-0.49218750000067757) q[8],q[6];
+u(1.9361880910802494,-0.04825146553661621,-1.5277016193470718) q[6];
+u(2.451234582644583,-1.3613509694724177,-0.6133905173900474) q[8];
+u(2.6409563336762547,-0.5873772154881192,2.6893703523943673) q[9];
+u(2.220031333362083,-3.0993257670922656,1.303097519945883) q[10];
+u(0.5638752582051868,0.8676229721019088,2.073766782520819) q[11];
+can_6075562464(0.5,0.5,-0.5) q[11],q[10];
+u(0.648537149157818,1.8862907779681792,-0.3174342183822003) q[10];
+can_6084266272(0.5,0.5,-0.5) q[10],q[9];
+u(1.051606429987764,3.0958227648273953,-3.93429319495963) q[9];
+can_6080473152(0.5,0.5,-0.5) q[9],q[8];
+u(1.3730523747605181,-4.158780667551967,-3.0984765582680125) q[8];
+u(0.9113345243755403,-1.0105466696158474,1.5717665361568303) q[9];
+u(1.6070509897083018,-5.676113450642596,-2.8060807974230126) q[10];
+u(1.7509607271936642,0.9090141783142563,1.3898418481189478) q[11];
+u(0,0,pi) q[12];
 u(0,0,pi) q[13];
-can(0.5,0.5,-0.5) q[13],q[1];
-u(2.5506714313786354,1.1069754614625058,-2.5330412691913784) q[1];
-u(0.8245478124102139,-3.0522547464488,0.8252424435190089) q[13];
-u(0,0,pi) q[14];
-u(1.5707962848610408,3.14159261612308,0) q[15];
-can_13032231504(0.00024414062499903617,0,0) q[15],q[12];
-u(1.570796315451924,-3.528828894326912,3.870594067478805e-09) q[12];
-can_13032234384(0.5,0.5,-0.24999999999999986) q[12],q[10];
-u(1.5708013735376145,1.7421204588252692e-05,4.577772458210873) q[10];
-can_13077132544(0.00012207029659646196,0,0) q[11],q[10];
-u(2.0921740982875168,-1.255333091823624,0.2863430709788944) q[10];
-u(1.247777707662991,1.5708060987337178,4.712311742765427) q[11];
-u(1.8830612993773679,-2.068384125956678,0.9717891237636478) q[12];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(0.9947233473945367,-2.407543100616074,-4.473777533520116) q[10];
-can(0.5,0.5,-0.5) q[10],q[9];
-u(2.3640047128226063,3.1110533723839904,-0.37381816324895484) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(2.7953456041384146,1.4101774203551478,2.121950114212997) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.176019359128539,0.8974627021764093,0.9002468492363418) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.078834555187744,-0.24408935346160138,-1.7791675426297198) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(2.4368526975868163,-0.11652880747783634,2.029871070856732) q[4];
-can_13066382096(0.5,0.5,-0.4990234374999999) q[4],q[3];
-u(1.5707961421972292,3.1415924442178706,-1.2164062304774828) q[3];
-can_13066382144(0.0019531249993810574,0,0) q[3],q[2];
-u(1.9068542437618143,-2.0699450114914795,-4.5899648626312475) q[2];
-can_13066371728(0.5,0.5,-0.2499999999991411) q[2],q[0];
-u(3.141592627780225,-0.36091313813681425,-1.6973868857131622) q[0];
-u(1.570796333688483,3.141592680487909,0.94540044421237) q[2];
-u(0.013796896375892242,-10.995560624896234,4.712375528353013) q[3];
-can_13066386752(0.00390625000011067,0,0) q[3],q[2];
-u(1.5707963198950687,-0.010423437287955917,3.1415926266938237) q[2];
-can_13032241488(0.5,0.5,0.25) q[2],q[0];
-u(1.9091846239317833,-1.6360784969058315,-2.9730357358580504) q[0];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(1.8236141849418508,0.40296836525098484,0.30175640684644733) q[0];
-u(1.1669416338707381,2.866514738810253,-2.1488163833393625) q[1];
-u(2.8723786392372976,-0.27444965016159495,-2.734105652877617) q[2];
-u(1.3380362449857819,-0.5047136485380028,-2.8473218549292025) q[3];
-u(pi,3.0012883031300364,3.178137804804305) q[4];
-u(0.281838226751507,1.7508864085131173,-4.19860967567761) q[5];
-u(2.3402071444406762,1.6512702020222108,3.4427417339250708) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.0984607593421303,0.1728050059569266,0.8171144523510614) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.5037944135712689,-0.3814365047350717,-4.6101052148994395) q[4];
-u(0.4748748206316923,-0.45119570519354607,0.0036463332899869805) q[5];
-u(0.675020015356169,-0.8217737553514797,-1.657612198593681) q[6];
-u(1.604850539787419,-0.8494600319420631,-1.054952141312547) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.0725973328341654,1.8746251717189948,-3.678447839626057) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.098447409354529,-3.8582492001810325,-2.5642480199592335) q[5];
-u(0.5625706278342771,2.5927685952187027,-1.7239406671374191) q[6];
-u(1.1984619307964337,2.1575370231965283,2.352329173648162) q[8];
-u(1.9984371349659962,0.5936204959211118,-3.5307568647114476) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(0.1574243194369842,1.2938993724525807,3.8221208440086216) q[8];
-u(1.2659077354009558,0.08441901015243425,3.9468127987433705) q[9];
-u(1.6195943360148415,-7.027906315489911,-2.382422905582549) q[10];
-can_13066374272(0.01562500000056764,0,0) q[10],q[9];
-u(0.3714154989582134,-10.995574284338966,1.5707963237253946) q[9];
-can_13077206208(0.03125000000061848,0,0) q[9],q[8];
-u(2.8223078919939146,3.044807863161698,5.821955786399955) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(0.29986496086498393,-1.661533312308799,2.634384855368073) q[6];
-u(1.9813246548481893,-2.690293201332082,5.092433315015228) q[8];
-u(1.4938216012843786,-1.6432396788487118,1.1199412436998153) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(2.9554021702355153,-0.8651743224163067,1.7288642561641363) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.3870948220083283,-8.294087865475769,-2.0544470117595366) q[6];
-can_13082949152(0.06249999964245682,0,0) q[6],q[5];
-u(1.7708948214585656,1.2651670700176612,-4.505529016041741) q[5];
-u(0.04867396806724886,-7.8539812381551934,1.570795937324522) q[6];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(1.3148399958653159,2.1323324100979297,0.7401688099833168) q[5];
-can_13082937008(0.12500000007049877,0,0) q[6],q[5];
-u(0.7393234228447978,-0.6645941412816729,3.698499701657618) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(2.3068285974259752,2.158725036112107,-4.795881591015818) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(0.4435634746160205,-0.9205052637003445,-1.5622988890093092) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(2.0146945715517406,0.1886212775767392,2.556342611296658) q[2];
-u(2.353624847898765,-0.030115093885584334,-1.541907769745276) q[3];
-u(1.6010807104427822,-0.1452575327071284,0.43861633737668027) q[4];
-u(1.6182741058923005,-1.1259764095585936,-1.5635670090206149) q[5];
-u(1.6539694232024063,-4.712388986900429,4.712388977135249) q[6];
-can_13077216000(0.2499999999943058,0,0) q[6],q[5];
-u(1.5601998150915697,-1.20662069410429,4.242707799147991) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.2654134363819656,0.6659323700833681,3.5220399687859087) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(0.5579360537769026,-4.755714973180234,-4.359003866568826) q[3];
-can_13029761408(0.5,0.5,0) q[3],q[2];
-u(pi,0,-7.680737502606808) q[2];
-u(pi/2,pi,-4.829120001496294) q[3];
-u(1.326558188218065,1.754630551034035,-0.9733552957931226) q[4];
-u(1.841604908469195,-1.6933586677401362,-0.1439819814024499) q[5];
-u(1.2652549868918195,-2.947292062933617,-5.310717193319842) q[6];
-u(2.3957719195923914,0.7621364878046614,-5.129042875459023) q[7];
-u(1.079137773862245,1.9265851206998035,-3.764517388006248) q[8];
-u(1.5080655873706792,-2.222814527578143,3.1955100015186173) q[9];
-u(1.934991374898886,3.115055749623346,0.607245486869572) q[10];
-can(0.5,0.5,-0.5) q[10],q[9];
-u(2.0450965109792754,2.239799572557759,2.2721655024863887) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.179751100030005,2.720952334479793,-3.2666034277650997) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.0365236698086724,-2.321916262271518,0.6298002083961343) q[6];
-can_13066374080(0.5,0.5,0.4921875000000881) q[6],q[5];
-u(1.369846856891394,-1.6753598115889572,2.88647700373426) q[5];
-u(1.3335925865705207,-0.8826812508146601,-0.9409709901815602) q[6];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(0.9176601144776867,1.1291324775875597,6.619753534462442) q[5];
-u(2.5055349877687587,-1.2281184864920682,0.3840398205429709) q[7];
-u(0.5308629253612395,-0.4277233505415552,4.534821959673843) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(0.7990396169017181,2.7790732519982204,-2.681510950630372) q[6];
-u(1.5686135018223204,1.8080006695721005,-0.6886428020737148) q[8];
-u(1.476001950993086,-7.552784985479548,5.285969566625806) q[9];
-can_13083822464(0.01562500000005875,0,0) q[9],q[8];
-u(1.3189095604913972,0.1516344238867449,-0.8738766079790097) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(0.900007419437615,-1.7216173786428952,-1.928096967452898) q[6];
-can_13032014048(0.5,0.5,0.46874999999991585) q[6],q[5];
-u(2.521079440717671,0.5840907290651555,0.8103548614171058) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.6650930142194784,0.6142416900389862,-2.28761062420138) q[4];
-can_13066373456(0.06249999999689048,0,0) q[4],q[3];
-u(pi/2,-3.874416865689132,-pi) q[3];
-can_13082940224(0.5,0.5,0) q[3],q[2];
-u(1.762159238663057,0.9982261936400445,-1.5355721618713316) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(0.4413745049491917,-3.052615903492175,1.0107063350362502) q[0];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(0.23174797914874892,-0.33356194389522525,-4.510764723859724) q[0];
-u(2.08847855281397,3.1373256343766998,-1.359989432088665) q[1];
-u(0.9104056218876231,0.011479218944463266,-1.7657675516368403) q[2];
-u(1.4085290670414121,0.767848851945979,0.7459422504487266) q[3];
-u(2.2355462947280715,-1.5707963262582414,-4.712388983410661) q[4];
-can_13029768752(0.1249999999999091,0,0) q[4],q[3];
-u(0.8475197853240418,2.7689739620288543,5.287529500885842) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(0.9949327973247941,-2.21702217821667,1.6968923244142298) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.9769885108754766,2.264647358299791,-2.845738129004814) q[0];
-u(1.563194721934377,-0.13151262600561456,-0.5396027937440704) q[2];
-u(1.1904574753076476,0.6373683621056655,3.907407133209592) q[3];
-u(1.5085347763257873,1.015395853333678,1.5273437232940343) q[4];
-u(1.7207599529562754,-1.7168523848907773,1.2958842995823432) q[5];
-u(2.106412417360675,-1.0018231530243986,0.8355453474661181) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.958669463076622,-1.270387008639869,1.9222262308337843) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(0.8220872945099761,0.24154398164975371,1.7482422366313612) q[4];
-u(0.28202040149048124,1.7272195072122916,-1.1630287304886644) q[5];
-u(1.6373769926387307,-0.8472126320143407,2.114976606192084) q[6];
-u(1.810016535488209,-2.0529583943302683,2.630388039629068) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.229047685127969,-4.7680885285504395,-4.372236001546816) q[6];
-can_13029766256(0.2500000000000003,0,0) q[6],q[5];
-u(1.8281730762281942,0.6436783451724059,1.587512037685913) q[5];
-u(1.4434797024613393,0.6663312143061525,1.0340141484936987) q[6];
-u(1.8280009565727984,-0.2309782397893949,1.357633046218311) q[8];
-u(1.6809174954022368,0.9273881425899795,-1.5995948344330049) q[9];
-u(0.9160924608114392,-0.3892177613733942,-2.780553194334692) q[10];
-u(2.157446137458816,2.3494514287977846,-0.6592938279999423) q[12];
-u(1.9087526496854745,0.6666782085852736,-0.12971742048364837) q[15];
-can(0.5,0.5,-0.5) q[15],q[12];
-u(1.4708629450493858,0.3475829518134179,-5.485191027258162) q[12];
-can_13077277840(0.000488281250000334,0,0) q[12],q[10];
-u(2.119418997547159,-4.712389004994051,-1.5707963200000206) q[10];
-can_13082936288(0.0002441406250007325,0,0) q[11],q[10];
-u(0.3196443887885806,-0.0497186143392101,-1.7250703902532436) q[10];
-can(0.5,0.5,-0.5) q[10],q[9];
-u(0.8880092446478877,-1.1573194798559587,3.6693848067184307) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(0.980255627117074,0.805389708347432,-1.0049602071323225) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.3307780222179413,2.838897757092471,-3.472956951715868) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.1933945167275453,-0.7863105967038111,0.11302916207110436) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(0.9199714724667107,-0.9732337233690891,0.7346844265630761) q[4];
-can_13029763184(0.5,0.5,0.4998779297067309) q[4],q[3];
-u(2.2345993167259137,0.9824940873563502,-2.023710220375929) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.4227922984451484,1.7832107112699003,-2.1728181680144325) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(0.9240228773355801,-0.7898798208229141,5.342860913472892) q[0];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(0.2728439854454077,0.23283919373368803,-4.628887253662934) q[0];
-u(1.920363518064908,3.572040651330966,0.09376547801557433) q[1];
-u(0.4442634941407956,2.4909463084607926,-2.174030886266754) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(0.1776672119768275,1.8316287261107398,4.401613754660361) q[0];
-u(2.538381579204748,1.118557661333284,-0.29365064666692264) q[2];
-u(2.405381363306003,2.9437306170555955,5.787911475835273) q[3];
-u(1.4778597679672747,0.4403300651723545,-2.1313909799481903) q[4];
-u(0.09795858723388702,2.609971477186864,-1.5123407977609356) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.542118662347085,0.07664676363286803,1.3071784815929366) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.629117253586155,-1.5251231592288281,-3.713819823221817) q[3];
-u(1.1132307900440614,4.0890134972697005,-2.273648719929769) q[4];
-u(0.3582735497490038,1.1362250407059238,-2.667148814025786) q[5];
-u(0.377606763889707,0.8348523627562818,-1.7560388671378473) q[6];
-u(2.283359854273873,0.27797437986008,-0.10989180963285294) q[8];
-u(1.3023349467342626,0.4019329448159751,2.9864824314997436) q[9];
-u(0.5670975968306291,-1.3258668416531683,1.4335286974832093) q[10];
-u(1.086127140663138,1.5707963267296166,7.853981634136898) q[11];
-u(0.7357605963917304,-2.8607249893332636,-3.2406183615279884) q[12];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(2.3021305324393526,-0.8610752553146535,-3.2892357269148844) q[10];
-can_13029764144(0.5,0.5,0.4990234374856331) q[10],q[9];
-u(1.8189081815754469,-0.8814107372261372,0.88534246446754) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(0.7163411800423517,0.05812844746362744,1.9131793331790834) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.475721307870243,-2.212890012188034,5.238162305174622) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.806163621378391,-12.535683289815752,-7.127757595676551) q[5];
-can_13029761312(0.0019531250000640993,0,0) q[5],q[4];
-u(1.734206872722861,2.861039884729995,-1.755631959414655) q[4];
-u(0.6791262755095169,1.5707963267972493,7.853981633971329) q[5];
-u(0.000126605252712875,0.5066817900347467,1.945985727356483) q[6];
-can_13029752912(0.003906250000000411,0,0) q[7],q[5];
-u(1.463397486839167,1.6424476808183577,-2.1402403063843294) q[5];
-u(0.9942709540543279,0.6544420880179247,4.998675115120437) q[7];
-u(1.03515516871778,2.413771630897234,-2.1884688600745137) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.6923847193033104,-2.1831360160087523,-4.3692331781892655) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.982964100518197,0.9551391881090949,-4.607879252986974) q[5];
-u(1.7981968619586557,-0.8867009767712932,2.1431053278291974) q[6];
-u(2.868547599846002,-0.5041642138785021,-1.232088887416335) q[8];
-u(0.5534370312015593,2.7910756330982704,-0.4904245002793268) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(0.6350430965843121,3.067987191421901,2.357140448823369) q[8];
-u(1.173785327324038,-0.2914529238298416,-5.634247608874073) q[9];
-u(1.5707963003991914,-3.141593097037182,1.2596277762780503) q[10];
-can_13029764096(0.0004882812499907217,0,0) q[11],q[10];
-u(1.5707963006281391,-4.922629209922279,-1.1712349756720641e-08) q[10];
-can_13028767504(0.5,0.5,0.4997558593751494) q[10],q[9];
-u(2.6963569261373963,-2.3822802773592526,1.4011435423967) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.6602641604083834,-1.9371467147426478,-4.710892311140212) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.250958145583561,-2.490536447490941,0.44625584451134875) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.1080063380851561,-1.8238348925177184,2.2459194452245543) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.6377446623440408,-3.126904219748252,5.270075696605353) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(2.2853465263579977,-3.043439324594365,0.4765349242383511) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.0981224926656195,-2.3648477229268603,2.1821997081325115) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.2495250279123338,-0.5118385133246321,3.0350173591850895) q[0];
-u(1.57079632724104,1.4737696718627016,-2.711584826437611) q[2];
-u(2.427949455504279,1.388120317869856,-2.756886214895313) q[3];
-u(1.20884647493577,2.365281167380114,-0.8927900197289584) q[4];
-u(2.763275850025313,2.4854260234330043,-4.8619767116037105) q[5];
-u(1.2574729915571443,-0.048062148674780765,1.4293907568967632) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(0.6510632458699551,-1.0426254190041158,4.125896903898399) q[5];
-u(1.8233437892498623,3.0925556295326015,-3.636671965332315) q[6];
-u(2.7423743440817523,0.899601055287331,0.5606140455947975) q[8];
-u(0.9567004454949601,-2.476674465879259,3.230749118146254) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(0.4252288333572389,-0.10109535071991713,-3.97489679959019) q[8];
-u(2.344673470305236,-2.540188116982671,-1.774188078979915) q[9];
-u(1.5700462776923128,1.879965088150238,-2.2547808521155117) q[10];
-u(2.6015912215314287,-2.2562074330046094,1.5101950203527466) q[11];
-u(0.9438091238982488,-2.3109438697333538,-2.6364188086562725) q[12];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(1.7924701788319397,-9.44892318264389,-1.234458396343201) q[10];
-can_13029767552(0.00781249999999969,0,0) q[10],q[9];
-u(2.747012506425418,1.316285151640444,4.4402102193890585) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.2141850564309329,-0.9726384461010372,0.8619549615013142) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.3894856015665749,2.344892474281156,-0.6275677202295249) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.2406871991171715,-3.6368954060592693,-2.1498717472637465) q[5];
-can_13032026144(0.5,0.5,-0.48437499999998423) q[5],q[4];
-u(1.5707963267782539,-1.3057845278142965e-11,-1.8935204393094764) q[4];
-can_13077274144(0.03124999999988285,0,0) q[4],q[3];
-u(1.1261553941886542,-3.566500086637713,-6.65392687286308) q[3];
-can_13066381520(0.5,0.5,-0.25000000000492234) q[3],q[2];
-u(pi,2.10566931283653,-0.7990855540389559) q[2];
-u(1.5707963269273337,4.08720834954579e-10,0.1635039231145594) q[3];
-u(2.0188411895661478,-4.712388980404331,4.712388980370312) q[4];
-can_13030024224(0.06250000000156151,0,0) q[4],q[3];
-u(1.5707963266654001,-5.289546491652583,-4.01923383464009e-10) q[3];
-can_13067535040(0.5,0.5,0.25) q[3],q[2];
-u(1.541233737845609,1.2583732305694415,1.4586279764620196) q[2];
-u(1.6911270043310764,-0.6934855517395445,-0.3483697905722354) q[3];
-u(1.5113397386961493,1.5707963220693961,1.570796335188233) q[4];
-u(1.4937610529557,-2.868756498308154,1.8548481346136776) q[5];
-u(2.2096503918453876,2.6849789650022373,0.22615338374378968) q[6];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(1.4261236677756086,2.3406798533628805,0.1386591135679076) q[5];
-u(0.2207991289788842,-0.4640713842330346,4.071300538814672) q[7];
-u(1.102050412654408,-3.0704055678569713,-4.327427380136838) q[8];
-u(1.4838662497543478,1.6046171349990186,-1.8014518385787537) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(2.5921423637689394,1.6316512133458332,-0.35414899250915466) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.1173538919443695,-1.2596459802306728,-3.8001353377802323) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.714595724915174,1.6733866605695844,0.9528051520565872) q[5];
-can_13070214464(0.1249999999243199,0,0) q[5],q[4];
-u(2.7625546062634836,1.570796305308731,1.5707963085383365) q[4];
-u(0.41563541770945645,-2.6611066977506233,3.5746103587209195) q[5];
-u(1.0378295553268382,2.720808742312156,-0.5166020695728833) q[6];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(1.1719621627365895,-1.319293451078987,-0.7001259978681135) q[5];
-u(1.0416843193711665,0.44191829234281155,2.4743542192411896) q[7];
-u(2.5294029322279585,2.2194269613545092,0.44120232669314574) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.3112828728989276,-1.6386306229986367,0.462265471646353) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.8391991520442166,-10.485247319181012,1.2778865560414974) q[5];
-can_13082344336(0.24999999999999972,0,0) q[5],q[4];
-u(2.6739659038334844,1.900112515675955,-0.6621153907222097) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.7443611879959098,-1.8349503619528473,0.29366576460832206) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.6371182166406815,-1.6263223321317937,0.08895024840504817) q[2];
-u(0.9695544241564183,-0.46710575993809506,3.003975032885364) q[3];
-u(2.5553367676632273,-2.0490725256651956,1.0335769995960495) q[4];
-u(1.1831594231930396,2.4711203028787447,3.332032107785584) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.7232460325868413,-2.7061936030747717,2.8530520754497286) q[4];
-u(1.346415696319704,0.3411130711776684,1.6540469751233915) q[5];
-u(2.565520197419821,-0.017108073590698766,-1.4741047956581785) q[6];
-u(0.18259973587522701,4.635478084497075,1.5682755154624832) q[8];
-u(2.6704385285335808,0.36286110897721224,-1.351957722512348) q[9];
-u(1.5362907513702684,1.2565269945012154,-1.2745605509738638) q[10];
-can(0.5,0.5,-0.5) q[11],q[10];
-u(1.5396529707610274,-0.06526454253457059,-2.5081765876340034) q[10];
-can_13066374848(0.5,0.5,-0.49902343750000044) q[10],q[9];
-u(1.5707963222187282,-9.424777962819839,-4.537080492867924) q[9];
-can_13070210336(0.0019531250000081215,0,0) q[9],q[8];
-u(1.447709801793575,-0.08083653323425503,-0.568610504789086) q[8];
-u(1.8511552633707022,1.1982139416764421,3.134911006426226) q[9];
-u(1.5707963154809637,4.496560457312171e-09,3.6981739458023153) q[10];
-u(0.30481319654034306,2.9049117655981647,0.5514065358747242) q[11];
-u(2.352681792630985,1.57185339751517,-3.450016616817828) q[12];
-can_13029487056(0.0004882812499958106,0,0) q[12],q[10];
-u(2.99465048995844,2.3288026815723892,2.264400839320134) q[10];
-can(0.5,0.5,-0.5) q[10],q[9];
-u(0.6086894138372606,-2.380889302928637,-1.6024851371371893) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.0296633268164321,-2.9336699927284204,-2.6452573100785903) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.290600097167228,0.8610912639448864,3.99956903242055) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.1402699775088687,0.04303971957179176,3.022091149189033) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.8052290684068089,-1.978950580155095,4.164122726434664) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.3177481915644,1.3674516273919841,1.6228550504529755) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(2.065660978356144,2.8545748739258605,-2.8072781886630667) q[2];
-u(1.4574667937656078,-0.5052972646419236,-1.6846569407285386) q[3];
-u(2.8232115649908596,-3.0317549535799273,-2.6147886298182965) q[4];
-u(2.076656323686264,-2.650956225699804,5.143133210196581) q[5];
-u(1.3866839422278905,0.8163036129085903,-0.9761293283030912) q[6];
-u(1.098530479237127,1.358660657157386,-2.855103618828773) q[8];
-u(1.9403533085039837,-1.5229842601857264,4.454259387510261) q[9];
-u(1.626397704333588,-2.8665809662047437,0.15397405975988865) q[10];
-can_13067539072(0.003906250000544922,0,0) q[11],q[10];
-u(1.8728726023706086,2.970476843388719,2.449417846618882) q[10];
-can(0.5,0.5,-0.5) q[10],q[9];
-u(2.3964648863307554,-4.509351593192129,-1.0551254746223848) q[9];
-can_13028762032(0.5,0.5,0.4921874999856853) q[9],q[8];
-u(1.4901161193847656e-08,-0.08157092160843682,0.7444610186402424) q[8];
-can_13082720976(0.5,0.5,0.48437499999968453) q[8],q[6];
-u(pi,-3.141592653542928,-1.0974109677582242) q[6];
-u(1.3229558172336402,0.29668349242970365,-2.671083819973772) q[8];
-u(1.570796297153437,3.141592573984433,0.997745296866076) q[9];
-u(1.775780944087153,1.7830723669774151,-1.7019216993773751) q[10];
-u(2.4570100712332987,-1.5707963326919798,-1.5707963433655838) q[11];
-u(1.57079633139123,-2.1196399320072548,3.141592596014066) q[12];
-can_13028760208(0.5,0.5,0.4990234375000037) q[12],q[10];
-u(1.5707963373354916,-3.1415926627665667,-2.768295000104221) q[10];
-can_13082712528(0.0019531249999979437,0,0) q[11],q[10];
-u(0.0073457460166662415,-7.853981399423689,-4.712389213915962) q[10];
-can_13082717520(0.003906249999999845,0,0) q[10],q[9];
-u(1.834629564178719,1.365012206357698,-3.8860690604277903) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(0.9620080457940037,-2.227997742548103,-2.301611616086539) q[8];
-u(1.3229558538322883,-1.7692995748644234,-0.296683505429743) q[9];
-u(1.5707963261638096,-5.870590445714676,-3.141592655215483) q[10];
-can_13082535376(0.5,0.5,0.49218750000446776) q[10],q[9];
-u(1.57079632869175,3.141592654162877,7.391492474923894) q[9];
-u(2.4966309401446085,2.9373892917296907,-2.7225032650346064) q[10];
-u(0.7383334432784298,-7.853981373898731,4.712388628681776) q[11];
-u(1.4263188114279048,2.9799798759615492,-1.954922392135003) q[12];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(1.426318792857459,-2.482771387098717,3.3032054058664855) q[10];
-u(0.928611883521299,-6.347711452342983,-2.829922400885453) q[12];
-can(0.5,0.5,-0.5) q[14],q[7];
-u(1.0467348339300893,0.7867308232278457,-0.6519143691875813) q[7];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(0.873551669039998,0.6631433695122287,1.196772200779531) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.562530493213092,0.1636925301149022,1.6541486635620026) q[4];
-u(1.3108811632978155,-2.762061226158825,1.1319020269692717) q[5];
-can_13082715504(0.5,0.5,0.46875000000040384) q[6],q[5];
-u(pi,-1.782949998382409e-09,-1.9980661523261625) q[5];
-u(2.917011235078375,0.6723454999856928,-0.9348338179555442) q[6];
-u(1.1971961477065585,-2.646558729899083,-4.861045532916535) q[7];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.817346135814412,-2.6630589738962955,3.8975360612372754) q[6];
-u(1.1938528933049917,-1.3736668466493962,-1.7074820577605936) q[8];
-can_13029941968(0.49996762550552243,0,0) q[9],q[8];
-u(0.9455123408187717,1.380603883386609,-1.2491856543700568) q[8];
-u(0.814516396254377,0.9695420728472027,-2.250900069219478) q[9];
-u(0.9990145995337145,-3.0878276100548447,1.5786540316130118) q[14];
-can(0.5,0.5,-0.5) q[14],q[7];
-u(2.221650917463822,-5.892036291269942,-0.5771943845504057) q[7];
-can_13082942336(0.5,0.5,-0.2837854748650943) q[7],q[5];
-u(2.9282046388343597,1.0587361173149106,1.8996475568844766) q[5];
-u(1.570796326215401,-1.362383317271565e-09,2.3039169560119923) q[7];
-u(1.2366849929222115,0.3087231597964746,-3.1394060986948604) q[14];
-can_13029818736(0.12499999999547216,0,0) q[14],q[7];
-u(1.5707963264150633,-1.1532357510754474,-1.1113854281319391e-10) q[7];
-can_13066379312(0.5,0.5,0.33333333333333326) q[7],q[5];
-u(1.4657983236350896,-0.68868250917007,2.0020709634605516) q[5];
-u(0.7504034577726343,-5.673246546933357,-1.0587361180272925) q[7];
-u(1.0207520062334423,-10.995574286752102,-4.7123889785529105) q[14];
-u(2.525382222942664,2.80383863704513,-3.0100339690785796) q[15];
+can_6075549744(0.5,0.5,-0.5) q[13],q[1];
+u(1.0844806599055898,2.1587097886962403,3.2445285112176765) q[1];
+can_6083916240(0.5,0.5,-0.5) q[1],q[0];
+u(1.4022407707485143,2.3618183933400156,-0.2680362522613269) q[0];
+u(1.6224841329598396,-2.2183642870276805,0.8657730556322614) q[1];
+can_6080465280(0.5,0.5,-0.5) q[2],q[0];
+u(0.7137907090668797,-1.6439958492860183,2.494953344873648) q[0];
+u(1.5534218914069522,-2.904727460354983,-4.622877993497175) q[2];
+can_6080640064(0.5,0.5,-0.5) q[3],q[2];
+u(1.1864806230919827,-1.6172802277147138,1.8703096474828296) q[2];
+u(0.231052991234076,-1.7441439769140026,-4.053606184774142) q[3];
+can_6083906208(0.5,0.5,0.4997558593749495) q[4],q[3];
+u(1.2651932577938618,-1.784856004931551,-3.4993357460434833) q[3];
+u(2.145229506597687,2.69989627392062,0.874422846069685) q[4];
+can_6076735920(0.5,0.5,-0.5) q[5],q[4];
+u(2.160771811184894,-4.597034266590644,-5.10596163441487) q[4];
+u(0.7338780083204234,2.2368347970463107,-3.5731279880245337) q[5];
+can_6060204080(0.5,0.5,-0.5) q[6],q[5];
+u(1.205404561610227,-3.499575395818543,3.1898441273867406) q[5];
+u(1.613129093157196,-1.588818821627903,-4.678741453470403) q[6];
+can_6079885728(0.5,0.5,-0.49951171874999856) q[8],q[6];
+u(1.7084084583024333,-0.8253895960936878,3.7845605132772495) q[6];
+u(1.7408723219734281,-0.4592854801443327,-1.3094655895618401) q[8];
+can_6080077296(0.5,0.5,-0.5) q[9],q[8];
+u(2.859505570477496,-2.6019999787187045,-3.463749001467755) q[8];
+u(1.4007202716811782,-0.03673547251391416,-2.682307431244129) q[9];
+can_6079739904(0.5,0.5,-0.24999999999999972) q[10],q[9];
+u(1.5630405030489214,-3.1424418395487526,-3.772683957730794) q[9];
+u(1.5707961931277827,-1.4654569113758953e-07,2.11527327240878) q[10];
+can_6079538592(0.0009765624999656114,0,0) q[11],q[10];
+u(0.8207407889936942,1.5707961450474413,4.712389250129895) q[10];
+can_6078931376(0.2508500405180221,0,0) q[10],q[9];
+u(2.6920944046807365,1.8151687072175835,-3.5871525012525005) q[9];
+can_6078925856(0.5,0.5,-0.5) q[9],q[8];
+u(2.0667923684368996,1.0223200608625458,0.2238299193965042) q[8];
+u(1.6529114848187745,2.6164625196946436,4.536055186998613) q[9];
+u(1.5707962752802747,-4.089701566385491,-3.1415926852501364) q[10];
+can_6078678992(0.5,0.5,0.4960937524172387) q[10],q[9];
+u(2.7101960705240074,1.2107835474241477,-1.7531389871289458) q[9];
+can_6078963952(0.5,0.5,-0.5) q[9],q[8];
+u(2.3345018795589496,2.7650047824968205,5.902027491787428) q[8];
+u(1.9122561286917812,2.737655399127893,0.9791254991423683) q[9];
+u(0.5824326053844749,-1.090425906836631,-3.508388660138789) q[10];
+u(0.22808826119492692,2.094655454275846,1.5923576481047859) q[11];
+can_6079429136(0.5,0.5,-0.5) q[11],q[10];
+u(0.6847389737802339,-3.0001348784180673,-2.6330781930799674) q[10];
+can_6078958864(0.5,0.5,-0.5) q[10],q[9];
+u(1.8929574688125521,-4.453709442854137,-4.441604512009649) q[9];
+u(2.6602092507152504,-3.5987439432506707,5.597456609164917) q[10];
+u(1.0405984015323617,3.3951320029159344,-2.524682273359139) q[11];
+u(2.9880916884099324,1.6729416925821115,-1.2746394364428832) q[13];
+can_6084680960(0.5,0.5,-0.5) q[13],q[1];
+u(1.0764075791783536,2.57223407888252,3.4560148366275083) q[1];
+can_6079414496(0.5,0.5,-0.5) q[1],q[0];
+u(0.5941388811923787,-2.274001891651156,0.06890418231222739) q[0];
+u(1.777841147130471,-0.8644009156736819,1.3619511164394342) q[1];
+can_6076738992(0.5,0.5,-0.43749999993989946) q[2],q[0];
+u(4.712160915387242e-08,2.9878275743289056,0.6630029904964571) q[0];
+u(2.003817149636497,0.3069634881333112,2.09963244189706) q[2];
+can_6076740480(0.5,0.5,-0.5) q[3],q[2];
+u(1.283282617087313,2.5853410041046705,1.0034084834112682) q[2];
+u(2.003817145244332,-1.7376117959167168,-0.3069634522562903) q[3];
+can_6084857728(0.5,0.5,-0.4687499999990513) q[4],q[3];
+u(pi,-3.1415926534253846,-0.8334912027534349) q[3];
+u(1.4901161193847656e-08,1.2115425526704493,0.9652627667451399) q[4];
+can_6080470608(0.5,0.5,0.4843750000014569) q[5],q[4];
+u(pi,-pi,-3.8719713197478107) q[4];
+u(1.0803385986341205,-2.628314683177536,-2.409653828359515) q[5];
+can_6080277888(0.5,0.5,-0.5) q[6],q[5];
+u(2.833494930388022,1.1013801991675467,-1.1956435051898786) q[5];
+u(1.9137970531720456,1.527699556682958,2.724841639878477) q[6];
+u(1.162119814413636,2.2419360866163665,2.024245412786309) q[13];
+can_6075547728(0.5,0.5,-0.5) q[13],q[1];
+u(1.296448615209647,-4.675462984355907,0.3791500586785261) q[1];
+can_6079535856(0.5,0.5,-0.3749999999793706) q[1],q[0];
+u(2.7766579205618944,-0.2610912896367748,0.005150727545786715) q[0];
+u(1.5707963267415561,3.141592650944184,-1.2210759456068951) q[1];
+can_6084863920(0.5,0.5,-0.5) q[2],q[0];
+u(0.7453118178031688,2.8549946147244354,-1.8806323654069006) q[0];
+u(2.7766579126107924,2.631830236391443,0.26109130652224) q[2];
+can_6085308256(0.5,0.5,0.4375000000184046) q[3],q[2];
+u(0,0,4.289062843273907) q[2];
+u(pi,-1.3725596595084741e-10,1.4352123747955519) q[3];
+can_6084136880(0.5,0.5,0.46874999999999273) q[4],q[3];
+u(1.5707963271907521,1.7862133994128726e-10,0.5993497727351896) q[3];
+u(1.8220610225260416,1.3140267580595653,2.638089180139982) q[4];
+u(0.7851000491248843,-6.109003466483681,-1.7732906215952964) q[13];
+can(0.24999999999999972,0,0) q[13],q[1];
+u(0.7498378371038532,2.1254211519768513,-0.026044418153655435) q[1];
+can_6080071056(0.5,0.5,-0.5) q[1],q[0];
+u(0.4697058526496718,1.5838741362884157,1.2530644430758435) q[0];
+u(1.9741962639578254,0.3376152531199426,-0.25853567332449634) q[1];
+u(1.4209579929125775,-1.5112058475840107,2.291495012832884) q[13];
+can_6083176608(0.5,0.5,-0.5) q[13],q[1];
+u(1.4850303679682488,-0.813908865592178,0.4345633835411371) q[1];
+can_6078926288(0.5,0.5,-0.5) q[1],q[0];
+u(2.3028184378458776,-0.7549051554187111,-1.689576564614599) q[0];
+u(1.5707963152889457,-1.0143664291161238,-0.4292168633303439) q[1];
+can_6080277264(0.5,0.5,0.3749999999783133) q[2],q[0];
+u(3.141592611442945,-0.16499102657108716,-0.9117122779051595) q[0];
+can_6079542816(0.5,0.5,-0.2500000134057137) q[1],q[0];
+u(1.1795981898842702,-0.23759622387221163,4.0904894098444995) q[0];
+u(1.0863993999631938,-1.7981947589558784,1.7962444186021647) q[1];
+u(1.5707963266180374,-4.732658709372117e-12,-2.78849747355493) q[2];
+can_6080085696(0.06249999999833911,0,0) q[3],q[2];
+u(1.7527231776957377,2.4481515620313847,4.065836699689053) q[2];
+can_6079735728(0.5,0.5,-0.5) q[2],q[0];
+u(2.109243811362077,0.3774249722190394,-5.230775306026226) q[0];
+can_6079424048(0.5,0.5,-0.5) q[1],q[0];
+u(1.2495810376425238,-0.42978008427287495,-3.9750043128703973) q[0];
+u(1.8736508769538625,0.37832718232766704,-1.4995584913106936) q[1];
+u(1.1795981775160935,-0.5160262409846079,0.23759621818672105) q[2];
+u(1.5707963262815,-4.938255805777279,-1.9102275317095518e-10) q[3];
+can_6078685424(0.5,0.5,0.37499999999999195) q[3],q[2];
+u(1.5707963268598149,6.871503366312481e-11,-1.445621270621479) q[2];
+can(0.2499999999997922,0,0) q[2],q[0];
+u(0.04084507004234611,-2.81191118569412,0.45769031631517776) q[0];
+u(1.853204838235261,-2.2091972653007907,-0.09952933140119091) q[2];
+u(0.1466581347842854,-2.699134493568796,1.9913159144311114) q[3];
+u(0.977818990913278,0.7958229312382367,6.570915825702741) q[13];
+u(3.141591666907345,-pi,5.635349602190162) q[14];
+u(1.5707771695830108,-6.28318543582796,2.4644730700629225e-12) q[15];
+u(1.9933472772184115,-7.938719335043741,0.41477997866440264) q[16];
+can_6080467008(0.31600511266898185,0.21989164028170366,0) q[16],q[13];
+u(1.5708058836971355,3.141741376021672,6.28358364707053) q[13];
+u(1.329196924094621,-2.231885842034976,4.326197977291341) q[16];
 u(0,0,pi) q[17];
-can(0.5,0.5,-0.5) q[17],q[16];
-u(2.7854495962144994,-1.8076780770937444,-2.118809367873144) q[16];
-can(0.5,0.5,-0.5) q[16],q[13];
-u(2.558962721106204,-6.847089153955327,2.9222620519105824) q[13];
-can_13029758000(0.4999927124739938,0,0) q[13],q[1];
-u(2.6303211842412892,-2.532974269621388,2.1097450852163924) q[1];
-u(2.138124616122967,-2.1097245587354876,-1.6332323302185559) q[13];
-u(1.0278222747893162,1.6292276401273371,1.8035738441611515) q[16];
-can(0.5,0.5,-0.5) q[16],q[13];
-u(1.834233408539796,1.7699801755685303,-3.490770426299056) q[13];
-can(0.5,0.5,-0.5) q[13],q[1];
-u(2.7154326485771727,0.4432634033700078,-2.052880612194673) q[1];
-can_13082345392(0.0001220703124998008,0,0) q[1],q[0];
-u(1.9710916643801712,-3.0962859213002267,-1.6716346126344264) q[0];
-u(1.5707966168638983,-4.467440439973172,1.955814979692771e-06) q[1];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.1456046659242887,-3.1252187689625033,-1.4680890784594018) q[0];
-can_13029484752(0.5,0.5,-0.49975585937540834) q[1],q[0];
-u(0.5032978123870733,-1.8331700564194966,-2.3232388149652747) q[0];
-u(0.5893016207255759,-2.9247124875155124,-2.7969362347372506) q[1];
-u(2.773296256384827,-3.1354387920616986,-5.929288325226906) q[2];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(0.14708966085262887,2.6198773395764534,-1.4761876714723394) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.3248153321805725,-2.6904889898333324,-0.7651935673946956) q[0];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(2.1329935566164404,0.19366075762446822,3.2776506554077747) q[0];
-u(1.5742425041433445,-0.5823040971050474,-2.976198085667604) q[1];
-u(1.0567177315445944,-1.682568440860139,0.9218975211863119) q[2];
-u(2.399094079303463,1.199078542073905,-3.040236267403767) q[3];
-can_13070210432(0.49998697898697997,0,0) q[4],q[3];
-u(0.3296726076884115,-2.587452452088732,-2.2927437621436373) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.786401350802514,-1.9019018108027523,1.7112581622314043) q[2];
-u(1.396675864885339,2.8060399672189504,5.37206504586549) q[3];
-u(0.5174498719732091,-1.8746111660401739,-1.7016712366122142) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.5060776052901084,-0.016223640020448737,3.5594523160130804) q[3];
-can_13082580448(0.5,0.5,0) q[3],q[2];
-u(2.890090233309902,-2.600430911187616,-6.592974990819363) q[2];
-can_13029755744(0.00012207007598527321,0,0) q[2],q[0];
-u(1.2547472972877618,0.8885932228874605,-3.838981402255743) q[0];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(1.696127643078059,1.0482122383609966,3.0685946933321415) q[0];
-u(2.789835209262927,-2.3443607517222365,5.296367367691096) q[1];
-u(1.5828945132580785,2.028890320422985,-4.316364745156114) q[2];
-u(1.0685353553495345,-1.5367694506708003,0.6029392453554694) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.2241186542023081,1.2136571427077543,2.481730866053217) q[2];
-u(1.9809143735448183,-0.9747373552851739,-3.0645670535172007) q[3];
-u(0.8519471345918286,-1.364002939756126,-2.7779250308314283) q[4];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(0.302670049259094,2.7447952712026398,1.7436871750974343) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.0775215692372875,-0.3224160412584063,-2.6270985658609414) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.7478597978266424,-1.1323103337027676,-0.8583532913574135) q[2];
-can_13065385264(0.5,0.5,-0.24999999978607448) q[2],q[0];
-u(2.7270679433832794,-1.738625141245483,-0.7843158230777912) q[0];
-u(2.0128658067246326,0.31143091346638796,-2.309323253904822) q[2];
-u(1.8474338897159317,2.9473574017855184,-2.698041087277196) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.42839837900553,1.1136395379477044,-0.3065955118624462) q[2];
-u(2.1785160436647826,-1.9964591920979893,0.18234036052091818) q[3];
-u(2.1848724573214735,-1.3634438380058103,-1.5594611804118432) q[4];
-u(1.9530251819253501,1.1278924500490477,-1.9196564021877094) q[5];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.9113508062050948,-3.130904981725521,-2.417204697193177) q[5];
-u(2.7042603939364533,2.4988758939259283,-2.665375887494463) q[6];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.8752430656633785,0.259405182985497,-0.02217889275293139) q[6];
-u(2.2157937465958963,1.2618776451856508,-1.310507241429243) q[8];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.0956834359313021,-3.111747734197972,1.107956844392803) q[8];
-can_13065384736(0.5,0.5,0) q[8],q[6];
-u(1.2235297215702743,0.21595776044641618,-0.30706105558307684) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.9180629327810235,-2.205512803436935,-3.3575504148089164) q[5];
-u(2.1174411371563937,-1.3057631640903922,-3.103129168116394) q[6];
-can_13078850704(0.5,0.5,0.46875000001133355) q[7],q[5];
-u(2.656061335171884,-2.307419131281841,1.548112993663754) q[5];
-u(1.5707963303819588,-3.1415926282044264,0.8519882202263283) q[7];
-u(2.3665968158084256,-2.5316593580427877,-2.1044244088362922) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.3561714908038203,-2.3753204789908797,1.4498369093681172) q[6];
-u(1.7957067848824892,-2.3845292544274628,0.08461376915512903) q[8];
-u(1.7263028551856152,1.426312113808606,1.8953365055403832) q[9];
-can_13065375232(0.5,0.5,-0.4995117187500025) q[10],q[9];
-u(2.819857304759985,1.0251067695881346,-4.103927627090251) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.8402655922281412,0.1728322834687661,2.9154868382197705) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(0.7812372531097812,-0.2731699687753084,-0.23538210995147257) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.2725471546701987,-2.4564238600687807,0.6584329737375494) q[5];
-can_13065384112(0.5,0.5,0.49975585937500266) q[5],q[4];
-u(1.2235894017287998,-2.5067409946956314,0.9985572581291421) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.2012895705493911,3.133292925023588,5.719118403743511) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(2.421542745084876,-0.41934696710179065,-3.2343183786507748) q[2];
-u(2.7829745788901388,0.25567276766985336,-4.160802343901198) q[3];
-u(1.8151619987994518,-5.143182361098686,-1.9144472338960572) q[4];
-u(0.6852248259624236,-1.4350893135183915,-0.0337691499305941) q[5];
-u(1.0143533864381726,-2.739454310943062,-2.127140221325828) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(0.8692221160001723,-2.424702423099646,-1.9165955475413494) q[5];
-u(2.1439044194053887,-1.324028417314553,0.79737484816261) q[6];
-u(0.8282244526867977,-2.3170080534881103,2.7334441766824447) q[8];
-u(1.7447939377590527,5.454790802581446,4.207583193077147) q[9];
-u(1.5707964112993578,-3.1415927767844316,-0.43446312468503123) q[10];
-can_13065385312(0.0009765624989546191,0,0) q[11],q[10];
-u(2.633999755944302,-7.853982085897136,-7.853981925954415) q[10];
-can_13065384880(0.001953124999941966,0,0) q[10],q[9];
-u(1.6063037742340203,1.1090782794231413,-0.35061083856390163) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.1381769308687553,1.9853554814753058,-0.20063351107736338) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.1744857761965635,-2.970277251732039,0.3361542318391708) q[6];
-u(1.7055862813522777,-0.5224171125799095,0.19003746369747865) q[8];
-u(0.8735562983202888,-2.588190152166088,1.7678549244106472) q[9];
-u(1.1328258624987597,1.5707964563857024,-1.570796338343118) q[10];
-u(1.7398174807686848,-3.1308194500006827,-0.0009884319824278176) q[11];
-can_13065382960(0.0039062500002593785,0,0) q[12],q[10];
-u(1.5707963267294704,-1.7586342287979708,1.2324360865179074e-08) q[10];
-can_13072262272(0.5,0.5,0.4921874999999931) q[10],q[9];
-u(1.2555853480247996,2.7608454633428576,-4.5127640209292625) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.0382016680643422,2.628842608895618,0.46771287686734164) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.156857201040574,-8.656751238501327,2.3681950458295953) q[6];
-can_13082037712(0.015624999999961498,0,0) q[6],q[5];
-u(1.1606106434435517,2.9733100195438995,2.047069143961277) q[5];
-u(0.9743145591341191,0.640992968875232,-4.142886097376116) q[6];
-u(0.6357902146314107,2.260587357795749,-1.131391248418772) q[8];
-u(1.3736578526401193,0.7378080816615059,0.8890601907497304) q[9];
-u(1.9971368868634114,2.6757324995610485,2.4777310231699867) q[10];
-can(0.5,0.5,-0.5) q[11],q[10];
-u(1.4018094607782177,-9.428350743414944,-6.278594166151984) q[10];
-can_13076840576(0.00048828124998563286,0,0) q[10],q[9];
-u(2.7548496669548563,-7.853981508196391,1.570796470710127) q[9];
-can_13065377632(0.0009765625000080188,0,0) q[9],q[8];
-u(0.9891624414486009,-2.4243407433157236,0.8579274624516546) q[8];
-u(1.5013540248285515,1.5707963298031253,1.5707963274200996) q[9];
-u(0.5029963016016761,0.7019014520421285,-0.14050703991227742) q[10];
-u(2.181198914690637,2.400416422025248,2.8486717116176736) q[11];
-u(1.7705008483977411,-2.300056407005872,-1.558790233382594) q[12];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(3.0092786736938284,-10.906261716724787,-0.7506183664535104) q[10];
-can_13065373840(0.00195312499999964,0,0) q[10],q[9];
-u(2.04710637142047,1.570796326227491,1.5707963255141955) q[9];
-u(0.5935261307823874,-2.3403379638966855,1.8095813838289616) q[10];
-can(0.5,0.5,-0.5) q[11],q[10];
-u(0.9216991250406485,-9.638863839470933,-0.4208043431200621) q[10];
-can_13030024944(0.00390624999997327,0,0) q[10],q[9];
-u(1.9113428464967697,0.9272343075299144,1.5997204907704676) q[9];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(1.2020853018756563,0.4764154148858837,-2.1048001169780766) q[8];
-u(1.8507986912896301,-3.1079976211788756,0.5797007929712013) q[9];
-u(0.7060002960405934,0.521967253782076,2.862182361328333) q[10];
-u(1.8236028223492196,0.9110645175597365,-0.17577306107757512) q[11];
-u(1.1147750469023365,1.2126594990220265,-1.2840321456375905) q[12];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(1.9468768819534628,-1.5235825971515973,-4.327296720257902) q[10];
-can(0.5,0.5,-0.5) q[10],q[9];
-u(0.997936375695097,-0.6868888705847631,0.7707264472602143) q[9];
-u(1.570819301623533,-0.7112089221180922,-0.6008779888558284) q[10];
-u(0.8902497097384857,-1.0726307202745489,-4.4594307171388445) q[12];
-u(1.3169801621668134,2.0209877495079915,1.442904080837161) q[13];
-can_13065373888(0.06249999980960528,0,0) q[14],q[7];
-u(1.5846846121683045,-0.3924633188550433,1.796210303415749) q[7];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(2.3465684144589707,3.90640353091158,0.16879164524535595) q[5];
-can_13078847296(0.41805423029700833,0.03916216437358525,0) q[5],q[4];
-u(1.5400035639950014,1.1098923094098063,0.0842580709288967) q[4];
-u(1.6656146116470316,-0.984336005918693,4.851517607476751) q[5];
-u(0.69324784901109,0.554735173475441,-0.4965311201513041) q[7];
-u(1.1801415205341428,-1.5707963320912768,-4.712388981901285) q[14];
-u(1.623452387205904,-3.707892366810083,-5.777818455870049) q[16];
-can_13029767120(0.5,0.5,0) q[16],q[13];
-u(1.0438845390200033,0.961553445321439,1.651151521308203) q[13];
-can(0.5,0.5,-0.5) q[13],q[1];
-u(0.9925610919726853,0.3003094066818228,-1.251362909301907) q[1];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(1.0055331015922293,3.1373907367211187,-0.3130141000098028) q[0];
-u(1.5572823020275623,2.4655433500267554,1.6835873572458802) q[1];
-can_13065379936(0.5,0.5,0.4998779296874985) q[2],q[0];
-u(1.5880141710732527,0.4697158832488451,4.547416048114185) q[0];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(1.4551911034956055,0.09598875726914148,-5.037358452241586) q[0];
-u(0.5855153740254017,2.0915056565598436,4.338933195069356) q[1];
-u(0.268303734086947,-2.1010502198895833,1.648431291402297) q[2];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(2.4251321486537734,2.8676059478867155,0.23459474275590964) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.3394922399671034,-2.0305171998490406,0.7223902478701629) q[0];
-u(2.100970372118496,-0.23473750506970711,1.4518393241106795) q[2];
-u(2.3054870813843875,3.129120778237728,-2.925627701215438) q[3];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(2.821003222128021,0.9582835631062794,-2.5877886646846355) q[3];
-u(2.94219791782932,-1.3473028271897307,1.1626857373058004) q[4];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.5668939956825694,-2.7017556883119163,-0.5860891937646935) q[4];
-can_13030457520(0.5,0.5,0) q[4],q[3];
-u(2.6570143517692975,-3.8098576304659577,2.6069366793381548) q[3];
-can_13029759872(0.5,0.5,0.24999999990540436) q[3],q[2];
-u(1*pi/2,1.1351128256945955,6.192117602865614) q[2];
-u(pi,0,0.738032225734168) q[3];
-u(2.4131273679417116,2.4572446445583886,2.281165513490871) q[4];
-u(0.9349295119246085,2.5600141908011036,3.5295218181089165) q[5];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(0.6093764718484296,1.1200745968536305,2.518992793825367) q[5];
-u(1.8723115232182814,1.8142372199478312,-0.32874381111734396) q[6];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(3.0255148896427384,-0.9750725749342215,-2.4838638037711207) q[5];
-u(2.542603179424183,-0.23732615174952143,-2.9825974518249985) q[7];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.064045292147966,0.11952532251680281,2.032660480585456) q[6];
-can_13030458720(0.007812499999949932,0,0) q[6],q[5];
-u(0.5378018154780878,-3.1332715562001123,-2.6910928871336153) q[5];
-u(2.86909994298102,-0.9163744635904073,1.5074976313732367) q[6];
-u(2.9217652902477393,1.4498613081904959,2.3506318946427953) q[8];
-can_13030468752(0.5,0.5,-0.4997558594017086) q[9],q[8];
-u(1.961015624676169,1.2453407355062058,-2.7903509528364157) q[8];
-u(1.5707965638688577,1.9517085064757467e-07,-0.576745873836101) q[9];
-can_13030468416(0.0004882812514693263,0,0) q[10],q[9];
-u(2.7281192634496634,1.5707959422996296,1.5707959208339997) q[9];
-u(1.4585527386571813,-3.137086731640239,6.1821890065027665) q[10];
-can(0.5,0.5,-0.5) q[11],q[10];
-u(0.8555726791326612,-6.757501665602103,1.755825155200914) q[10];
-can_13030471200(0.0009765624999740929,0,0) q[10],q[9];
-u(2.7350375704920338,-4.7123893199249,-1.5707966384710044) q[9];
-u(2.474780139957021,0.41217469482828006,1.0707798616915927) q[10];
-u(0.8281457582477142,1.6073263072444013,-0.8625031082753953) q[11];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(2.4486614049099384,3.2162542394362457,6.262986536793771) q[10];
-can_13078087632(0.0019531250000041633,0,0) q[10],q[9];
-u(1.5707963250516235,-2.9728437180411538,1.0020686502798526e-08) q[9];
-u(0.8318301280178237,1.641639652508137,2.179956079309351) q[10];
-can(0.5,0.5,-0.5) q[11],q[10];
-u(0.7394223247820972,2.9892517436232326,-4.746849680857054) q[10];
-u(0.8795925226102743,-2.4746818505559927,-0.04331306602143026) q[11];
-u(0.6117058597370935,-0.4102129988370473,-1.2158453031066927) q[12];
-u(1.2805801382701307,-0.8439193078207103,-1.3373234448566782) q[13];
-can_13082046880(0.031250000004058566,0,0) q[14],q[7];
-u(0.9080319412566871,-1.3978492170215226,-1.9585875891636533) q[7];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(1.2681060747330004,-2.2776887409951225,3.2148794813219745) q[5];
-can_13078602640(0.5,0.5,0.43750000048871746) q[5],q[4];
-u(3.942476676500724e-08,-6.200730143411384,4.347668257727972) q[4];
-can_13082047360(0.5,0.5,0.3749999999993068) q[4],q[3];
-u(pi,-pi,2.245901315543934) q[3];
-can_13078785984(0.5,0.5,-0.24999999995618497) q[3],q[2];
-u(1.812165161380265,0.5393276272603198,2.849172315159815) q[2];
-u(3.0179486714703363,2.1880239662744794,3.897200538445783) q[3];
-u(1.5707963224719985,3.141592653818276,3.377821458631129) q[4];
-u(0.6415850084425802,-3.1079027713425393,-2.1599568267995473) q[5];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.4800711048154813,0.4690454631444929,2.4177725222613966) q[5];
-u(2.8289912163072057,-3.0210313961251054,0.5547345064938776) q[6];
-u(1.9580341134510544,2.9457131667495675,1.3022167586686544) q[7];
-can(0.5,0.5,-0.5) q[7],q[5];
-u(1.153687708426237,0.8918273166635058,3.424651330016656) q[5];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(0.414253253968076,0.705408422988766,3.991723235224841) q[5];
-u(2.063697586605994,1.2780142884397612,1.4598868133575684) q[6];
-u(0.8336152510939112,-0.6241587042505439,-2.801321944030861) q[7];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(1.581482458751558,4.322010391075377,-2.820539584175624) q[6];
-u(1.261365809168471,2.6544104356001648,6.675246394860456) q[8];
-can_13078783056(0.5,0.5,0.4960937499999945) q[9],q[8];
-u(1.8097827260846087,-1.1413729816470444,1.7947615747813312) q[8];
-u(1.0987224660604336,-0.191380594507625,3.5670893575121863) q[9];
-u(2.135042963325965,1.5707963263796045,1.5707963304064627) q[14];
-can_13078093440(0.01562499999978678,0,0) q[14],q[7];
-u(1.5707963290235862,-3.1759604340540526,-3.1415926534317413) q[7];
-can_13031416576(0.5,0.5,0.4687500000000165) q[7],q[5];
-u(1.5707963273550343,-9.424777964721136,-0.4665613128902808) q[5];
-can_13078375088(0.062499999993693524,0,0) q[5],q[4];
-u(2.4361673515743654,1.8289410009634453,-3.3836317244015337) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(2.7361964832224026,-2.5482991479733164,-0.3934644553581208) q[3];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(0.42106966948561264,-2.3058904439129932,3.386165507098748) q[2];
-u(2.6104970116423294,-1.4869075881608953,0.07348660595209866) q[3];
-u(1.6655170733330649,0.07959132471578934,1.6541675991820044) q[4];
-u(1.8767097634447025,1.570796326257507,-7.853981630209509) q[5];
-can_13031418112(0.12499999999402296,0,0) q[5],q[4];
-u(0.43584274892211455,1.727901128545623,3.9130964144243015) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(0.8009629440902508,3.0231115191364073,-5.18101344429746) q[3];
-u(1.1924037980378435,1.251931959478717,2.153279533535212) q[4];
-u(0.956675232446871,-10.995574287077966,4.712388980208756) q[5];
-can_13078780752(0.2500000000000003,0,0) q[5],q[4];
-u(1.1199459517683095,1.6821183361968077,4.595340116496933) q[4];
-u(1.6931229887106025,-0.09075722795347765,-4.970851830333505) q[5];
-u(1.0332331829926025,0.19956836866026384,-0.3994072601203129) q[7];
-u(1.352811046539547,2.9309605722949517,-0.1469288685579604) q[14];
-can(0.5,0.5,-0.5) q[14],q[7];
-u(1.3479734876661371,-3.002182178297436,-2.8965742698169312) q[7];
-u(1.0332331838925963,-5.229822080118722,-6.482753676152313) q[14];
-u(0.5447221638386162,1.343864454448999,1.7094358468292516) q[16];
-u(2.3640675848106913,1.6303867105823997,1.5822198372976513) q[17];
-can(0.5,0.5,-0.5) q[17],q[16];
-u(0.8596068796397457,0.01741699351052681,0.935894487473039) q[16];
-can(0.5,0.5,-0.5) q[16],q[13];
-u(0.8102564712144166,-0.23698509030266582,-2.2705961888722013) q[13];
-can(0.5,0.5,-0.5) q[13],q[1];
-u(2.4207874860179017,-0.22035291303258872,2.227224373406393) q[1];
-can(0.5,0.5,-0.5) q[1],q[0];
-u(0.6987790991740064,-0.8565733864718059,-0.7553259824254743) q[0];
-u(0.2544989548388973,-0.4968365918119053,2.7754874603087085) q[1];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(0.883201743727423,1.3623909704405996,1.9595365208023612) q[0];
-u(0.6244940392650717,3.0142622378902324,-2.767438346790821) q[2];
-can(0.5,0.5,-0.5) q[3],q[2];
-u(1.7114827610726586,2.515883971548562,4.350492396087025) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.4415513674506826,-2.1618710665399115,3.1966911036520687) q[0];
-u(0.8652598811350748,-0.3816032574105299,0.510348432519339) q[2];
-u(0.8496675374391627,-1.6351720905137577,-4.117008495825175) q[3];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(0.7942899994111627,0.6301738277181012,0.4912678505626754) q[3];
-u(2.363220918599545,1.67900810552443,2.199674456231021) q[4];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(0.8398447203553713,1.663477572935162,-1.539866555595254) q[4];
-u(1.8149586127448565,3.2461105870946376,0.06486034558107545) q[5];
-can_13030464000(0.4999999983222147,0,0) q[6],q[5];
-u(0.7039242051818836,2.9673764835738154,1.3442834762762061) q[5];
-u(2.9370514944158725,-1.0056158302360494,1.6105335152432225) q[6];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(2.182174678656481,-2.477375541279497,3.8471603007675017) q[6];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(1.4015638908539259,0.9349863907760655,-2.6417192260715305) q[5];
-u(1.4245678539741804,-0.8725065377204866,5.060383986835677) q[6];
-can_13028838384(0.007812499999237488,0,0) q[7],q[5];
-u(1.1702973529515044,1.5707963411004529,-1.570796301096816) q[5];
-u(1.1606119518766431,2.080730603115572,-2.830263853947139) q[7];
-u(1.5627270287411656,-4.765629841808635,-0.5262708134734817) q[8];
-can_13082047840(0.5,0.5,0) q[8],q[6];
-u(0.9849400822029734,0.33836881287401077,0.06865346604060257) q[6];
-u(2.5679694399831035,-0.8755257447579268,-2.158208129863907) q[8];
-can(0.5,0.5,-0.5) q[9],q[8];
-u(2.042870190097826,-3.022688268286626,-2.9502120588170815) q[8];
-u(2.2832592771990594,3.9422776003732007,1.5953193977183884) q[9];
-can_13066387280(0.00024414062384838216,0,0) q[10],q[9];
-u(0.6211542806961113,1.570796193960142,-4.712388701448948) q[9];
-u(2.315196578831268,-2.3098377206013003,-0.05524469042570013) q[10];
-can(0.5,0.5,-0.5) q[12],q[10];
-u(2.4707995556228495,-7.902444858030406,0.8656614352149388) q[10];
-can_13065383152(0.0004882812499228699,0,0) q[10],q[9];
-u(1.0455212146449964,-1.5707949300025728,1.5707932544233414) q[9];
-u(1.4851588334753236,1.2491466778741258,0.4763197428522057) q[10];
-can(0.5,0.5,-0.5) q[11],q[10];
-u(0.6670253076254484,4.10343713031682,0.9539385261245488) q[10];
-can_13029501616(0.0009765624972170467,0,0) q[10],q[9];
-u(1.570793657864709,-0.1724077775910149,-3.987007080041849e-08) q[9];
-can_13076584336(0.5,0.5,-0.4980468749999992) q[9],q[8];
-u(1.3689791174828816,1.3717036892604946,1.9938647791742676) q[8];
-can(0.5,0.5,-0.5) q[8],q[6];
-u(0.4257253857224146,0.062224973513353744,2.6222269203185107) q[6];
-u(2.1566520607624557,-3.7785035329679424,2.803218586474523) q[8];
-u(3.14159265101889,-5.017922672344134,-3.053037499356481e-05) q[9];
-u(1.570796142880747,-5.640801451105852,3.141592596807496) q[10];
-u(2.6582179977844107,-2.6907022698483853,3.627528079875674) q[11];
-u(0.7460545687862213,-0.12802389708279627,2.2283969049364343) q[12];
-u(1.5320296615282936,-1.6044447364154573,2.531090626821028) q[13];
-can_13082716032(0.5,0.5,0.24999999999996508) q[14],q[7];
-u(1.5707963268646754,3.1415926536048704,0.8140088074467269) q[7];
-can_13070217584(0.01562499999985463,0,0) q[7],q[5];
-u(1.3423665789023105,0.2597808919751648,1.631545848052545) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.3019590392452602,1.5285441034018226,-1.2085498054247164) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(1.3033343835975761,-0.6108317507686445,-1.6316303730346127) q[3];
-can_13078372496(0.03125000001839396,0,0) q[3],q[2];
-u(1.602912634617692,-4.301861281632073,3.1224660467400893) q[2];
-can_13076583808(0.5,0.5,0.33333333333305193) q[2],q[0];
-u(3.141592638688632,0.2551973641007964,1.9524438631274363) q[0];
-u(1.5707963262045834,-2.9203350848661103e-10,3.564332073517443) q[2];
-u(2.484694502444861,1.5707963569993137,1.5707963572152162) q[3];
-can_13076589136(0.06249999999981659,0,0) q[3],q[2];
-u(1.5707963262027667,-5.143443980314352,-3.1415926532922223) q[2];
-can_13073715168(0.5,0.5,0.33333333333333326) q[2],q[0];
-u(1.93288627430157,2.736641954168826,-2.222790721425692) q[0];
-u(1.5898950160735548,-3.109459751829615,-4.174234477273998) q[2];
-u(1.5707963267017093,-0.45509673158826036,-3.141592653574005) q[3];
-u(0.825845066795623,-5.355390201880146,-4.559414020565226) q[4];
-can_13083309072(0.5,0.5,-0.3750000000001859) q[4],q[3];
-u(0.9355809436932976,-0.875353595216526,-5.205017861465469) q[3];
-u(1.5707963268040286,2.4880097981849758e-11,3.3107627553449115) q[4];
-u(1.7782991498234946,-7.556896206789129,4.516170240159157) q[5];
-can_13028851200(0.24999999999757458,0,0) q[5],q[4];
-u(0.8796542201723421,0.26390638201846806,2.748770756670529) q[4];
-u(2.2993171689807252,0.8155963801720247,-2.701463474696717) q[5];
-can(0.5,0.5,-0.5) q[6],q[5];
-u(2.8744739103996757,-1.2478857054612684,0.98748898924612) q[5];
-u(2.271957997694855,3.62918509047108,0.48808707144064156) q[6];
-u(1.5707963267251603,1.9431799363336575,3.14159265357464) q[7];
-u(0,0,-4.556606364226476) q[14];
-can_13029760784(0.5,0.5,0.25) q[14],q[7];
-u(1.4317389645222456,-5.791357540742157,3.6208838995960386) q[7];
-can_13067364224(0.003906249999961396,0,0) q[7],q[5];
-u(1.2044434484419393,1.5707964339361877,1.5707963283897728) q[5];
-u(2.408615928698392,0.6041116500348058,2.105584055387967) q[7];
-u(1.475037278433129,-1.0227720135557947,-3.838421794638678) q[14];
-can(0.5,0.5,-0.5) q[14],q[7];
-u(2.131538826450598,-10.882430423378922,-0.48766800180974146) q[7];
-can_13066717712(0.007812499999845328,0,0) q[7],q[5];
-u(1.4027170802631623,-1.5972027451262552,-1.0331535467020865) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.1200750455214075,-1.0754613182948312,-1.4118806693697281) q[4];
-can(0.5,0.5,-0.5) q[4],q[3];
-u(2.708166757121981,-5.962172436300275,0.2687954243025539) q[3];
-can_13083306624(0.015624999999903258,0,0) q[3],q[2];
-u(2.280932233960282,0.7486476718100804,1.6504860769389484) q[2];
-can(0.5,0.5,-0.5) q[2],q[0];
-u(1.510396937078637,0.029125102715404416,4.015757282019998) q[0];
-u(1.910305221088804,4.327265570110791,1.8415617054945497) q[2];
-u(1.0749280697240038,1.570796326517799,1.5707963290427516) q[3];
-can_13073713536(0.03125000000004513,0,0) q[3],q[2];
-u(1.570796326801123,0.4437949677480976,0) q[2];
-u(1.5707963116646306,-0.9915232064255025,3.1415926677476556) q[3];
-u(2.2060117098556096,-5.705103289685578,-2.2662390584426797) q[4];
-can_13072512064(0.5,0.5,0.4375000000004028) q[4],q[3];
-u(2.381125950559423e-12,1.121712290221939,-3.404338077059358) q[3];
-u(2.271802401428419,-0.6991296239459093,0.6065919795325014) q[4];
-u(0.689776792470374,-2.520418396819149,0.41116664174295336) q[5];
-can(0.5,0.5,-0.5) q[5],q[4];
-u(1.9065525996158101,-1.550623830584097,2.459447623452548) q[4];
-u(1.0885632069338727,-0.7553848695148512,-4.470862328256499) q[5];
-can_13031133968(0.12500000000225678,0,0) q[6],q[5];
-u(1.6152701215098852,1.5707963266888911,-1.5707963267609795) q[5];
-can_13031144816(0.24999999999999972,0,0) q[5],q[4];
-u(pi/2,0.34505084228530125,pi) q[4];
-u(0.773674501158707,5*pi/2,pi/2) q[5];
-u(1.5707963340817428,-1.406836905076227,-3.141592655449276) q[6];
-u(1.570796325198623,8.208636810145405,5.97599747464983e-09) q[7];
-u(1.2228108504699913,-4.801189063886644,-1.7602012981747772) q[14];
-u(1.5277887346923311,3.9830853438643965,-2.9571947389324187) q[16];
-u(2.6403141257960545,2.4773622672133255,4.082736857248202) q[17];
+can_6079881936(0,0,0) q[17],q[16];
+u(1.945868176510217,-4.452278574734892,-2.3831347713422257) q[16];
+can_6080268624(0.4999863862419263,0.2801153422248798,0.18400391518201564) q[16],q[13];
+u(1.2536311489756797,2.3246779642598803,-2.5538498683960293) q[13];
+can_6078681632(0.5,0.5,-0.5) q[13],q[1];
+u(2.9374272312096075,1.2159707507649804,0.9442119384674372) q[1];
+can_6079424240(0.5,0.5,-0.5) q[1],q[0];
+u(1.0093373822092124,1.8318712540173967,-4.075419147530475) q[0];
+u(3.1141534862555265,-2.1638713529377607,-0.46011339528876594) q[1];
+can_6079416752(0.5,0.5,-0.5) q[2],q[0];
+u(1.567996504558714,1.670930898290881,-3.831423579163827) q[0];
+u(2.0671915897313613,-0.40098318386609894,0.260780391871243) q[2];
+can_6078682784(0.5,0.5,-0.5) q[3],q[2];
+u(1.3603558758098504,-1.1561391749201866,0.5346924873346962) q[2];
+u(1.9653661773726638,2.6807318107182807,-1.5586251291013833) q[3];
+can_6078928544(0.5,0.5,-0.5) q[4],q[3];
+u(0.975503102191334,1.080188724732218,1.9155687462542688) q[3];
+u(2.0224709657930737,-3.116787358493162,0.09029536197220711) q[4];
+can_6080077008(0.00024414062499733988,0,0) q[5],q[4];
+u(0.8425091593677357,-2.6413436754555235,0.9560317676008572) q[4];
+u(1.4399054791375288,-1.5707962611629924,-4.712388960402414) q[5];
+can_6080282352(0.0001220702690135609,0,0) q[7],q[5];
+u(1.5664212990667494,-1.8485771012211174,-3.138986465648948) q[5];
+can_6084142160(0.5,0.5,-0.5) q[5],q[4];
+u(1.9846117761710154,1.845067916157481,0.7145638434093313) q[4];
+can_6079278608(0.5,0.5,-0.5) q[4],q[3];
+u(1.1422703609086107,-1.6483381495650822,0.5869989016943302) q[3];
+u(2.78847778189091,-0.19164968965189808,-1.3289107363172936) q[4];
+u(1.759556383187199,1.484255774490039,2.2945766858625474) q[5];
+can_6079883088(0.5,0.5,-0.5) q[6],q[5];
+u(0.8386702798403893,2.6533240009532446,4.870042500880595) q[5];
+u(1.9592699301569219,1.3623947266256575,1.54114630494961) q[6];
+u(2.2949700244174225,0.8079069841270222,-3.5227352320419767) q[7];
+can_6080471280(0.5,0.5,-0.5) q[8],q[6];
+u(0.5878323704663455,-4.409526999320192,-0.2132348307723264) q[6];
+can_6075550320(0.5,0.5,-0.4921874999969368) q[6],q[5];
+u(2.682209014892586e-07,-2.6508692670813585,4.871604606789845) q[5];
+can_6076983648(0.5,0.5,0.4843749999756178) q[5],q[4];
+u(0.6373715130140288,-1.576992429250835,-2.8528929350871817) q[4];
+can_6058877312(0.5,0.5,-0.5) q[4],q[3];
+u(2.504220977689598,-4.671511879729219,-1.5646001646151375) q[3];
+can_6058351488(0.5,0.5,0.33333333333333326) q[3],q[2];
+u(1.5707962705551155,6.283185251480441,1.2420099906878854) q[2];
+u(1.9162157578543837,-9.237014407418464,-4.7381006489960615) q[3];
+u(2.162538638925706,0.28650595341374174,2.9222374336003014) q[4];
+u(2.475165861960937,-0.8324250553208599,2.661747426683344) q[5];
+u(1.117424464262058,0.23559031849788295,0.885689415001274) q[6];
+can_6076729728(0.5,0.5,-0.5) q[7],q[5];
+u(0.8018475591120556,0.9426675244648838,4.93185180765208) q[5];
+u(1.847083692456125,2.5561570115141508,2.642486957261348) q[7];
+u(1.4919969736998038,-2.4165118086959616,-0.7185748873793687) q[8];
+can_6084278944(0.5,0.5,0.4995117187496763) q[9],q[8];
+u(2.408736282074552,0.3105001772381062,2.1082409905281168) q[8];
+can_6084869824(0.5,0.5,-0.5) q[8],q[6];
+u(0.7328563727576008,-2.073239874773946,2.8310924766285726) q[6];
+can_6080631712(0.5,0.5,-0.49975585937499534) q[6],q[5];
+u(1.6427859472144626,-2.3910352838229207,1.7093237196867277) q[5];
+u(0,0,1.6511010820608183) q[6];
+can_6074120240(0.5,0.5,-0.5) q[7],q[5];
+u(2.84726692576949,-3.1108612199502073,0.15714442102489334) q[5];
+u(1.4988082074582139,2.21539175156092,-0.7505578530831682) q[7];
+u(0.6076649049685793,2.4750249948839818,3.3553599814672648) q[8];
+u(3.1415919923743765,-3.0733611599401573,-4.151928499528623) q[9];
+can_6076733184(0.5,0.5,-0.4990234409847715) q[10],q[9];
+u(0.9269023586465448,1.4173900980907843,-1.5221479247338787) q[9];
+can_6076737552(0.5,0.5,-0.5) q[9],q[8];
+u(0.9259921546354893,-2.1481547491444606,4.864243803495364) q[8];
+can_6079110496(0.5,0.5,0.4995117187500511) q[8],q[6];
+u(0.8627090613685366,1.4394126610190765,-1.0480566403342382) q[6];
+can_6079546192(0.5,0.5,-0.5) q[6],q[5];
+u(2.0013446349481576,-0.7731721143477336,-2.60605219079597) q[5];
+u(1.7845728677318553,-0.3950518320205691,0.19177800397192324) q[6];
+u(1.2471884074176676,-1.1155741451681487,-3.4581624697743796) q[8];
+u(1.442479593855938,4.608624044178039,1.8472539604877996) q[9];
+u(1.570795909723439,3.1415931063726363,8.567352456764793) q[10];
+can_6076740432(0.00195312499999964,0,0) q[11],q[10];
+u(2.196494331836101,-7.853981639309678,1.5707963229150947) q[10];
+can_6079111984(0.003906249999665675,0,0) q[10],q[9];
+u(0.11395122861414544,-0.1497821522192404,-2.597834554264265) q[9];
+can_6079448608(0.5,0.5,-0.5) q[9],q[8];
+u(1.828434438502502,-1.844439838158079,3.6274483963636786) q[8];
+u(1.994583029491478,0.3168402534295043,3.4110095709741244) q[9];
+u(1.7644189672038237,-1.2711105294953913,3.3835666755347873) q[10];
+can_6079550464(0.5,0.5,-0.5) q[10],q[9];
+u(1.6922639603257297,-1.9568131582499593,0.36022453413992706) q[9];
+can_6058883120(0.5,0.5,-0.5) q[9],q[8];
+u(1.761630356967312,-3.5827539176518948,1.6521928997392215) q[8];
+can_6084721984(0.5,0.5,-0.4921874999999145) q[8],q[6];
+u(0.9581070032638025,-2.089666096268376,-3.06672690679223) q[6];
+u(1.5707963273430887,0.6404520157828829,0.808754117448208) q[8];
+u(0.9442045957748736,1.2951679845040156,3.0948102910954973) q[9];
+u(0.9509334073876367,2.6148520852864054,1.99564726672748) q[10];
+u(1.4345248593331383,4.7123889801148735,1.5707963252294772) q[11];
+can_6058871600(0.0009765624999995373,0,0) q[11],q[10];
+u(1.5707963251469408,-3.665226812647215,-3.1415926537359478) q[10];
+can_6063174768(0.5,0.5,-0.49804687499999684) q[10],q[9];
+u(1.570796400645709,8.45639834573873,2.085150976404607) q[9];
+can_6063171696(0.16486899981714428,0.0019047520692858852,0) q[9],q[8];
+u(0.5063306446791305,-0.9430487349624886,3.3471672163115316) q[8];
+u(2.7411083090135695,-0.09821905568504108,-0.046615211334098294) q[9];
+u(1.8952714135312176,-2.3470717057031902,5.045857063340446) q[10];
+u(1.5707963130847107,-2.2582560274336996,1.9375948667743614e-07) q[11];
+can_6063169824(0.5,0.5,-0.5) q[12],q[10];
+u(1.5707963297880787,-9.42477796086135,-6.228087954410913) q[10];
+u(1.450151085085599,-1.8143992403975988,-1.2636396904194789) q[12];
+u(0.2693489810300008,-0.6250573181555783,-5.487736308233022) q[13];
+can_6078970960(0.5,0.5,-0.5) q[13],q[1];
+u(2.1736626437343687,2.8873566302868925,2.8531043575275365) q[1];
+can_6079115776(0.5,0.5,-0.5) q[1],q[0];
+u(2.621940704545876,-0.6836680034065818,2.3222832051492475) q[0];
+u(1.3812150852611715,-2.439566219132668,-4.231721886136091) q[1];
+can_6079727088(0.03124999999882436,0,0) q[2],q[0];
+u(1.845658341063025,1.0976632407030593,1.8638199137359481) q[0];
+u(2.2016828516610865,1.570796391608527,1.570796415640707) q[2];
+can_6079277984(0.16937203195043748,0,0) q[3],q[2];
+u(2.8390646890238234,-4.712388734704188,-1.570796093997942) q[2];
+u(2.4348373703257216,-1.576051407820749,0.02084020281850396) q[3];
+u(0.5196942889264154,0.9328370399386727,0.4967074137532036) q[13];
+can_6079533840(0.5,0.5,-0.5) q[13],q[1];
+u(2.680278954851339,2.209581669739971,2.119087851472989) q[1];
+can_6054980416(0.5,0.5,-0.5) q[1],q[0];
+u(2.8860771262739933,4.70813945844363,0.4253510240768277) q[0];
+u(2.4760648491321438,2.9824580356195973,6.054358865968393) q[1];
+can_6079546624(0.1249999999991175,0,0) q[2],q[0];
+u(1.5235159253220263,-1.7914932587087427,-1.254808237059623) q[0];
+u(1.3361272160490842,-1.5707963264208846,-1.5707963270029446) q[2];
+u(1.1129587969131247,2.6830384350034366,0.21197408068815693) q[13];
+can_6079453072(0.5,0.5,-0.5) q[13],q[1];
+u(1.3992766001730697,1.687201388045928,-2.9718490803004114) q[1];
+can_6079558432(0.5,0.5,-0.5) q[1],q[0];
+u(1.08935288840981,1.8180155260291253,-2.925479883292864) q[0];
+u(1.3015733856168066,-0.6195813082374264,-2.315171604285005) q[1];
+can(0.2500000000000127,0,0) q[2],q[0];
+u(0.29348044640424314,2.7674508933582604,1.065928889648183) q[0];
+u(1.6805525953247324,3.0027602128662654,-1.349660501920663) q[2];
+u(2.073069066906221,-2.229750301935413,3.3193213159363673) q[13];
+can_6058872656(0.5,0.5,-0.5) q[13],q[1];
+u(0.11717371254773343,2.216244098567692,5.035759630759511) q[1];
+can_6063166848(0.5,0.5,-0.5) q[1],q[0];
+u(1.6193832971635025,3.0147477063542847,0.25169393510118976) q[0];
+u(1.4562217161402724,-2.5647179302799694,2.432201527063996) q[1];
+can_6074111456(0.5,0.5,-0.5) q[2],q[0];
+u(2.5558839201010928,1.1324867186724166,-2.29153118154221) q[0];
+u(2.1866063272642,0.012771379519501247,1.8407568850898186) q[2];
+u(0.8883271875745095,1.9841774805675065,0.7479388304474657) q[13];
+can_6074105984(0.5,0.5,-0.5) q[13],q[1];
+u(1.6004256155328795,-2.6450780399715956,-3.625660590365994) q[1];
+can_6080462976(0.5,0.5,-0.5) q[1],q[0];
+u(2.1574452888526787,1.1956128361258198,-1.946001569562274) q[0];
+u(2.7457040449512764,-0.46641922397249747,0.0210461722522417) q[1];
+u(2.262818670404272,2.532835898762397,-0.31836319889969045) q[13];
+can_6074317568(0.5,0.5,-0.5) q[13],q[1];
+u(1.1264540257487359,-0.4629223084231753,0.680947072823923) q[1];
+u(2.7232240832456727,8.026867366944886,2.5379245940582527) q[13];
+can_6079451824(0.5,0.5,-0.49987792968956035) q[14],q[7];
+u(1.5707972858254866,-6.283185075201512,0.2373315605892048) q[7];
+can_6074114528(0.0002441406249996016,0,0) q[7],q[5];
+u(1.6198136861114922,1.0969383784665552,-1.548888786564939) q[5];
+can_6058875104(0.5,0.5,-0.5) q[6],q[5];
+u(0.938489604408642,-0.7126397336138377,2.5360761861818784) q[5];
+can_6057288304(0.5,0.5,-0.5) q[5],q[4];
+u(1.371654745377116,0.5778564886067244,-0.09000692852164693) q[4];
+can_6079281824(0.5,0.5,-0.5) q[4],q[3];
+u(0.9448258909785521,4.768066732880659,0.6914251683117825) q[3];
+can_6074107424(0.17243632293428918,0,0) q[3],q[2];
+u(1.6602193997409485,0.6910530060918236,-3.1504992411501824) q[2];
+u(0.6632903284988821,-1.5707984374440633,1.5707958042239665) q[3];
+u(2.4187665606014095,-10.100169803665663,-2.9323029267820484) q[4];
+can_6079556368(0.0312499325500661,0,0) q[4],q[3];
+u(1.570795129738277,-1.0059039332474966,-6.283182880247919) q[3];
+can_6076741440(0.5,0.5,-0.333333333333333) q[3],q[2];
+u(1.913624734482896e-06,-0.51859682753628,0.7168982800594984) q[2];
+can_6063172320(0.5,0.5,0.43750000000156014) q[2],q[0];
+u(pi,4.908333496443917e-10,2.285260655976431) q[0];
+can_6084708016(0.5,0.5,0.3750000000001596) q[1],q[0];
+u(3.1415926237874707,-2.7749284824449543,-2.052079575116103) q[0];
+u(1.569638757638778,0.20147278949541292,0.6403248882544039) q[1];
+u(2.9802322387695312e-08,3.000506654541335,-1.8137594976933813) q[2];
+u(1.822561026947499,1.0818597849588985,0.6754012041686646) q[3];
+u(1.360319288442812,-1.5372386138733516,-4.963489582573876) q[4];
+u(1.4699931509013264,-2.6001724139338367,-0.8325416552541925) q[5];
+u(0.6876119753841131,-0.8722206750085708,-0.9348298657290283) q[6];
+u(1.7014151145132832,-2.4078469867489924,2.9815781145181193) q[7];
+can_6074308640(0.5,0.5,-0.5) q[7],q[5];
+u(1.5725113011956295,-2.7976260757873654,-0.0029390279913299455) q[5];
+u(1.4887519703008534,-5.878724174176986,-0.1267294300128372) q[7];
+can_6074120864(0.5,0.5,-0.5) q[8],q[6];
+u(2.0645343068122886,-1.0395616275237385,0.6996033235116745) q[6];
+u(2.845168627714611,-0.21883224834245207,1.187189769198725) q[8];
+can_6074314784(0.5,0.5,-0.5) q[9],q[8];
+u(1.9704454149199115,-0.9094609305750954,3.171597274272894) q[8];
+can_6079275296(0.5,0.5,-0.333333333333333) q[8],q[6];
+u(0.23613292640909886,-3.037212684437845,-1.7174821482883682) q[6];
+can_6074109776(0.5,0.5,-0.5) q[6],q[5];
+u(1.0885437299640464,-1.712104147667478,3.9469316874243283) q[5];
+can_6079460608(0.5,0.5,0.25) q[5],q[4];
+u(1.570796328020313,3.141592655028837,4.903620969384538) q[4];
+can_6083910672(0.24225719651681368,0,0) q[4],q[3];
+u(1.5712402697615924,1.1413961931807106,0.0046627436298143365) q[3];
+u(1.265605223256682,4.71238898000897,-1.5707963268932403) q[4];
+u(1.6142991604951025,0.05241940512912267,-2.2417324611449416) q[5];
+can_6080471568(0.24657484168800373,0,0) q[5],q[4];
+u(1.5707963262299502,-2.8181650559516394,3.141592650036095) q[4];
+can_6080270256(0.5,0.5,0.24999999999999972) q[4],q[3];
+u(9.996002811937589e-08,-2.301402586255251,6.83054813842202) q[3];
+can_6084279808(0.5,0.5,-0.4687500000031714) q[3],q[2];
+u(pi,-3.1415926535986607,-0.31316277859708297) q[2];
+can_6058818928(0.5,0.5,0.43750000000146044) q[2],q[0];
+u(1.5707963281939965,1.5626566707283018e-09,-4.759603480968652) q[0];
+u(0,0,0.911129418661436) q[2];
+u(3.1415926237874707,-3.113766699213667,-3.8198958212107277) q[3];
+u(2.904332590563454,-2.456324179603598,-5.234308105171475) q[4];
+u(1.4803774365261904,1.5545158004888704,0.05991615753473911) q[5];
+can_6078931760(0.5,0.5,-0.5) q[5],q[4];
+u(0.6019215532527368,-1.1037061525066287,-4.8778890108459985) q[4];
+u(2.7966844052173427,1.2134780761309898,-4.201733024804288) q[5];
+u(1.7739575241451986,2.6353152555430195,5.774182198717924) q[6];
+u(2.243953175651354,-1.1603517772221859,1.3616010910633232) q[8];
+can_6079117504(0.5,0.5,-0.5) q[8],q[6];
+u(0.9960963142271305,-0.08913779558921767,0.12248985896856195) q[6];
+u(1.4534472453084197,-0.01253342149390615,-2.524981856580908) q[8];
+u(0.22639247967854997,-2.7755477912454793,1.8278190407407402) q[9];
+can_6063177312(0.0001220702347619555,0,0) q[10],q[9];
+u(0.5603195764412442,-1.5569042624669438,1.4539466240938927) q[9];
+can_6076737168(0.5,0.5,-0.5) q[9],q[8];
+u(1.5726044582753762,1.5884308154350537,-2.6814293753713185) q[8];
+can_6084045104(0.5,0.5,-0.5) q[8],q[6];
+u(0.7252615338079564,0.5592378234999119,2.389978401482071) q[6];
+can_6074310128(0.5,0.5,-0.5) q[6],q[5];
+u(0.952077097531149,2.026719163498693,0.06821580515637704) q[5];
+can_6057322080(0.5,0.5,-0.5) q[5],q[4];
+u(1.982223190834224,-1.9603510268399453,3.0128286282931533) q[4];
+u(1.6630126182065534,2.650373963159017,-4.132002426733285) q[5];
+u(2.930621528460453,-2.4245918267626263,0.07221773398071152) q[6];
+u(2.161152431735259,-0.7507863742742112,0.5995578519496765) q[8];
+u(0.7075974484949751,-2.067260313991885,-4.329734280401315) q[9];
+u(1.7058151641058266,2.9711750321515065,-0.14595611587907964) q[10];
+can_6079546432(0.5,0.5,0) q[11],q[10];
+u(1.5707962882848145,-6.283185307188903,5.8491709827612315) q[10];
+can_6079735200(0.00048828124879879116,0,0) q[10],q[9];
+u(0.08551303119234877,-1.5707961906423102,1.5707961759874554) q[9];
+u(0.13277828343725762,-1.5707960169098831,-4.712389290703451) q[10];
+u(1.5708852663878545,-6.283062968076382,3.4248161892061817) q[11];
+can_6084412528(0.49976065357863797,0,0) q[11],q[10];
+u(2.3500896812240164,0.6067819875734417,-0.7250494608348644) q[10];
+u(2.6937914651176373,1.2996718844091069,1.1640018618821086) q[11];
+can_6079784832(0.5,0.5,-0.5) q[12],q[10];
+u(1.6622012108371487,-0.4921344228381934,-0.6939955464717271) q[10];
+can_6057480544(0.000976562500000668,0,0) q[10],q[9];
+u(1.570796316531979,-4.022449077335052,2.045665858929624e-09) q[9];
+can_6058818736(0.5,0.5,-0.49804687499994793) q[9],q[8];
+u(pi,-3.141592525479527,-2.8219950551037147) q[8];
+can_6079775952(0.5,0.5,-0.4960937499999808) q[8],q[6];
+u(pi,-3.400117377038286,-2.128734697468301) q[6];
+can_6057325392(0.5,0.5,0.4921874999999572) q[6],q[5];
+u(1.9820129575412009,-1.4517793237450818,-2.5460608486793443) q[5];
+can_6079459552(0.5,0.5,-0.5) q[5],q[4];
+u(1.1595796993449077,-0.42341566687744026,4.59337199070948) q[4];
+can_6074304800(0.5,0.5,0.48437500000012595) q[4],q[3];
+u(0,0,0.2955422618905381) q[3];
+can_6079790496(0.5,0.5,-0.46875000000168904) q[3],q[2];
+u(0,0,-1.792825495662056) q[2];
+u(pi,-1.1977373076181896e-10,2.821854708821636) q[3];
+u(3.1415926019706566,0.11581351963311574,-0.5014058437385951) q[4];
+u(1.2808196711644695,-2.318348733350536,-1.6138028147555217) q[5];
+u(0,0,-6.444504677514432) q[6];
+u(3.14159258058931,-0.11263684360428906,-1.5210869780673917) q[8];
+u(pi,7.036577794531939e-10,-2.6342085479092727) q[9];
+u(1.1621634872639381,-1.5707963030231864,-4.712388991416535) q[10];
+can_6057322704(0.00048828124999976863,0,0) q[11],q[10];
+u(2.3018827395096824,-1.8617978057485558,4.074202764581752) q[10];
+u(1.808076589756948,1.38954582754228,2.7725592344644543) q[11];
+u(1.5933191305782297,-1.0091241738639207,-3.063644913380061) q[12];
+can_6079421936(0.2459590661615571,0.03135795488169694,-0.00046402329784452843) q[13],q[1];
+u(1.6259951200497051,-1.5326616402733912,0.006986003523011153) q[1];
+can_6058809040(0.3226179800061479,0,0) q[1],q[0];
+u(2.755241746130792,1.5707962988522868,-1.5707963521146533) q[0];
+u(0.3150948751602499,-0.7894939313707002,1.5707963264976477) q[1];
+u(1.8816399286694798,1.315547627788551,2.1746672333379364) q[13];
+can_6057324048(0.46284328099705757,0.009725502499558508,0) q[13],q[1];
+u(2.5657060073658275,-7.853981633956959,4.598035268471061) q[1];
+can(0.24999999999999972,0,0) q[1],q[0];
+u(1.570796334426551,2.043478101584704,6.28318531328239) q[0];
+u(1.5750530111361292,-1.5335273144760928,0.006555839100065075) q[1];
+u(1.5707963268084146,-5.485547570221257,3.1725938462116434) q[13];
+can_6057489040(0.5,0.5,0) q[13],q[1];
+u(2.4183465690552666,-5.69017210668693,2.9479376905647223) q[1];
+can_6057488752(0.5,0.5,-0.3749999999934109) q[1],q[0];
+u(0,0,-3.241148780336803) q[0];
+u(pi,2.532094382556435,-1.7645434523234835) q[1];
+can_6084040448(0.5,0.5,-0.437500000007979) q[2],q[0];
+u(pi,-6.457079849105442e-10,-0.9302679847052011) q[0];
+u(1.5707963070719917,3.1415926472299924,5.578893916776785) q[2];
+u(0.5161917656053465,-5.709491792820387,-2.102970495014747) q[13];
+can_6084036704(0.5,0.5,0.33333333333333326) q[13],q[1];
+u(1.0023883310061088,-1.1871881252056893,0.8813883365989376) q[1];
+can_6044501776(0.5,0.5,0.3749999999914324) q[1],q[0];
+u(1.0162273537080377,-1.1959960789797084,0.41618290003666036) q[0];
+u(1.570796324683425,0.737862863121147,2.3862015723508008) q[1];
+u(2.4536813033373117,-6.147727721741802,2.0596048439072256) q[13];
+can_6084038720(0.47796690487411125,0.1861276387259672,0) q[13],q[1];
+u(0.7538650772912693,1.71242728390041,-0.6133019743591568) q[1];
+u(0.7566571213354194,-2.21794272526868,-2.5632502207421526) q[13];
+u(1.759987901551753e-05,6.280740388380953,0.6463191447905108) q[14];
+can_6057326688(0.00012207031244269218,0,0) q[15],q[12];
+u(0.5269585491309255,-2.9736048744941574,3.399703639010932) q[12];
+can_6057492256(0.5,0.5,-0.5) q[12],q[10];
+u(2.297765176913302,1.4419422927149554,1.3439462239297286) q[10];
+can_6084049904(0.5,0.5,-0.5) q[11],q[10];
+u(0.43577385987240347,-2.318400219647397,3.8689637757492035) q[10];
+can_6057490528(0.5,0.5,-0.49902343749999595) q[10],q[9];
+u(0,0,-6.0805846250670355) q[9];
+can_6084046112(0.5,0.5,0.49804687499996186) q[9],q[8];
+u(0,0,-9.590713756229679) q[8];
+can_6084037808(0.5,0.5,-0.4960937499999575) q[8],q[6];
+u(1.3482838818213667,2.9879032963689265,-1.7124391628404885) q[6];
+can_6084045680(0.5,0.5,-0.5) q[6],q[5];
+u(1.3482838814104663,-0.30783076906458184,3.295282006096183) q[5];
+can_6055018576(0.5,0.5,-0.4921875000000243) q[5],q[4];
+u(0,0,1.8941693252626826) q[4];
+can_6058355520(0.5,0.5,0.48437499999997324) q[4],q[3];
+u(1.5707963268450018,-9.42477796059468,-2.6065947578949036) q[3];
+can_6055022704(0.03124999999993204,0,0) q[3],q[2];
+u(0.6395241553394075,-2.4064921552518035,-3.3930132832408915) q[2];
+u(0.6055630877603683,1.789427153076312,-3.35363857328714) q[3];
+u(0.5616545622949425,1.3647802874020685,-0.7087014075894782) q[4];
+u(1.24497756649288,0.889396867014821,4.0033785836824425) q[5];
+u(0.7640418853584304,0.9727130376034193,1.320780403410135) q[6];
+u(1.1309239844672863,0.5833726545067828,1.2093822614886711) q[8];
+u(1.8295574110227575,0.8218819409092187,-3.6940395626838827) q[9];
+u(0.8716816233777568,0.5412458280173793,-1.5992294594506702) q[10];
+u(1.0737593681936142,-5.2552298713325225,3.0096574747384786) q[11];
+u(2.1549293877192857,-1.0102478734885043,1.7352265612176145) q[12];
+u(0.06341758591588631,-10.995574522088162,1.5707966888441427) q[15];
+can_6084038576(0.0002441406250018633,0,0) q[15],q[12];
+u(0.6690793162031752,2.0534760938274514,-0.7847843618755069) q[12];
+can_6084046784(0.5,0.5,-0.5) q[12],q[10];
+u(1.6327351954873386,-1.4997185382246452,3.533459995802033) q[10];
+can_6055030432(0.5,0.5,-0.5) q[10],q[9];
+u(1.1777091094168513,-2.8518549060047587,1.1224976690024953) q[9];
+can_6055470112(0.5,0.5,-0.5) q[9],q[8];
+u(2.822868281231706,-0.4861806178993068,-1.3776883638569843) q[8];
+can_6058359312(0.5,0.5,-0.5) q[8],q[6];
+u(2.3485320125829556,2.976519103296106,-5.965781969608274) q[6];
+can_6084047936(0.5,0.5,-0.5) q[6],q[5];
+u(1.3013599799462778,-2.197420697656689,2.611726178458442) q[5];
+u(1.2449775231372109,1.586588511619962,5.39378850496118) q[6];
+u(1.6880426121879495,2.7804778048029597,0.16517668635324023) q[8];
+u(1.130923981286664,-2.090451249837939,-0.5833726440650442) q[9];
+u(1.312035199183791,0.7768034706821968,-3.9634745550882893) q[10];
+u(0.8716816247138119,-1.6327299585454247,-0.541245794162974) q[12];
+u(1.5707963231545738,-4.417162813588692,3.141592653717777) q[15];
+can_6055019344(0.5,0.5,-0.49951171875004885) q[15],q[12];
+u(pi,-3.141592651796514,-0.4686795402243782) q[12];
+can_6058358256(0.5,0.5,0.49902343749997785) q[12],q[10];
+u(0,0,-1.1660618149760793) q[10];
+can_6084038192(0.5,0.5,0.4980468750000002) q[10],q[9];
+u(1.5707963242082044,-2.364806567638145,-0.020174676669016733) q[9];
+can_6057481984(0.5,0.5,-0.5) q[9],q[8];
+u(1.570796326041814,-3.6675215014311435,-0.7767860827722011) q[8];
+can_6074304896(0.5,0.5,-0.4960937499999052) q[8],q[6];
+u(3.0474743558915125,-2.567884891610088,0.08430472036046341) q[6];
+u(2.1163875259549836,-0.20853794226326275,1.5079018492652931) q[8];
+u(2.299992537901923,-1.1795309378222383,0.2509830975653035) q[9];
+u(1.9419880489602128,-0.7662502262684755,1.493882002616119) q[10];
+u(1.799555207031352,-2.9724825536877613,5.138212969829809) q[12];
+u(1.6675415650380372,2.7274059085568125,-3.040385804229967) q[15];
+can_6084040352(0.5,0.5,-0.5) q[15],q[12];
+u(0.7911932208600885,-2.9217305586398976,-4.755922250445686) q[12];
+can_6057322944(0.5,0.5,-0.5) q[12],q[10];
+u(1.1802271516061766,-5.386675635051469,-1.527538430003854) q[10];
+u(1.391097259011295,-1.007907757600808,1.1192393583836187) q[12];
+u(1.8110401635434665,1.592648134241914,-1.3263728938203254) q[15];
+can_6045275904(0.5,0.5,-0.5) q[15],q[12];
+u(1.894762319562021,1.2195374983022447,4.9123142584159325) q[12];
+u(2.3059001581968572,-2.7034570241042264,2.645511116118515) q[15];
+u(0.1545798917746283,0.5991755606460335,-1.4279031944142733) q[16];
+u(1.4652324125987044,2.6129137695674247,1.9838201323475975) q[17];
+can_6079738896(0.5,0.5,-0.5) q[17],q[16];
+u(1.0391844461448527,0.750984306503544,0.7850619448536067) q[16];
+can_6079785504(0.5,0.5,-0.5) q[16],q[13];
+u(0.10953170511316486,1.612522176115447,0.35047791623710955) q[13];
+can_6075560208(0.5,0.5,-0.5) q[13],q[1];
+u(2.502950870918472,-0.8280036412949131,0.3325514721672833) q[1];
+can_6074121824(0.5,0.5,-0.5) q[1],q[0];
+u(1.5051625900194516,-0.7222900608573534,4.9904624585962765) q[0];
+u(1.5063968851774472,-0.05448442678303422,3.535706593439036) q[1];
+can_6058355472(0.5,0.5,-0.5) q[2],q[0];
+u(1.9839174226687046,1.267401716306916,4.341761074188543) q[0];
+can_6057494672(0.5,0.5,-0.5) q[1],q[0];
+u(2.5519814671611667,3.147724653571453,-2.253971047396548) q[0];
+u(1.9425663086435092,2.625441763643607,-0.309996993830102) q[1];
+u(1.3564666755843333,-0.7742971963259115,0.6980406089609053) q[2];
+can_6058360368(0.5,0.5,-0.5) q[3],q[2];
+u(2.4020884969826373,-8.825472843391987,2.35451465198038) q[2];
+can_6058359072(0.06249999997280647,0,0) q[2],q[0];
+u(1.85372525389427,0.4755359582366747,3.5401498267810583) q[0];
+u(1.5632635534727324,-7.85398163448502,4.712388981843587) q[2];
+u(1.5408528337806906,0.12375909944981833,-1.0462464447173905) q[3];
+can_6058357248(0.5,0.5,-0.5) q[4],q[3];
+u(0.5616545622883095,2.835682897261166,4.918405019650496) q[3];
+u(1.4322696501664112,0.9070088497147071,0.133474850208261) q[4];
+can_6058351056(0.5,0.5,0.4998779296938291) q[5],q[4];
+u(0.00018476297889627368,-0.01856669711581549,-2.565328900269473) q[4];
+u(1.1823683804810177,1.3822374073371704,3.1192253389321) q[5];
+can_6055233776(0.5,0.5,-0.5) q[6],q[5];
+u(1.6653007557413018,2.0032328839106244,-3.30296125300634) q[5];
+can_6059190384(0.5,0.5,-0.5) q[5],q[4];
+u(1.7514418046225027,-3.7634944099770196,-2.041527808081764) q[4];
+can_6059186256(0.5,0.5,-0.4921875000000348) q[4],q[3];
+u(pi,-4.53003855670913,-0.4278115208739437) q[3];
+u(pi,-1.8605094016005701e-09,-2.95007971756081) q[4];
+u(2.377974341351528,-3.0702007344405358,-0.517983369373958) q[5];
+u(2.388548477319415,-2.9840140209712565,2.355535984248905) q[6];
+can_6059188080(0.5,0.5,-0.5) q[8],q[6];
+u(2.116387464578121,2.3947983808868303,0.20853796250772527) q[6];
+u(1.7216133735727865,0.48893478914406635,-2.8402702323498428) q[8];
+can_6059190816(0.5,0.5,-0.5) q[9],q[8];
+u(2.650136876595716,-0.11154818132212434,-1.8842181298510527) q[8];
+u(1.188479119995359,0.4946630538657039,-0.856164131842318) q[9];
+can_6059187552(0.5,0.5,0.49975585937499983) q[10],q[9];
+u(2.1846028804112274,-0.838757321314467,0.21571111747081506) q[9];
+u(1.5707963179498674,3.14159266485981,2.478922764237803) q[10];
+can_6059191392(0.00048828124999976863,0,0) q[12],q[10];
+u(0.08055534707927768,-1.5707960935745462,-1.5707965890579747) q[10];
+u(2.9072510203306785,-1.2288896672397904,-2.6059559313241474) q[12];
+u(0.9425093497210938,-2.506628755378782,2.1151124221531155) q[13];
+can_6059190144(0.5,0.5,-0.5) q[15],q[12];
+u(0.6653962341579458,-10.543501623994267,-2.9083291474125836) q[12];
+can_6059195136(0.0009765624999904904,0,0) q[12],q[10];
+u(2.556251128078069,-1.4869838138354583,-1.6982360360995237) q[10];
+can_6059358832(0.5,0.5,-0.5) q[10],q[9];
+u(0.7447376074478679,-0.45582604036295565,1.5439560353076764) q[9];
+can_6059348320(0.5,0.5,-0.5) q[9],q[8];
+u(1.408489877931102,-1.0276315771245614,5.095495530523089) q[8];
+can_6059345968(0.5,0.5,-0.4980468749998036) q[8],q[6];
+u(2.0182107560973765,-0.6269003040016861,2.3368827721619647) q[6];
+can_6059184048(0.5,0.5,-0.5) q[6],q[5];
+u(2.0182107560766647,-1.489245875922141,6.9100856111322955) q[5];
+can_6059184144(0.5,0.5,-0.4960937500002744) q[5],q[4];
+u(0,0,-3.5881915413028898) q[4];
+u(1.3227810082539493e-08,1.5261147995980782,-1.4081364785525745) q[5];
+u(2.377974459448842,-1.0358776252422541,-3.2129845254124416) q[6];
+u(4.496562657232251e-08,2.81344894170666,-4.312307398412328) q[8];
+u(0.6783156633341093,-0.35374255098123,0.9816700854719105) q[9];
+u(0.956989775037503,-4.979826537389384,3.9803499751284024) q[10];
+u(1.5707963264704463,1.2069174303001904,3.1415926535205236) q[12];
+u(1.7718289331750192,-1.6787562911761444,-1.3648229760963833) q[15];
+u(0.814611627822918,-2.6152083164780144,-0.9671501264615134) q[16];
+can_6063162096(0.5,0.5,0) q[16],q[13];
+u(0.9422975170308453,-0.6832598291579022,2.5394061429142907) q[13];
+can_6058350528(0.5,0.5,-0.5) q[13],q[1];
+u(1.12923070799522,-0.5041616833932561,0.16555079954027185) q[1];
+can_6058350192(0.5,0.5,-0.5) q[1],q[0];
+u(1.547404433606447,-1.2277128322872701,0.8631614601331592) q[0];
+u(0.9113062788802677,-0.9936869503268371,2.179487563388941) q[1];
+can_6059190096(0.12499999999999957,0,0) q[2],q[0];
+u(1.9729132329354448,-1.2523990260860125,1.0543037679119043) q[0];
+u(1.691881477119222,-0.9165651658973405,-3.5852247668912014) q[2];
+u(1.8733091865926077,-0.06616349550240955,-2.314982256525071) q[13];
+can_6055237712(0.5,0.5,-0.5) q[13],q[1];
+u(1.8399663928918621,2.756842994047018,2.9990232141917925) q[1];
+can_6055239584(0.5,0.5,-0.5) q[1],q[0];
+u(1.2905202496993784,-1.8290878086930558,-3.375026686222231) q[0];
+u(0.6431742682869067,-1.6663818804221409,0.2849969765454641) q[1];
+can_6059182800(0.5,0.5,-0.5) q[2],q[0];
+u(1.391427151084828,-3.072922853033877,-2.293457375149996) q[0];
+u(2.2408553401435634,-0.8601996609536628,0.4550467209858249) q[2];
+can_6059180784(0.5,0.5,-0.48437500000060113) q[3],q[2];
+u(pi,-3.1415926387870923,-0.05787211092785538) q[2];
+u(0,0,-3.9837611678105427) q[3];
+can_6059189568(0.5,0.5,-0.49218749999999634) q[4],q[3];
+u(pi,-3.1192481482022862,3.3212727592380675) q[3];
+u(4.8371105613926786e-09,-4.901426330235614,-2.4247783851663653) q[4];
+u(2.114723693426752,-1.016280552352743,3.1153416996811334) q[13];
+can_6059187648(0.5,0.5,-0.5) q[13],q[1];
+u(1.586526949082635,-1.2125239622719577,-1.864825237873595) q[1];
+can_6077355248(0.5,0.5,-0.5) q[1],q[0];
+u(2.3342540143865493,-1.7338673942997531,-5.658813523599309) q[0];
+u(0.9273287205907713,-1.180353082889466,-1.259568737618202) q[1];
+can_6059349760(0.5,0.5,0) q[2],q[0];
+u(1.7249341164216756e-07,-3.018430013644325,-1.5657379277346846) q[0];
+u(1.595262102302779,-0.3071546994803258,5.376617016484387) q[2];
+u(2.9016676690806587,2.372771727844341,-3.624289826538508) q[13];
+can_6059187936(0.5,0.5,-0.5) q[13],q[1];
+u(1.6022377300343977,-3.9269715266939116,-0.6730536667726161) q[1];
+can_6059192880(0.5,0.5,0.43750000451706866) q[1],q[0];
+u(1.4102911920421595,-1.395842339587369,0.13735153628836105) q[0];
+u(1.5707961605056848,-6.283185291640466,2.8499050782174447) q[1];
+can_6059344816(0.5,0.5,-0.5) q[2],q[0];
+u(2.555899277281851,1.704340500321635,-1.1493000075455049) q[0];
+can_6058360464(0.5,0,0) q[1],q[0];
+u(0.9598625317371707,-4.467607452461284,1.1554739005858614) q[0];
+u(0.9269805006782601,-1.5707963309102715,1.570796337754867) q[1];
+u(1.4024139966269191,0.2185684274822234,1.3944640980177025) q[2];
+can_6059354704(0.5,0.5,-0.333333333333333) q[3],q[2];
+u(1.5707963274672394,3.141592652729127,-5.8326581468602265) q[2];
+can_6059182080(0.16647488131346613,0,0) q[2],q[0];
+u(1.5801163766554807,2.0415043149805316,-0.09780665239907727) q[0];
+u(3.061123849805927,-1.5707963272637264,1.570796326374818) q[2];
+u(1.571668100690132,0.0010244088420199304,-8.60661043083261) q[3];
+can_6058358640(0.19791581099003347,0,0) q[3],q[2];
+u(1.5707963268317893,-2.973375027334485,3.1415926536354166) q[2];
+can_6079560976(0.5,0.5,-0.333333333333333) q[2],q[0];
+u(2.824253599358764,-1.66459302850843,-1.2228570002922061) q[0];
+u(1.5159766661773906,2.2490444981229776,-0.37600704857207395) q[2];
+u(1.5663492643056633,-1.5099623656274246,3.1468183875866234) q[3];
+u(0.9676220264391299,1.5937408956955115,-0.9763732967352603) q[13];
+u(1.4336823515079733,-1.3935930435611257,-0.9744981677543735) q[16];
+can_6059196384(0.5,0.5,0.250000000003947) q[16],q[13];
+u(1.570796326642569,-6.2831853071549695,7.112612414731536) q[13];
+can_6059355952(0.12499999995538982,0,0) q[13],q[1];
+u(1.8769424727804032,-1.570796325227554,-1.5707963250644346) q[1];
+u(0.31986930912377565,0.34795311629073017,-0.4926769871882254) q[13];
+u(1.5707963266451597,-5.882690266601851,-2.3320312881229404) q[16];
+can_6059344528(0.5,0.5,0) q[16],q[13];
+u(1.570796326799182,pi,0.25439453068578244) q[13];
+can(0.24999999999999972,0,0) q[13],q[1];
+u(2.0766725116812332,2.933775675230719,3.5723049865642302) q[1];
+can_6076734528(0.5,0.5,-0.5) q[1],q[0];
+u(2.4343543591947623,-2.758242198254571,1.6024703942240421) q[0];
+u(1.2795170386549444,0.12777039276139512,1.243941419193778) q[1];
+u(1*pi/2,1.6594096044660205,3.1415926535948717) q[13];
+u(pi,-0.34779942193668445,-1.0059598577924296) q[16];
+can_6059183328(0.5,0.5,0) q[16],q[13];
+u(2.1989583468512164,-1.2213171498047237,0.9568892232028787) q[13];
+can_6080072544(0.06250000000176337,0,0) q[13],q[1];
+u(2.424217658806945,4.712389002194445,7.853981636262445) q[1];
+u(0.40852495575694825,1.5221502454346407,1.4434821438448022) q[13];
+u(2.3258201307880713,-0.6618578010739555,2.5533069519115528) q[16];
+can_6076500928(0.5,0.5,-0.5) q[16],q[13];
+u(2.135385215631943,-5.658584674052271,-1.5474587673458755) q[13];
+can_6079788528(0.12499999888106121,0,0) q[13],q[1];
+u(1.3572933681668407,-7.853981672194859,-4.712389002492931) q[1];
+can_6057478720(0.24999999805194814,0,0) q[1],q[0];
+u(1.57079629495733,-5.896836677573943,7.514534772212755e-09) q[0];
+u(1.5943363013276446,-1.570796338032132,-4.712388980733722) q[1];
+u(1.570796327393307,7.7905808575726585,-1.3385692554379602e-10) q[13];
+u(1.5203351139206653,-0.7484640405989271,0.1655827796867826) q[16];
+u(2.8089792708294343,-2.4466255961543606,1.5241389575027502) q[17];

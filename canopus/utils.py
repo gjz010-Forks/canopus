@@ -280,7 +280,7 @@ def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=No
 
 
 def canonical_coordinate(u: np.ndarray) -> Tuple[float, float, float]:
-    """
+    r"""
     Obtain the canonical coordinate of a unitary matrix.
 
     Args:

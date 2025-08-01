@@ -42,7 +42,7 @@ result = pd.DataFrame(columns=[
 # Read QASM files and summarize results
 for fname in fnames:
     qc = canopus.utils.tket_to_qiskit(pytket.qasm.circuit_from_qasm(os.path.join(benchmark_dpath, fname)))
-    print(f'Processing {fname}...')
+    # print(f'Processing {fname}...')
     if args.compiler == 'canopus':
         qc_cx = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'cx', fname))
         qc_zzphase = QuantumCircuit.from_qasm_file(os.path.join(output_dpath, 'zzphase', fname))

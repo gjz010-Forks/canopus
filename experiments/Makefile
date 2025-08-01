@@ -110,25 +110,25 @@ baselines:
 sum_result:
 	@echo "Summarizing results for all topologies and ISAs ..."
 	@commands=( \
-		"python sum_result.py --compiler canopus --topology chain" \
-		"python sum_result.py --compiler canopus --topology hhex" \
-		"python sum_result.py --compiler canopus --topology square" \
-		"python sum_result.py --compiler sabre --topology chain" \
-		"python sum_result.py --compiler sabre --topology hhex" \
-		"python sum_result.py --compiler sabre --topology square" \
-		"python sum_result.py --compiler toqm --topology chain" \
-		"python sum_result.py --compiler toqm --topology hhex" \
-		"python sum_result.py --compiler toqm --topology square" \
-		"python sum_result.py --compiler bqskit --topology chain" \
-		"python sum_result.py --compiler bqskit --topology hhex" \
-		"python sum_result.py --compiler bqskit --topology square" \
+		"python result_summary.py --compiler canopus --topology chain" \
+		"python result_summary.py --compiler canopus --topology hhex" \
+		"python result_summary.py --compiler canopus --topology square" \
+		"python result_summary.py --compiler sabre --topology chain" \
+		"python result_summary.py --compiler sabre --topology hhex" \
+		"python result_summary.py --compiler sabre --topology square" \
+		"python result_summary.py --compiler toqm --topology chain" \
+		"python result_summary.py --compiler toqm --topology hhex" \
+		"python result_summary.py --compiler toqm --topology square" \
+		"python result_summary.py --compiler bqskit --topology chain" \
+		"python result_summary.py --compiler bqskit --topology hhex" \
+		"python result_summary.py --compiler bqskit --topology square" \
 	); \
 	printf '%s\n' "$${commands[@]}" | parallel --bar
 
 
 disp_result:
 	@echo "Displaying results for all topologies and ISAs ..."
-	@python disp_result.py
+	@python result_display.py
 
 clean:
 	@echo "Cleaning up .QASM files..."

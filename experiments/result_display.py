@@ -13,8 +13,6 @@ COMPILERS = ['sabre', 'toqm', 'bqskit', 'canopus']
 
 
 def display_result(compiler: str, filter_isomorphism: bool = True):
-    print('>>> Results for {} <<<'.format(compiler.upper()))
-
     result_chain= pd.read_csv('./results/{}-chain.csv'.format(compiler))
     result_hhex= pd.read_csv('./results/{}-hhex.csv'.format(compiler))
     result_square= pd.read_csv('./results/{}-square.csv'.format(compiler))
@@ -25,13 +23,13 @@ def display_result(compiler: str, filter_isomorphism: bool = True):
         result_square = filter_vf2layout(result_square)
 
     table = PrettyTable()
+    table.title = '>>> Results for {} <<<'.format(compiler.upper())
     table.field_names = ['Routing overhead', 'CX', 'ZZPhase', 'SQiSW', 'Can-XX', 'Can-XY', 'ZZPhase_', 'SQiSW_', 'Het']
     table.add_row(['Chain'] + [gmean(result_chain[isa]).round(2) for isa in ISA_TYPES])
     table.add_row(['HHex'] + [gmean(result_hhex[isa]).round(2) for isa in ISA_TYPES])
     table.add_row(['Square'] + [gmean(result_square[isa]).round(2) for isa in ISA_TYPES])
-
+    
     print(table)
-    print()
 
 
 for compiler in COMPILERS:
