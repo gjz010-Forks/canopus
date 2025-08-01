@@ -1,12 +1,9 @@
-// src/lib.rs
 use ndarray::{Array2, array};
 use num_complex::Complex64;
 use numpy::IntoPyArray;
 use pyo3::prelude::*;
 use std::f64::consts::{FRAC_PI_2, PI};
 
-// 类型别名，使用标准的 num_complex
-type C64 = Complex64;
 
 // define the global variable ATOL: f64 = 1e-8;
 const ATOL: f64 = 1e-8;
@@ -87,17 +84,15 @@ fn optimal_can_gate_duration(a: f64, b: f64, c: f64, gx: f64, gy: f64, gz: f64) 
 
     let coupling_strength = gx + gy + gz.abs();
 
-    // 注意：Rust 的浮点数除零会产生 Inf (无穷大) 或 NaN (非数字)，
-    // 而不是像 Python 那样抛出 ZeroDivisionError。这在科学计算中通常是可接受的行为。
 
-    // 计算 tau1
+    // calculate tau1
     let tau0 = x / gx;
     let tau_plus = (x + y - z) / (gx + gy - gz);
     let tau_minus = (x + y + z) / (gx + gy + gz);
-    let tau1 = tau0.max(tau_plus).max(tau_minus); // 链式调用 max
+    let tau1 = tau0.max(tau_plus).max(tau_minus);
 
-    // 计算 tau2
-    let tau0_prime = (PI / 2.0 - x) / gx; // PI / 2.0 也可以写成 FRAC_PI_2
+    // calculate tau2
+    let tau0_prime = (PI / 2.0 - x) / gx;
     let tau_plus_prime = (FRAC_PI_2 - x + y + z) / (gx + gy - gz);
     let tau_minus_prime = (FRAC_PI_2 - x + y - z) / (gx + gy + gz);
     let tau2 = tau0_prime.max(tau_plus_prime).max(tau_minus_prime);
@@ -177,38 +172,27 @@ fn sort_two_objs(
     key: Option<Bound<'_, PyAny>>,
 ) -> PyResult<(PyObject, PyObject)> {
     match key {
-        // --- 情况一：提供了 key 函数 ---
         Some(key_fn) => {
-            // 1. 检查 key 是否可调用，这是一个良好的实践
             if !key_fn.is_callable() {
                 return Err(pyo3::exceptions::PyTypeError::new_err(
                     "key argument must be a callable",
                 ));
             }
 
-            // 2. 调用 key 函数分别作用于 a 和 b，得到待比较的值
             let val_a = key_fn.call1((&a,))?;
             let val_b = key_fn.call1((&b,))?;
 
-            // 3. **核心改动**：使用 Python 的比较方法 `.lt()` (less than)
-            //    这会调用 Python 运行时的 `val_a < val_b`
-            //    它返回一个 PyResult<bool>，因为比较可能失败（例如，类型不兼容）
             let should_swap: bool = val_b.lt(&val_a)?; // 等价于 `val_b < val_a`
 
-            // 4. 根据比较结果，返回原始的 a 和 b
             if should_swap {
-                // .to_object() 将借用的 Bound<PyAny> 转换为拥有的 PyObject，以便返回
                 Ok((b.unbind(), a.unbind()))
             } else {
                 Ok((a.unbind(), b.unbind()))
             }
         }
-        // --- 情况二：没有提供 key 函数 ---
         None => {
-            // 1. **核心改动**：直接对输入的 a 和 b 使用 Python 的比较方法
             let should_swap: bool = b.lt(&a)?; // 等价于 `b < a`
 
-            // 2. 根据比较结果返回
             if should_swap {
                 Ok((b.unbind(), a.unbind()))
             } else {
@@ -281,7 +265,7 @@ fn canonical_unitary(py: Python, a: f64, b: f64, c: f64) -> PyResult<PyObject> {
     let eip = c!(0.0, z).exp();
 
     // U = exp(-i * π/2 * (a XX + b YY + c ZZ))
-    let matrix: Array2<C64> = array![
+    let matrix: Array2<Complex64> = array![
         [eim * cosm, zero, zero, i!(-1.0) * eim * sinm],
         [zero, eip * cosp, i!(-1.0) * eip * sinp, zero],
         [zero, i!(-1.0) * eip * sinp, eip * cosp, zero],

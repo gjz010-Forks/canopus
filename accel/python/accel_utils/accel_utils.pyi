@@ -105,8 +105,8 @@ def optimal_can_gate_duration(
     Calculate optimal canonical gate duration in the AshN gate scheme.
     
     Args:
-        a, b, c: Canonical coefficients of an SU(4), where π/4 ≥ a ≥ b ≥ |c|
-        gx, gy, gz: Normalized coefficients of the coupling Hamiltonian
+        a, b, c: Canonical coefficients of an SU(4), where 0.5 ≥ a ≥ b ≥ |c|
+        gx, gy, gz: Normalized coefficients of the coupling Hamiltonian, where gx ≥ gy ≥ |gz|
         
     Returns:
         Optimal gate duration

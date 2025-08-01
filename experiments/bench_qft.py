@@ -16,13 +16,6 @@ from rich.console import Console
 
 console = Console()
 
-# configure logging
-# logging.basicConfig(
-#     level=logging.INFO,
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#     handlers=[logging.StreamHandler()]
-# )
-
 qc = QFT(int(sys.argv[1]), do_swaps=False).decompose()
 circ = qiskit_to_tket(qc)
 circ = rebase_to_tk2(circ)

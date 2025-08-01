@@ -1,37 +1,30 @@
 import pytket
 import qiskit
 import pickle
+import warnings
+import os
 import pytket.qasm
 import qiskit.qasm2
 import numpy as np
+import rustworkx as rx
 from pytket import OpType
 from math import pi
 from typing import Union, Tuple
 from rich.console import Console
-from rich.table import Table
+from prettytable import PrettyTable
 from pytket.utils.stats import gate_counts
 from qiskit.transpiler import Layout, CouplingMap
-import rustworkx as rx
-from accel_utils import sort_two_ints
+from functools import lru_cache
+from qiskit.synthesis import TwoQubitWeylDecomposition
+from qiskit.circuit.library import RZZGate, iSwapGate, CXGate, XXPlusYYGate
+from canopus.basics import CanonicalGate, half_pi
+from accel_utils import sort_two_ints, check_weyl_coord, canonical_unitary, optimal_can_gate_duration
+from monodromy.coverage import gates_to_coverage, coverage_lookup_cost
 
 console = Console()
 
-from qiskit.circuit.library import XXPlusYYGate
-from canopus.basics import CanonicalGate
-
-import warnings
-import os
-
-from functools import lru_cache
-from qiskit.circuit.library import RZZGate, iSwapGate, CXGate
-from canopus.basics import CanonicalGate
-from accel_utils import check_weyl_coord, canonical_unitary, optimal_can_gate_duration
-from monodromy.coverage import gates_to_coverage, coverage_lookup_cost
-
-
 CX_AshN_Time_XY = optimal_can_gate_duration(0.5, 0, 0, 1, 1, 0)
 SQiSW_AshN_Time_XY = optimal_can_gate_duration(0.25, 0.25, 0, 1, 1, 0)
-
 
 Coverage_Dumped_Dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'configs')
 ZZPhase_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'zzphase_coverage.pkl')
@@ -72,8 +65,8 @@ def get_zzphase_with_mirror_coverage():
     gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2), CanonicalGate(0.5, 0.5, 1 / 3),
                 CanonicalGate(0.5, 0.5, 1 / 4), CanonicalGate(0.5, 0.5, 0)]
     cx_cost = 1
-    iswap_cost = 1.5 # optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0) / CX_AshN_Time_XY == 1
-    swap_cost = 2 # optimal_can_gate_duration(0.5, 0.5, 0.5, 1, 1, 0) / CX_AshN_Time_XY == 1.5
+    iswap_cost = 1.5  # optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0) / CX_AshN_Time_XY == 1
+    swap_cost = 2  # optimal_can_gate_duration(0.5, 0.5, 0.5, 1, 1, 0) / CX_AshN_Time_XY == 1.5
     costs = [cx_cost / 3, cx_cost / 2, cx_cost,
              swap_cost - (swap_cost - iswap_cost) / 3, (iswap_cost + swap_cost) / 2, iswap_cost]
     names = ['RZZ_π_6', 'RZZ_π_4', 'RZZ_π_2', 'pSWAP_π_6', 'pSWAP_π_4', 'pSWAP_π_2']
@@ -240,6 +233,7 @@ def qc2mat(qc: qiskit.QuantumCircuit) -> np.ndarray:
 
 
 def remove_1q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
+    """Remove all single-qubit gates from a QuantumCircuit instance."""
     qc_new = qiskit.QuantumCircuit(qc.num_qubits, qc.num_clbits)
     qc_new.name = qc.name
     qc_new.global_phase = qc.global_phase
@@ -252,6 +246,7 @@ def remove_1q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
 
 
 def replace_close_to_zero_with_zero(arr) -> np.ndarray:
+    """Replace all numerically-zero values with zeros"""
     arr = np.array(arr)
     close_to_zero = np.isclose(arr, 0)
     arr[close_to_zero] = 0
@@ -275,17 +270,27 @@ def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=No
     else:
         raise ValueError('Unsupported circuit type {}'.format(type(circ)))
 
-    # use rich Table
-    table = Table(title=title)
-    table.add_column("num_qubits")
-    table.add_column("num_gates")
-    table.add_column("num_2q_gates")
-    table.add_column("depth")
-    table.add_column("depth_2q")
-    table.add_row(str(num_qubits),
-                  str(num_gates), str(num_nonlocal_gates),
-                  str(depth), str(depth_nonlocal))
-    console.print(table)
+    # use prettytable
+    table = PrettyTable()
+    if title:
+        table.title = title
+    table.field_names = ["num_qubits", "num_gates", "num_2q_gates", "depth", "depth_2q"]
+    table.add_row([str(num_qubits), str(num_gates), str(num_nonlocal_gates), str(depth), str(depth_nonlocal)])
+    print(table)
+
+
+def canonical_coordinate(u: np.ndarray) -> Tuple[float, float, float]:
+    """
+    Obtain the canonical coordinate of a unitary matrix.
+
+    Args:
+        u: 4x4 unitary matrix
+
+    Returns:
+        (a, b, c) ~ e^{- i \frac{\pi}{2}(a XX + b YY + c ZZ)} where 0.5 ≥ a ≥ b ≥ |c|
+    """
+    decomp = TwoQubitWeylDecomposition(u)
+    return decomp.a / half_pi, decomp.b / half_pi, - decomp.c / half_pi
 
 
 def match_global_phase(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -351,11 +356,7 @@ def gene_square_coupling_map(size):
 
 
 def gene_hhex_coupling_map(size):
-    d = 3
-    while (5 * d**2 - 2 * d - 1) // 2 < size:
-        d += 2
-    return CouplingMap(CouplingMap.from_heavy_hex(d).graph.subgraph(range(size)))
-    # return CouplingMap(Manhattan.graph.subgraph(range(size)).edge_list())
+    return CouplingMap(Manhattan.graph.subgraph(range(size)).edge_list())
 
 
 def crop_coupling_map(coupling_map, crop_size, seed=None):
@@ -389,31 +390,6 @@ def generate_random_layout(qreg, coupling_map, seed=None) -> Layout:
 
 def generate_trivial_layout(qreg, coupling_map) -> Layout:
     return Layout.from_intlist(list(coupling_map.physical_qubits), qreg)
-
-
-# from regulus.utils import arch
-# def gene_1d_chain
-
-
-# import cirq
-# import numpy as np
-# from typing import Union
-# from canopus.datatypes import Canonical
-# from canopus.utils.functions import fuzzy_compare
-
-# def synth_cost_by_sqisw(target: Union[cirq.Operation, cirq.Gate]):
-#     if isinstance(target, cirq.Operation):
-#         target = target.gate
-
-#     if isinstance(target, (cirq.CXPowGate, cirq.CZPowGate, cirq.ISwapPowGate)):
-#         return 2
-
-#     if isinstance(target, Canonical):
-#         if fuzzy_compare(target.x, target.y + abs(target.z), ">="):
-#             return 2
-#         return 3
-
-#     raise ValueError("Unsupported gate type")
 
 
 Manhattan_Edges = [
