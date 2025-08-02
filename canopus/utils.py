@@ -57,6 +57,23 @@ def synth_cost_by_zzphase(a, b, c):
     return cost
 
 
+
+@lru_cache(maxsize=1)
+def get_sqisw_coverage():
+    gate_set = [iSwapGate().power(1/2), iSwapGate()]
+    costs = [0.75, 1.5]
+    cov = gates_to_coverage(*gate_set, costs=costs)
+    return cov
+
+
+@lru_cache(maxsize=1)
+def get_cx_coverage():
+    gate_set = [CXGate()]
+    costs = [1]
+    cov = gates_to_coverage(*gate_set, costs=costs)
+    return cov
+
+
 @lru_cache(maxsize=1)
 def get_zzphase_with_mirror_coverage():
     """Get the coverage set for the ZZ phase gate with mirror symmetry."""
@@ -154,7 +171,7 @@ def tket_to_qiskit(circ: pytket.Circuit) -> qiskit.QuantumCircuit:
     """The self-implemented conversion function holds the high-level semantics of some customized Gate instances"""
     if set(gate_counts(circ).keys()).issubset(
             {OpType.X, OpType.Y, OpType.Z, OpType.H, OpType.S, OpType.T, OpType.Sdg, OpType.Tdg,
-             OpType.TK1, OpType.U3,
+             OpType.TK1, OpType.U3, OpType.SWAP,
              OpType.TK2, OpType.ISWAP, OpType.ZZPhase}):
         qc = qiskit.QuantumCircuit(circ.n_qubits, circ.n_bits)
         for cmd in circ.get_commands():
@@ -175,11 +192,14 @@ def tket_to_qiskit(circ: pytket.Circuit) -> qiskit.QuantumCircuit:
             elif cmd.op.type == OpType.Tdg:
                 qc.tdg(cmd.qubits[0].index[0])
             elif cmd.op.type == OpType.TK1:
-                a, b, c = cmd.op.params
-                qc.u(b * pi, (a - 0.5) * pi, (c + 0.5) * pi, cmd.qubits[0].index[0])
+                alpha, beta, gamma = cmd.op.params
+                qc.u(beta * pi, (alpha - 0.5) * pi, (gamma + 0.5) * pi, cmd.qubits[0].index[0])
             elif cmd.op.type == OpType.U3:
                 theta, phi, lam = np.array(cmd.op.params) * pi
                 qc.u(theta, phi, lam, cmd.qubits[0].index[0])
+            elif cmd.op.type == OpType.SWAP:
+                q0, q1 = sort_two_ints(cmd.qubits[0].index[0], cmd.qubits[1].index[0])
+                qc.swap(q0, q1)
             elif cmd.op.type == OpType.ISWAP:
                 q0, q1 = sort_two_ints(cmd.qubits[0].index[0], cmd.qubits[1].index[0])
                 qc.append(XXPlusYYGate(-cmd.op.params[0] * pi), [q0, q1])
@@ -240,8 +260,9 @@ def qiskit_to_tket(qc: qiskit.QuantumCircuit) -> pytket.Circuit:
             elif instr.operation.name == 'tdg':
                 circ.Tdg(*qubits)
             elif instr.operation.name == 'u' or instr.operation.name == 'u3':
-                theta, phi, lam = np.array(instr.operation.params) / pi
-                circ.U3(theta, phi, lam, *qubits)
+                theta, phi, lam = np.array(instr.operation.params)
+                # circ.U3(theta / pi, phi / pi, lam / pi, *qubits)
+                circ.TK1(phi / pi + 0.5, theta / pi, lam / pi - 0.5, *qubits)
     else:
         circ = pytket.qasm.circuit_from_qasm_str(qiskit.qasm2.dumps(qc))
 
@@ -261,6 +282,19 @@ def remove_1q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
 
     for instr in qc.data:
         if instr.operation.num_qubits != 1:
+            qc_new.append(instr.operation, instr.qubits, instr.clbits)
+
+    return qc_new
+
+
+def remove_2q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
+    """Remove all two-qubit gates from a QuantumCircuit instance."""
+    qc_new = qiskit.QuantumCircuit(qc.num_qubits, qc.num_clbits)
+    qc_new.name = qc.name
+    qc_new.global_phase = qc.global_phase
+
+    for instr in qc.data:
+        if instr.operation.num_qubits == 1:
             qc_new.append(instr.operation, instr.qubits, instr.clbits)
 
     return qc_new

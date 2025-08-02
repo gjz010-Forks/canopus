@@ -33,6 +33,7 @@ def test_mirror_weyl_coord():
 
         assert np.allclose(coord1, coord2)
 
+
 def test_optimal_can_gate_duration():
     durations = []
     for i in range(10000):
@@ -43,4 +44,4 @@ def test_optimal_can_gate_duration():
         durations.append(duration)
 
     print(np.mean(durations))
-    assert False
+    assert np.round(np.mean(durations), 2) == 1.34

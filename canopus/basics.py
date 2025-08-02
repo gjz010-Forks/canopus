@@ -52,15 +52,39 @@ class CanonicalGate(Gate):
             ryy(phi) q0, q1;
             rzz(lam) q0, q1;
         }
+
+        gate can(theta, phi, lam) q0,q1 {
+            u3(1.5*pi, 0.0, 1.5*pi) q1;
+            u3(0.5*pi, 1.5*pi, 0.5*pi) q0;
+            cx q1, q0;
+            u3(1.5*pi, theta + pi, 0.5*pi) q1;
+            u3(pi, 0.0, phi + pi) q0;
+            cx q1, q0;
+            u3(0.5*pi, 0.0, 0.5*pi) q1;
+            u3(0.0, 1.5*pi, lam + 0.5*pi) q0;
+            cx q1, q0;
+        }
         """
         from qiskit.circuit.library import RXXGate, RYYGate, RZZGate
+        from qiskit.circuit.library import UGate, CXGate
 
         q = QuantumRegister(2, "q")
         qc = QuantumCircuit(q, name=self.name)
+        # rules = [
+        #     (RXXGate(self.params[0] * pi), [q[0], q[1]], []),
+        #     (RYYGate(self.params[1] * pi), [q[0], q[1]], []),
+        #     (RZZGate(self.params[2] * pi), [q[0], q[1]], []),
+        # ]
         rules = [
-            (RXXGate(self.params[0] * pi), [q[0], q[1]], []),
-            (RYYGate(self.params[1] * pi), [q[0], q[1]], []),
-            (RZZGate(self.params[2] * pi), [q[0], q[1]], []),
+            (UGate(1.5 * pi, 0.0, 1.5 * pi), [q[1]], []),
+            (UGate(0.5 * pi, 1.5 * pi, 0.5 * pi), [q[0]], []),
+            (CXGate(), [q[1], q[0]], []),
+            (UGate(1.5 * pi, self.params[0] * pi + pi, 0.5 * pi), [q[1]], []),
+            (UGate(pi, 0.0, self.params[1] * pi + pi), [q[0]], []),
+            (CXGate(), [q[1], q[0]], []),
+            (UGate(0.5 * pi, 0.0, 0.5 * pi), [q[1]], []),
+            (UGate(0.0, 1.5 * pi, self.params[2] * pi + 0.5 * pi), [q[0]], []),
+            (CXGate(), [q[1], q[0]], []),
         ]
         for instr, qargs, cargs in rules:
             qc._append(instr, qargs, cargs)
@@ -71,7 +95,7 @@ class CanonicalGate(Gate):
         """Return a numpy.array for the U1 gate."""
         if copy is False:
             raise ValueError("unable to avoid copy while creating an array as requested")
-        a,b,c = (float(param) for param in self.params)
+        a, b, c = (float(param) for param in self.params)
         mat = canonical_unitary(a, b, c)
         return qi.Operator(mat).reverse_qargs().to_matrix()
 
@@ -79,4 +103,3 @@ class CanonicalGate(Gate):
         if isinstance(other, CanonicalGate):
             return self._compare_parameters(other)
         return False
-

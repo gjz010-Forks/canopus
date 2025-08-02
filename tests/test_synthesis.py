@@ -76,3 +76,17 @@ def test_canonical_synthesis():
     qc = pm.run(qc_demo)
 
     assert is_equiv_unitary(qc2mat(qc_demo), qc2mat(qc))
+
+
+def test_canonical_definition():
+    qc = QuantumCircuit(2)
+    a = np.random.uniform(0, 0.5)
+    b = np.random.uniform(0, a)
+    c = np.random.uniform(-b, b)
+    qc.append(CanonicalGate(a, b, c), [0, 1])
+    qc_ = qc.decompose('can')
+
+    assert is_equiv_unitary(qc2mat(qc_), qc2mat(qc))
+
+def test_stabilizer_circuit():
+    ...
