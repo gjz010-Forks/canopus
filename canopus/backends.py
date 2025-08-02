@@ -21,7 +21,7 @@ class ISAType(Enum):
     ZZPhaseWithMirror = 'zzphase_'
     SQiSWWithMirror = 'sqisw_'
     HetISA = 'het'  # CX-family and iSWAP-family heterogeneous ISA
-
+    StabilizerISA = 'stab'
 
 class CouplingType(Enum):
     XX = "xx"
@@ -104,6 +104,8 @@ class SynthCostEstimator:
             cost = synth_cost_by_sqisw_with_mirror(a, b, c)
         elif self.isa_type == ISAType.HetISA:
             cost = synth_cost_by_het_isa(a, b, c)
+        elif self.isa_type == ISAType.StabilizerISA:
+            cost = synth_cost_by_stabilizer_isa(a, b, c)
         else:
             raise TypeError(f"Unsupported ISAType: {self.isa_type}")
         self._cached_gate_costs[a, b, c] = cost

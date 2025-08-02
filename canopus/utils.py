@@ -32,6 +32,7 @@ ZZPhase_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'zzphase_w
 SQiSW_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'sqisw_coverage.pkl')
 SQiSW_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'sqisw_with_mirror_coverage.pkl')
 Het_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'het_isa_coverage.pkl')
+Stabilizer_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'stabilizer_isa_coverage.pkl')
 
 
 @lru_cache(maxsize=1)
@@ -124,6 +125,26 @@ def get_het_isa_coverage():
 
 def synth_cost_by_het_isa(a, b, c):
     cov = get_het_isa_coverage()
+    target = canonical_unitary(a, b, c)
+    cost, fid = coverage_lookup_cost(cov, target)
+    return cost
+
+
+@lru_cache(maxsize=1)
+def get_stabilizer_isa_coverage():
+    if os.path.exists(Stabilizer_ISA_Coverage_File):
+        with open(Stabilizer_ISA_Coverage_File, 'rb') as f:
+            return pickle.load(f)
+    gate_set = [iSwapGate(), CXGate()]
+    costs = [1, 1]
+    cov = gates_to_coverage(*gate_set, costs=costs)
+    with open(Stabilizer_ISA_Coverage_File, 'wb') as f:
+        pickle.dump(cov, f)
+    return cov
+
+
+def synth_cost_by_stabilizer_isa(a, b, c):
+    cov = get_stabilizer_isa_coverage()
     target = canonical_unitary(a, b, c)
     cost, fid = coverage_lookup_cost(cov, target)
     return cost

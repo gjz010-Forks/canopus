@@ -74,7 +74,7 @@ for fname in fnames:
         qc_het = qc_cx
         
     result = pd.concat([result, pd.DataFrame({
-        'program': fname.replace('.qasm', ''),
+        'program': fname.replace('.qasm', '').rsplit('_n', 1)[0],
         'num_qubits': qc.num_qubits,
         'cx': cx_synth_estimator.eval_circuit_duration(qc_cx) / cx_synth_estimator.eval_circuit_duration(qc),
         'zzphase': zzphase_synth_estimator.eval_circuit_duration(qc_zzphase) / cx_synth_estimator.eval_circuit_duration(qc),
