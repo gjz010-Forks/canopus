@@ -8,9 +8,17 @@ from qiskit.transpiler import PassManager
 import qiskit
 import numpy as np
 import time
-import tqdm
+from tqdm import tqdm
+import stim
 from canopus import *
 from canopus.utils import *
+from qiskit.qasm2 import dumps
+from qldpc import codes
+from qldpc.codes import CSSCode
+from ldpc.bp_decoder import BpDecoder
+from ldpc.bplsd_decoder import BpLsdDecoder
+from ldpc.bposd_decoder import BpOsdDecoder
+import beliefmatching
 
 
 def canopus_pass(qc, topology, isa):
@@ -57,8 +65,157 @@ def get_layout(qc):
     return log_to_phys_initial, log_to_phys_final
 
 
+def get_info(Code):
+    ancilla_qubit_list = list(range(Code.num_checks_x + Code.num_checks_z))
+    ancilla_x_qubit_list = ancilla_qubit_list[:Code.num_checks_x]
+    ancilla_z_qubit_list = ancilla_qubit_list[Code.num_checks_x:]
+    data_qubit_list = list(range(Code.num_checks, Code.num_checks + Code.num_qubits))
+    qubits_all_list = ancilla_qubit_list + data_qubit_list
+    logical_x_operators = Code.get_logical_ops()[0]
+    logical_z_operators = Code.get_logical_ops()[1]
+    info_dict = {
+        "ancilla_qubit_list": ancilla_qubit_list,
+        "ancilla_x_qubit_list": ancilla_x_qubit_list,
+        "ancilla_z_qubit_list": ancilla_z_qubit_list,
+        "data_qubit_list": data_qubit_list,
+        "qubits_all_list": qubits_all_list,
+        "logical_x_operator": logical_x_operators,
+        "logical_z_operator": logical_z_operators
+    }
+    return info_dict
+
+
+def transformer_syndrome_extraction_circuit(qc_pre_stim, log_to_phys_initial, log_to_phys_final, Code, p = 0.01): 
+    """Transforms the quantum circuit for syndrome extraction into a format suitable for Stim.
+
+    Args:
+        qc_pre_stim (QuantumCircuit): The quantum circuit to be transformed.
+        log_to_phys_initial (Dict[int, int]): Initial layout mapping from logical to physical qubits.
+        log_to_phys_final (Dict[int, int]): Final layout mapping from logical to physical qubits.
+        Code (qldpc.Code): The qldpc code used for quantum error correction.
+        p (float): Physical error rate
+    Returns:
+        Stim.Circuit: The transformed Stim circuit.
+    """
+    info_dict = get_info(Code)
+    ancilla_qubit_list = info_dict["ancilla_qubit_list"]
+    ancilla_x_qubit_list = info_dict["ancilla_x_qubit_list"]
+    ancilla_z_qubit_list = info_dict["ancilla_z_qubit_list"]
+    data_qubit_list = info_dict["data_qubit_list"]
+    qubits_all_list = info_dict["qubits_all_list"]
+    
+    stim_circ = stim.Circuit()
+    num_qubits = qc_pre_stim.num_qubits
+    num_clbits = qc_pre_stim.num_clbits
+    print(f"num qubits = {num_qubits}, num clbits = {num_clbits}")
+    stim_circ.append("R", [i for i in range(num_qubits)])
+    
+    for instruction in qc_pre_stim.data:
+        gate = instruction.operation
+        qubit_indices = [qc_pre_stim.qubits.index(q) for q in instruction.qubits]
+        # classical bits if needed: instruction.clbits
+
+        name = gate.name.lower()
+
+        if name == 'h':
+            stim_circ.append("H", [qubit_indices[0]])
+        elif name in ('cx', 'cnot'):
+            stim_circ.append("CNOT", [qubit_indices[0], qubit_indices[1]])
+        elif name == 'cz':
+            stim_circ.append("CZ", [qubit_indices[0], qubit_indices[1]])
+        elif name == 's':
+            stim_circ.append("S", [qubit_indices[0]])
+        elif name in ('sdg', 's_dag', 'sdag'):
+            stim_circ.append("S_DAG", [qubit_indices[0]])
+        elif name == 'x':
+            stim_circ.append("X", [qubit_indices[0]])
+        elif name in ('sx', 'sqrtx'):
+            stim_circ.append("SQRT_X", [qubit_indices[0]])
+        elif name == 'y':
+            stim_circ.append("Y", [qubit_indices[0]])
+        elif name in ('sy', 'sqrty'):
+            stim_circ.append("SQRT_Y", [qubit_indices[0]])
+        elif name == 'z':
+            stim_circ.append("Z", [qubit_indices[0]])
+        elif name in ('sz', 'sqrtz'):
+            stim_circ.append("SQRT_Z", [qubit_indices[0]])
+        elif name == 'swap':
+            stim_circ.append("SWAP", [qubit_indices[0], qubit_indices[1]])
+        elif name == 'iswap':
+            stim_circ.append("ISWAP", [qubit_indices[0], qubit_indices[1]])
+        elif name == 'measure':
+            stim_circ.append("M", [qubit_indices[0]])
+        else:
+            raise ValueError(f"Unsupported gate: {gate.name}")
+    
+    stim_circ.append("TICK")
+    
+    # stabilizer measurement
+    stim_circ.append("M", [log_to_phys_final[i] for i in ancilla_qubit_list])
+    # add Z detector
+    detector_shift = 0
+    z_detector_flag = 0
+    for i in ancilla_qubit_list[::-1]:
+        detector_shift -= 1
+        if i in ancilla_z_qubit_list:
+            local_index = ancilla_z_qubit_list.index(i)
+            stim_circ.append("DETECTOR",[stim.target_rec(detector_shift)], [z_detector_flag, local_index, 0])
+    
+    # measure all data qubits
+    stim_circ.append('X_ERROR', [log_to_phys_final[i] for i in data_qubit_list], p)
+    stim_circ.append('M', [log_to_phys_final[i] for i in data_qubit_list])
+    # add perfect Z measurement
+    matrix_x = Code.matrix_x
+    matrix_z = Code.matrix_z
+    
+    detector_list = []
+    detector_list += ancilla_qubit_list
+    detector_list += data_qubit_list
+    detector_shift_list = [(-len(detector_list) + i) for i in range(len(detector_list))]
+    
+    detector_set = set(detector_list) 
+    data_qubits_set = set(data_qubit_list)
+    stabilizer_z_set = set(ancilla_z_qubit_list)
+    
+    for i, detector in enumerate(detector_list):
+        if detector in stabilizer_z_set:
+            target_rec = []
+            target_rec.append(stim.target_rec(detector_shift_list[i]))
+            
+            # one stabilizer check - many data qubits
+            idx = detector % len(ancilla_z_qubit_list)
+            stabilizer = matrix_z[idx]
+            data_qubits = [data_qubit_list[j] for j in np.where(stabilizer == 1)[0]]
+            for check_qubit in data_qubits:
+                target_rec.append(stim.target_rec(detector_shift_list[detector_list.index(check_qubit)]))
+            local_index = ancilla_z_qubit_list.index(i)
+            z_detector_flag = 0
+            stim_circ.append("DETECTOR", target_rec, [z_detector_flag, local_index, 1])
+    
+    # add logical Z operators according to qldpc logical operators
+    logical_x_operators = Code.get_logical_ops()[0]
+    logical_z_operators = Code.get_logical_ops()[1]
+    N = Code.num_qubits
+    K = (len(logical_x_operators) + len(logical_z_operators)) // 2
+    
+    for k in range(K):
+        target_rec = []
+        logical_z_operator = logical_z_operators[k]
+        data_qubits = [data_qubit_list[j - N] for j in np.where(logical_z_operator == 1)[0]]
+        for i in range(len(detector_list)):
+            if detector_list[i] in data_qubits:
+                target_rec.append(stim.target_rec(detector_shift_list[i]))
+        stim_circ.append(stim.CircuitInstruction('OBSERVABLE_INCLUDE', target_rec, [k]))
+    
+    print("stim circuit:\n", stim_circ)
+    stim_circ.to_file("test_qldpc.stim")
+    return stim_circ
+    
 if __name__ == "__main__":
+    shots = 10000
     qasm_fname = './qldpc_circ/steane_code/SteaneCode_[[7, 1, 3]]_Naive_CX.qasm'
+    Code = codes.SteaneCode()
+    
     qc = QuantumCircuit.from_qasm_file(qasm_fname)
     
     # rebase to tk2: naive optimization by tk2
@@ -124,3 +281,49 @@ if __name__ == "__main__":
     # print(qc_canopus_stab_pre_stim)
     # print(qc_canopus_cx_pre_stim)
     # print(qc_canopus_stab_pre_stim)
+    
+    qasm_str_sabre = dumps(qc_sabre_pre_stim)
+    qasm_str_canopus_cx = dumps(qc_canopus_cx_pre_stim)
+    qasm_str_canopus_stab = dumps(qc_canopus_stab_pre_stim)
+    print(qasm_str_canopus_stab)
+    
+    stim_canopus_stab = transformer_syndrome_extraction_circuit(qc_canopus_stab_pre_stim, qc_canopus_stab_log_to_phys_initial, qc_canopus_stab_log_to_phys_final, Code)
+    
+    # sampler = stim_canopus_stab.compile_sampler()
+    sampler = stim_canopus_stab.compile_detector_sampler()
+    syndrome_matrix, actual_observables = sampler.sample(shots=shots, separate_observables=True)
+    
+    model = stim_canopus_stab.detector_error_model()
+    matrices = beliefmatching.detector_error_model_to_check_matrices(model, allow_undecomposed_hyperedges=True)
+    K = matrices.observables_matrix.shape[0]
+    OUR_DECODER = BpLsdDecoder(
+        matrices.check_matrix,
+        channel_probs=matrices.priors,
+        max_iter=20,
+        lsd_order=14,
+        bp_method='product_sum',
+        lsd_method='lsd_cs',
+        schedule='serial'
+    )
+    
+    successful_decodes = 0
+    successful_decodes_logical = 0
+    
+    for i in tqdm(range(len(syndrome_matrix))):
+        corr = OUR_DECODER.decode(syndrome_matrix[i])
+        # print(i, actual_observables[i], (matrices.observables_matrix @ corr) % 2 == actual_observables[i])
+        if ((matrices.observables_matrix @ corr) % 2 == actual_observables[i]).all():
+            successful_decodes += 1
+            
+        # new method to calculate the logical accuracy
+        successful_decodes_logical += ((matrices.observables_matrix @ corr) % 2 == actual_observables[i]).sum()
+    
+    
+    print(f"Word Error Rate   : {shots - successful_decodes}/{shots} = {(shots - successful_decodes) / shots}")
+    print(f"Logical Error Rate: {(shots) * K - successful_decodes_logical}/{(shots) * K} = {((shots) * K - successful_decodes_logical) / ((shots) * K)}")
+    
+    # syndrome_matrix, actual_observables = sampler.sample(shots=100)  # shape: (100, num_measurements)
+    # print(syndrome_matrix)
+    # print(actual_observables)
+    # syndrome_matrix, actual_observables = sampler.sample(shots=100, separate_observables=True)
+    # print(syndrome_matrix, actual_observables)
