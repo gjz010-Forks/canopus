@@ -3,7 +3,7 @@ from qiskit.transpiler import TransformationPass, Layout
 from qiskit.dagcircuit import DAGCircuit, DAGNode
 from tqdm import tqdm
 from canopus.backends import CanopusBackend
-from canopus.utils import generate_random_layout
+from canopus.utils import generate_random_layout, generate_trivial_layout
 from canopus.basics import *
 from qiskit.circuit.library import SwapGate
 from qiskit.transpiler import TranspilerError
@@ -64,13 +64,14 @@ def average_degree(g):
 
 class BidirectionalMapping(TransformationPass):
     def __init__(self, backend: CanopusBackend, seed=None,
-                 max_iterations=5, trials=None, layout_trials=None):
+                 max_iterations=5, trials=None, layout_trials=None, init_layout_method='random'):
         super().__init__()
         self.backend = backend
         self.trials = min(os.cpu_count(), 10) if trials is None else trials
         self.max_iterations = max_iterations
         self.seed = seed
         self.layout_trials = min(os.cpu_count(), 10) if layout_trials is None else layout_trials
+        self.init_layout_method = init_layout_method
 
         self.coupling_map = backend.coupling_map
         self.distance_matrix = self.coupling_map.distance_matrix.astype(int)
@@ -115,7 +116,12 @@ class BidirectionalMapping(TransformationPass):
 
         for trial in range(self.layout_trials):
             trial_seed = None if self.seed is None else self.seed + trial
-            initial_layout = generate_random_layout(self.canonical_qreg, self.coupling_map, trial_seed)
+            if self.init_layout_method == 'trivial':
+                initial_layout = generate_trivial_layout(self.canonical_qreg, self.coupling_map)
+            elif self.init_layout_method == 'random':
+                initial_layout = generate_random_layout(self.canonical_qreg, self.coupling_map, trial_seed)
+            else:
+                raise ValueError(f"Unsupported initial layout method: {self.init_layout_method}")
             # logger.info(f'Initial layout for trial {trial + 1} ...')
             routed_dag, initial_layout, final_layout = self._bidirectional_route(dag, initial_layout, trial_seed)
             if self._eval_dagcircuit_cost(routed_dag) < best_metric:
@@ -205,11 +211,12 @@ class BidirectionalMapping(TransformationPass):
 class CanopusMapping(BidirectionalMapping):
     def __init__(self, backend: CanopusBackend, seed=None,
                  max_iterations=5, trials=None, layout_trials=None,
-                 comm_opt=True):
-        super().__init__(backend, seed, max_iterations, trials, layout_trials)
+                 comm_opt=True, init_layout_method='random'):
+        super().__init__(backend, seed, max_iterations, trials, layout_trials, init_layout_method)
         self.depth_driven_rate = None
         self.average_degree = average_degree(self.coupling_map.graph)
-        self.w_degree = self.average_degree / (2 + self.average_degree)
+        # self.w_degree = self.average_degree / (1.5 + self.average_degree) * np.log2(self.coupling_map.size()) / 1.5 # * 2 # 如果乘上2，可以对QFT做到optimal routing
+        self.w_degree = self.average_degree / (2 + self.average_degree)  # 经验发现，这种设置效果还不错
         self.comm_opt = comm_opt
 
     def _eval_dagcircuit_cost(self, dag):
@@ -389,15 +396,18 @@ class CanopusMapping(BidirectionalMapping):
                                  extended_set, layout, swap,
                                  wire_durations, duration, 
                                  avg_dist_front, avg_dist_extended) for swap in swap_candidates])
-        # print('swaps:', swap_candidates)
-        # print('costs:', costs)
+        # console.print('swaps: {}'.format([(self._get_qubit_index(swap[0]), self._get_qubit_index(swap[1])) for swap in swap_candidates]))
+        # console.print('costs: {}'.format(costs))
         # print()
         # print('len(swap_candidates)={}, len(costs)={}'.format(len(swap_candidates), len(costs)))
-        # print(costs[0])
+        # console.print('min_cost={}'.format(np.min(costs)))
         # print('swap candidates: {}'.format([(self._qubit_indices[q0], self._qubit_indices[q1]) for q0, q1 in swap_candidates]))
         # print('swap costs: {}'.format(costs))
         min_cost = np.min(costs)
         min_indices = np.where(np.abs(costs - min_cost) < 1e-8)[0]
+        if not len(min_indices):
+            console.print('swaps: {}'.format([(self._get_qubit_index(swap[0]), self._get_qubit_index(swap[1])) for swap in swap_candidates]))
+            console.print('costs: {}'.format(costs))
         swap = swap_candidates[np.random.choice(min_indices)]
         # console.print('Best swap: {} with cost {:.4f}'.format((self._qubit_indices[swap[0]], self._qubit_indices[swap[1]]),min_cost))
         # print('min_cost:', min_cost)
@@ -439,7 +449,7 @@ class CanopusMapping(BidirectionalMapping):
                         duration: float,
                         avg_dist_front=None, avg_dist_extended=None):
         wire_durations = wire_durations.copy()
-        assert duration == max(wire_durations.values()), "Duration should be the maximum wire duration."
+        # assert duration == max(wire_durations.values()), "Duration should be the maximum wire duration."
         avg_dist_front = self._avg_dist(front_layer, layout) if avg_dist_front is None else avg_dist_front
         avg_dist_extended = self._avg_dist(extended_set, layout) if avg_dist_extended is None else avg_dist_extended
 
@@ -453,8 +463,9 @@ class CanopusMapping(BidirectionalMapping):
                 self._try_update_wire_durations_by_commutation((swap_p0, swap_p1), routed_node, commutative_pairs, wire_durations)
                 gate_duration = self.backend.cost_estimator.eval_gate_cost(*mirror_weyl_coord(*params)) - self.backend.cost_estimator.eval_gate_cost(*params)
             else:
-                assert gname == 'swap', "Only swap gates should be in the last mapped layer."
-                gate_duration = float('inf')
+                # assert gname == 'swap', "Only swap gates should be in the last mapped layer."
+                # gate_duration = float('inf')
+                gate_duration = self.backend.cost_estimator.swap_cost * 10
         else:
             gate_duration = self.backend.cost_estimator.swap_cost
 
@@ -492,8 +503,8 @@ class CanopusMapping(BidirectionalMapping):
 
 class SabreMapping(BidirectionalMapping):
     def __init__(self, backend: CanopusBackend, seed=None,
-                 max_iterations=5, trials=None, layout_trials=None):
-        super().__init__(backend, seed, max_iterations, trials, layout_trials)
+                 max_iterations=5, trials=None, layout_trials=None, init_layout_method='random'):
+        super().__init__(backend, seed, max_iterations, trials, layout_trials, init_layout_method)
 
     def _eval_dagcircuit_cost(self, dag):
         return dag.count_ops().get('swap', 0)

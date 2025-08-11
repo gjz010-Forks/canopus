@@ -1,3 +1,4 @@
+import canopus
 import numpy as np
 from qiskit import qasm2
 from qiskit import QuantumCircuit
@@ -5,7 +6,6 @@ from canopus.utils import is_equiv_unitary, qc2mat
 from scipy.stats import unitary_group
 from qiskit.synthesis import TwoQubitWeylDecomposition
 from accel_utils import canonical_unitary
-from qiskit.circuit.library import UnitaryGate
 from canopus.basics import CanonicalGate
 
 Z = np.array([[1, 0], [0, -1]], dtype=np.complex128)
@@ -52,30 +52,13 @@ def test_weyl_decomposition_circuit():
     decomp = TwoQubitWeylDecomposition(u)
     a, b, c = decomp.a / half_pi, decomp.b / half_pi, - decomp.c / half_pi
     qc = QuantumCircuit(2)
-    qc.append(UnitaryGate(Z @ decomp.K2l), [0])
-    qc.append(UnitaryGate(decomp.K2r), [1])
+    qc.unitary(Z @ decomp.K2l, [0])
+    qc.unitary(decomp.K2r, [1])
     qc.append(CanonicalGate(a, b, c), [0, 1])
-    qc.append(UnitaryGate(decomp.K1l @ Z), [0])
-    qc.append(UnitaryGate(decomp.K1r), [1])
+    qc.unitary(decomp.K1l @ Z, [0])
+    qc.unitary(decomp.K1r, [1])
 
     assert is_equiv_unitary(u, qc2mat(qc))
-
-
-def test_canonical_synthesis():
-    from qiskit.transpiler import PassManager, passes
-    from canopus.synthesis import CanonicalSynthesis
-
-    pm = PassManager([
-        passes.Collect2qBlocks(),
-        passes.ConsolidateBlocks(force_consolidate=True),
-        CanonicalSynthesis(),
-        passes.Decompose('unitary'),
-        passes.Optimize1qGates(basis=['u'])
-    ])
-
-    qc = pm.run(qc_demo)
-
-    assert is_equiv_unitary(qc2mat(qc_demo), qc2mat(qc))
 
 
 def test_canonical_definition():
@@ -88,5 +71,26 @@ def test_canonical_definition():
 
     assert is_equiv_unitary(qc2mat(qc_), qc2mat(qc))
 
+
 def test_stabilizer_circuit():
-    ...
+    from qiskit.circuit.random import random_clifford_circuit
+    qc = random_clifford_circuit(6, 100)
+    qc_ = canopus.rebase_to_tk2(qc)
+    qc_ = canopus.synthesize_clifford_circuit(qc_)
+
+    assert is_equiv_unitary(qc2mat(qc), qc2mat(qc_))
+
+
+def test_canonical_synthesis():
+    qc = canopus.rebase_to_canonical(qc_demo)
+    assert is_equiv_unitary(qc2mat(qc_demo), qc2mat(qc))
+
+
+def test_sqisw_synthesis():
+    qc = canopus.rebase_to_sqisw(qc_demo)
+    assert is_equiv_unitary(qc2mat(qc_demo), qc2mat(qc))
+
+
+def test_zzphase_synthesis():
+    qc = canopus.rebase_to_zzphase(qc_demo)
+    assert is_equiv_unitary(qc2mat(qc_demo), qc2mat(qc))

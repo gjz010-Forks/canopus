@@ -40,7 +40,4 @@ def test_circuit_conversion_2():
     assert is_equiv_unitary(qc2mat(qc_zzphase), qc2mat(qc_demo))
 
     qc_sqisw = rebase_to_sqisw(qc_can)
-    from regulus.utils.functions import infidelity
-    print('final infid', infidelity(qc2mat(qc_sqisw), qc2mat(qc_sqisw)))
-
     assert is_equiv_unitary(qc2mat(qc_sqisw), qc2mat(qc_sqisw))

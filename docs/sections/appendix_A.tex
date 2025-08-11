@@ -1,1 +1,149 @@
 \section{Canonical gate and 2Q circuit synthesis}\label{sec:appendix_A}
+
+
+In this section we show the basic mathematical properties the its canonical form of 2Q unitary and then discuss the synthesis capability of some 2Q basis gates.
+
+\subsection{Canonical decomposition}
+
+$\mathbf{SU}(N)$ is a real manifold with dimension $N^2 - 1$, within which any element is a \emph{special unitary} matrix with determinant equal to 1. Since the global phase does not affect quantum computation processes, it is sufficient to focus on the mathematical properties of special unitaries in the area of circuit synthesis. A generic 2Q gate, despite having 15 real parameters, can have its nonlocal behavior fully characterized by only 3 real parameters. This method, known as \emph{Canonical decomposition} or \emph{KAK decomposition} from Lie algebra theory, is widely adopted in quantum computing~\cite{zhang2003geometric,tucci2005introduction,bullock2003arbitrary,zulehner2019compiling}. Specifically, for any $U \in \mathbf{SU}(4)$, there exists a unique $\vec{\eta} = (x, y, z) \in W \subseteq \mathbb{R}^3$, along with $V_1, V_2, V_3, V_4 \in \mathbf{SU}(2)$ and a global phase, such that
+\begin{align}
+U = g \cdot (V_1 \otimes V_2) e^{-i\vec{\eta} \cdot \vec{\Sigma}} (V_3 \otimes V_4),\, g \in \{1, i\}
+\end{align}
+where $\vec{\Sigma} \equiv (XX, YY, ZZ)$~\cite{tucci2005introduction}. The set
+\begin{align}
+W := \left\{(x, y, z) \in \mathbb{R}^3 \,\vert\, \frac{\pi}{4} \geq x \geq y \geq |z|,\, z \geq 0 \text{ if } x = \frac{\pi}{4}\right\}
+\end{align}
+is known as the \emph{Weyl chamber}~\cite{zhang2003geometric}, and  $\vec{\eta} \in W$ is known as the \emph{Weyl coordinate} of $ U $. We also refer to a gate of the form 
+\begin{align}
+    \Can(a,b,c):= e^{-i\frac{\pi}{2}(a\,XX+b\,YY+c\,ZZ)} = \begin{pmatrix}
+        e^{-i \frac{c\pi}{2}} \cos{\frac{(a-b)\pi}{2}} & 0 & 0 & -i e^{-i \frac{c\pi}{2}} \sin{\frac{(a-b)\pi}{2}} \\
+        0 & e^{i \frac{c\pi}{2}} \cos{\frac{(a+b)\pi}{2}} & -i e^{i \frac{c\pi}{2}} \sin{\frac{(a+b)\pi}{2}} & 0 \\
+        0 & -i e^{i \frac{c\pi}{2}} \sin{\frac{(a+b)\pi}{2}} & e^{i \frac{c\pi}{2}} \cos{\frac{(a+b)\pi}{2}} & 0 \\
+        -i e^{-i \frac{c\pi}{2}} \sin{\frac{(a-b)\pi}{2}} & 0 & 0 & e^{-i \frac{c\pi}{2}} \cos{\frac{(a-b)\pi}{2}}
+    \end{pmatrix}
+\end{align}
+as a \emph{canonical} gate. Two 2Q gates $ U $ and $ V $ are considered \emph{locally equivalent} if they differ only by 1Q gates, meaning their canonical coefficients can be transformed into one another via the equivalence rules~\cite{crooks2020gates}:
+\begin{enumerate}
+    \item $(a,b,c)\sim (b,a,c)$ or $(a,b,c)\sim (c,b,a)$, i.e., any permutation of the coefficients;
+    \item $(a,b,c)\sim (-a, -b, c)$;
+    \item $(a,b,c)\sim (a-1, b, c)$;
+    \item $(1/2, b, c) \sim (1/2, b, -c)$.
+\end{enumerate}
+Note that we align the conventional that canonical coefficient $ (a,b,c) $ differs from Weyl coordinate $ (x,y,z) $ by a $ \frac{\pi}{2} $ factor. Unless otherwise specified, the canonical coefficients of gates in quantum ISAs and circuits are confined to $ \frac{1}{2}\geq a \geq b \geq \lvert c\rvert $. While for the Weyl chamber visualization by means of \code{weylchamber}, we assume the Weyl coordinates are confined to $\left\{\frac{\pi}{4}\geq x \geq y \geq z\geq 0\right\} \cup \left\{\frac{\pi}{4} \geq \frac{\pi}{2}-x \geq y \geq z \geq 0\right\}$, as illustrated by \Cref{fig:weyl_chamber}. Conversion of Weyl coordinates for different conventions is not simple according to the equivalence rules above.
+
+
+
+
+
+
+\subsection{Quantum ISA and the synthesis capability}
+
+
+
+
+\subsection{2Q gate mirroring}
+
+% TODO: 
+
+
+Mirroring formula:
+
+
+
+% \begin{align}
+%     \mathrm{SWAP}\cdot\mathrm{Can}(a,b,c)
+%     \sim \left(x+\frac{1}{2}, y+\frac{1}{2}, z+\frac{1}{2}\right)
+%     \sim \left(x+\frac{1}{2}-1,y+\frac{1}{2}-1,z+\frac{1}{2}-1\right)
+%     \sim  \left\{
+%     \begin{cases}{ll}
+%     \left(\frac{1}{2}-z, \frac{1}{2}-y, x - \frac{1}{2}\right), \textrm{ if } z\geq 0 \\
+%     \left(\frac{1}{2} + z, \frac{1}{2}-y, \frac{1}{2} - x\right), \textrm{ if } z < 0
+%     \end{cases}
+%     \right.
+% \end{align}
+
+\begin{align}
+    \mathrm{SWAP} \cdot \mathrm{Can}(a,b,c)
+    & \sim \left(x+\frac{1}{2}, y+\frac{1}{2}, z+\frac{1}{2}\right) 
+    & \sim \left(x+\frac{1}{2}-1, y+\frac{1}{2}-1, z+\frac{1}{2}-1\right) 
+    & \sim
+    \begin{cases}
+        \left(\frac{1}{2}-z, \frac{1}{2}-y, x - \frac{1}{2}\right), & \text{if } z \geq 0 \\
+        \left(\frac{1}{2} + z, \frac{1}{2}-y, \frac{1}{2} - x\right), & \text{if } z < 0
+    \end{cases}
+\end{align}
+
+
+\subsection{Coverage sets for the selected ISAs used in ...}
+
+
+
+
+\begin{figure}[tbp]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/coverage/coverage_cx_minimal.pdf}
+        \caption{Coverage set for \CXISA\ ISA.}
+        \label{fig:coverage_cx}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/coverage/coverage_sqisw_minimal.pdf}
+        \caption{Coverage set for \SQiSWISA\ ISA.}
+        \label{fig:coverage_sqisw}
+    \end{minipage}
+\end{figure}
+
+
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_sqisw_with_mirror_minimal.pdf}
+    \caption{Coverage set for \SQiSWWithMirrorISA\ ISA.}
+    \label{fig:coverage_sqisw_with_mirror}
+\end{figure}
+
+
+
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_zzphase_minimal_1.pdf}\vspace{-1.5em}
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_zzphase_minimal_2.pdf}\vspace{-1.5em}
+    \includegraphics[width=0.83\textwidth]{figures/coverage/coverage_zzphase_minimal_3.pdf}\vspace{-2em}
+    \caption{Coverage set for \ZZPhaseISA\ ISA.}
+    \label{fig:coverage_zzphase}
+\end{figure}
+
+
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_zzphase_with_mirror_minimal_1.pdf}\vspace{-1.5em}
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_zzphase_with_mirror_minimal_2.pdf}\vspace{-1.5em}
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_zzphase_with_mirror_minimal_3.pdf}\vspace{-1.5em}
+    \includegraphics[width=0.5\textwidth]{figures/coverage/coverage_zzphase_with_mirror_minimal_4.pdf}\vspace{-2em}
+    \caption{Coverage set for \ZZPhaseWithMirrorISA\ ISA.}
+    \label{fig:coverage_zzphase_with_mirror}
+\end{figure}
+
+
+
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_het_minimal_1.pdf}\vspace{-1.5em}
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_het_minimal_2.pdf}\vspace{-1.5em}
+    \includegraphics[width=\textwidth]{figures/coverage/coverage_het_minimal_3.pdf}\vspace{-1.5em}
+    \includegraphics[width=0.66\textwidth]{figures/coverage/coverage_het_minimal_4.pdf}\vspace{-2em}
+    \caption{Coverage set for \HetISA\ ISA.}
+    \label{fig:coverage_het}
+\end{figure}
+
+
+
+
+
+

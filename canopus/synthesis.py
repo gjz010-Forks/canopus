@@ -4,16 +4,17 @@ import pytket
 import qiskit
 import pytket.passes
 from pytket import circuit_library
-from pytket.circuit import Op, OpType
+from pytket.circuit import OpType
 from pytket.extensions.cirq import cirq_to_tk
 from pytket.utils.stats import gate_counts
 from qiskit.synthesis import XXDecomposer, TwoQubitWeylDecomposition
-from qiskit.converters import circuit_to_dag, dag_to_circuit
-from qiskit.circuit.library import UGate, RZGate, ZGate, SGate, SdgGate, HGate, CXGate, iSwapGate, UnitaryGate
+from qiskit.converters import circuit_to_dag
+from qiskit.circuit.library import *
 from qiskit.transpiler.passes import Optimize1qGatesDecomposition
 from canopus.basics import *
 from canopus.utils import tket_to_qiskit, qiskit_to_tket
-from accel_utils import canonical_unitary, fuzzy_equal
+from canopus.backends import ISAType
+from accel_utils import canonical_unitary, fuzzy_equal, fuzzy_less, check_weyl_coord
 from typing import Union
 from qiskit.transpiler import PassManager, TransformationPass, passes
 from qiskit.dagcircuit import DAGCircuit
@@ -27,8 +28,33 @@ def rebase_to_canonical(qc: QuantumCircuit) -> QuantumCircuit:
         passes.Collect2qBlocks(),
         passes.ConsolidateBlocks(force_consolidate=True),
         CanonicalSynthesis(),
-        passes.Decompose('unitary'),
-        passes.Optimize1qGates(basis=['u'])
+        passes.Decompose('unitary'),  # convert 1Q unitary to U3
+        passes.Optimize1qGatesDecomposition(basis=['u'])  # consolidate successive U3 gates
+    ]).run(qc)
+
+
+def normalize_canonical(qc: QuantumCircuit) -> QuantumCircuit:
+    return PassManager([
+        CanonicalSynthesis(),
+        passes.Optimize1qGatesDecomposition(basis=['u'])  # consolidate successive U3 gates
+    ]).run(qc)
+
+
+def rebase_to_sqisw(qc: QuantumCircuit) -> QuantumCircuit:
+    return PassManager([
+        passes.Collect2qBlocks(),
+        passes.ConsolidateBlocks(force_consolidate=True),
+        SQiSWSynthesis(),
+        passes.Optimize1qGatesDecomposition(basis=['u'])
+    ]).run(qc)
+
+
+def rebase_to_zzphase(qc: QuantumCircuit) -> QuantumCircuit:
+    return PassManager([
+        passes.Collect2qBlocks(),
+        passes.ConsolidateBlocks(force_consolidate=True),
+        ZZPhaseSynthesis(),
+        passes.Optimize1qGatesDecomposition(basis=['u'])
     ]).run(qc)
 
 
@@ -38,25 +64,89 @@ class CanonicalSynthesis(TransformationPass):
 
     def run(self, dag: DAGCircuit):
         for node in dag.op_nodes():
-            if hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary':
-                # decomposed_circuit = self._decompose_to_canonical(node.op.to_matrix())
+            if (hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary') or (isinstance(node.op, CanonicalGate) and not check_weyl_coord(*node.op.params)):
+                # decompose 2Q unitary to canonical gate sandwiched by 1Q gates
                 decomp = TwoQubitWeylDecomposition(node.op.to_matrix())
                 a, b, c = decomp.a / half_pi, decomp.b / half_pi, - decomp.c / half_pi
+
+                B0 = Z @ decomp.K2l
+                B1 = decomp.K2r
+                A0 = decomp.K1l @ Z
+                A1 = decomp.K1r
+
+                if fuzzy_equal(a, 0.5) and fuzzy_less(c, 0):
+                    c = -c
+                    A0 = A0 @ X
+                    A1 = A1 @ Z
+                    B1 = Y @ B1
 
                 mini_dag = DAGCircuit()
                 q = QuantumRegister(2)
                 mini_dag.add_qreg(q)
-                mini_dag.apply_operation_back(UnitaryGate(Z @ decomp.K2l), [q[0]])
-                mini_dag.apply_operation_back(UnitaryGate(decomp.K2r), [q[1]])
+                mini_dag.apply_operation_back(UnitaryGate(B0), [q[0]])
+                mini_dag.apply_operation_back(UnitaryGate(B1), [q[1]])
                 mini_dag.apply_operation_back(CanonicalGate(a, b, c), [q[0], q[1]])
-                mini_dag.apply_operation_back(UnitaryGate(decomp.K1l @ Z), [q[0]])
-                mini_dag.apply_operation_back(UnitaryGate(decomp.K1r), [q[1]])
+                mini_dag.apply_operation_back(UnitaryGate(A0), [q[0]])
+                mini_dag.apply_operation_back(UnitaryGate(A1), [q[1]])
 
-                dag.substitute_node_with_dag(
-                    node,
-                    mini_dag,
-                    [q[1], q[0]]
-                )
+                dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+
+        return dag
+
+
+class SQiSWSynthesis(TransformationPass):
+    def __init__(self):
+        super().__init__()
+
+    def run(self, dag: DAGCircuit):
+        cirq_qubit_pair = cirq.LineQubit.range(2)
+        for node in dag.op_nodes():
+            if hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary':
+                mini_dag = DAGCircuit()
+                q = QuantumRegister(2)
+                mini_dag.add_qreg(q)
+                ops = cirq.two_qubit_matrix_to_sqrt_iswap_operations(*cirq_qubit_pair, node.op.to_matrix(), atol=1e-12)
+                for op in ops:
+                    if isinstance(op.gate, cirq.ZPowGate):
+                        theta = op.gate.exponent * pi
+                        if op.qubits[0] == cirq_qubit_pair[0]:
+                            mini_dag.apply_operation_back(RZGate(theta), [q[0]])
+                        else:
+                            mini_dag.apply_operation_back(RZGate(theta), [q[1]])
+                    elif isinstance(op.gate, cirq.XPowGate):
+                        theta = op.gate.exponent * pi
+                        if op.qubits[0] == cirq_qubit_pair[0]:
+                            mini_dag.apply_operation_back(RXGate(theta), [q[0]])
+                        else:
+                            mini_dag.apply_operation_back(RXGate(theta), [q[1]])
+                    elif isinstance(op.gate, cirq.YPowGate):
+                        theta = op.gate.exponent * pi
+                        if op.qubits[0] == cirq_qubit_pair[0]:
+                            mini_dag.apply_operation_back(RYGate(theta), [q[0]])
+                        else:
+                            mini_dag.apply_operation_back(RYGate(theta), [q[1]])
+                    elif isinstance(op.gate, cirq.ISwapPowGate):
+                        theta = - op.gate.exponent * pi
+                        mini_dag.apply_operation_back(XXPlusYYGate(theta), [q[0], q[1]])
+                    else:
+                        raise ValueError(f"Unsupported gate type: {type(op.gate)}")
+                dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+
+        return dag
+
+
+class ZZPhaseSynthesis(TransformationPass):
+    def __init__(self):
+        super().__init__()
+
+    def run(self, dag: DAGCircuit):
+        for node in dag.op_nodes():
+            if hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary':
+                mini_qc = xx_decomposer(node.op.to_matrix(),
+                                        # basis_fidelity=0.995, approximate=True,
+                                        approximate=False)
+                mini_dag = circuit_to_dag(mini_qc)
+                dag.substitute_node_with_dag(node, mini_dag, mini_dag.qubits)
 
         return dag
 
@@ -79,7 +169,7 @@ def _logical_optimize(circ: pytket.Circuit) -> pytket.Circuit:
     return circ
 
 
-def rebase_to_sqisw(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
+def rebase_to_sqisw_by_tket(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _rebase_to_sqisw(circ)
     elif isinstance(circ, qiskit.QuantumCircuit):
@@ -88,7 +178,7 @@ def rebase_to_sqisw(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union
         raise TypeError(f"Unsupported circuit type: {type(circ)}. Expected pytket.Circuit or qiskit.QuantumCircuit.")
 
 
-def rebase_to_zzphase(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[
+def rebase_to_zzphase_by_tket(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[
     pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _rebase_to_zzphase(circ)
@@ -136,8 +226,8 @@ def _rebase_to_tk2(circ: pytket.Circuit, optimize: bool = True) -> pytket.Circui
     pytket.passes.DecomposeBoxes().apply(circ)
     if optimize:
         pytket.passes.FullPeepholeOptimise(allow_swaps=False, target_2qb_gate=OpType.TK2).apply(circ)
-    pytket.passes.SynthesiseTK().apply(circ)
-    # pytket.passes.NormaliseTK2().apply(circ)
+    pytket.passes.SynthesiseTK().apply(circ)  # or, else: ... SynthesiseTK().apply(circ) ???
+    # pytket.passes.NormaliseTK2().apply(circ) # This function might result in other 1Q gates (e.g., X, Z) other than U3
     return circ
 
 
@@ -169,109 +259,114 @@ def synthesize_clifford_circuit(qc: QuantumCircuit, isa='cx') -> QuantumCircuit:
     Returns:
         QuantumCircuit instance represented in {CX, H, S, Sdg, ...} or {CX, iSWAP, H, S, Sdg, ...} ISAs.
     """
-    dag = circuit_to_dag(qc)
-    for node in dag.op_nodes():
-        if isinstance(node.op, CanonicalGate):
-            # if isa == 'cx':
-            if np.allclose(node.op.params, [0.5, 0, 0]):  # CX gate
-                #        ┌───────────────┐  ┌───────────────┐  ┌────────────┐
-                # q_0: ──┤ U(7π/2,π,π/2) ├──┤0              ├──┤ U(π/2,0,π) ├──
-                #      ┌─┴───────────────┴─┐│  Can(0.5,0,0) │┌─┴────────────┴─┐
-                # q_1: ┤ U(3π/2,-π/2,3π/2) ├┤1              ├┤ U(0,-π/2,3π/2) ├
-                #      └───────────────────┘└───────────────┘└────────────────┘
-                mini_dag = DAGCircuit()
-                q = QuantumRegister(2)
-                mini_dag.add_qreg(q)
-                mini_dag.apply_operation_back(UGate(pi / 2, -pi / 2, -pi), [q[0]])
-                mini_dag.apply_operation_back(UGate(pi / 2, pi / 2, pi / 2), [q[1]])
-                mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
-                mini_dag.apply_operation_back(UGate(-pi / 2, -pi, 0), [q[0]])
-                mini_dag.apply_operation_back(UGate(0, pi / 2, pi / 2), [q[1]])
-                dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
-            elif np.allclose(node.op.params, [0.5, 0.5, 0]):  # iSWAP gate
-                #      ┌────────────────┐┌─────────────────┐
-                # q_0: ┤ U(π,-π/2,7π/2) ├┤0                ├──────────────────
-                #      └────────────────┘│  Can(0.5,0.5,0) │┌────────────────┐
-                # q_1: ──────────────────┤1                ├┤ U(π,-π/2,7π/2) ├
-                #                        └─────────────────┘└────────────────┘
-                if isa == 'cx':
+    return PassManager(CliffordSynthesis(isa=isa)).run(qc)
+
+
+class CliffordSynthesis(TransformationPass):
+    def __init__(self, isa='cx'):
+        super().__init__()
+        self.isa_type = ISAType(isa)
+
+    def run(self, dag: DAGCircuit):
+        for node in dag.op_nodes():
+            if isinstance(node.op, CanonicalGate):
+                if np.allclose(node.op.params, [0.5, 0, 0]):  # CX gate
+                    #        ┌───────────────┐  ┌───────────────┐  ┌────────────┐
+                    # q_0: ──┤ U(7π/2,π,π/2) ├──┤0              ├──┤ U(π/2,0,π) ├──
+                    #      ┌─┴───────────────┴─┐│  Can(0.5,0,0) │┌─┴────────────┴─┐
+                    # q_1: ┤ U(3π/2,-π/2,3π/2) ├┤1              ├┤ U(0,-π/2,3π/2) ├
+                    #      └───────────────────┘└───────────────┘└────────────────┘
                     mini_dag = DAGCircuit()
                     q = QuantumRegister(2)
                     mini_dag.add_qreg(q)
-                    mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[0]])
+                    mini_dag.apply_operation_back(UGate(pi / 2, -pi / 2, -pi), [q[0]])
+                    mini_dag.apply_operation_back(UGate(pi / 2, pi / 2, pi / 2), [q[1]])
+                    mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
+                    mini_dag.apply_operation_back(UGate(-pi / 2, -pi, 0), [q[0]])
+                    mini_dag.apply_operation_back(UGate(0, pi / 2, pi / 2), [q[1]])
+                    dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+                elif np.allclose(node.op.params, [0.5, 0.5, 0]):  # iSWAP gate
+                    #      ┌────────────────┐┌─────────────────┐
+                    # q_0: ┤ U(π,-π/2,7π/2) ├┤0                ├──────────────────
+                    #      └────────────────┘│  Can(0.5,0.5,0) │┌────────────────┐
+                    # q_1: ──────────────────┤1                ├┤ U(π,-π/2,7π/2) ├
+                    #                        └─────────────────┘└────────────────┘
+                    if self.isa_type == ISAType.CX:
+                        mini_dag = DAGCircuit()
+                        q = QuantumRegister(2)
+                        mini_dag.add_qreg(q)
+                        mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[0]])
+                        mini_dag.apply_operation_back(SGate(), [q[0]])
+                        mini_dag.apply_operation_back(SGate(), [q[1]])
+                        mini_dag.apply_operation_back(HGate(), [q[1]])
+                        mini_dag.apply_operation_back(CXGate(), [q[1], q[0]])
+                        mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
+                        mini_dag.apply_operation_back(HGate(), [q[0]])
+                        mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[1]])
+                        dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+                    elif self.isa_type == ISAType.StabilizerISA:
+                        mini_dag = DAGCircuit()
+                        q = QuantumRegister(2)
+                        mini_dag.add_qreg(q)
+                        mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[0]])
+                        mini_dag.apply_operation_back(iSwapGate(), [q[0], q[1]])
+                        mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[1]])
+                        dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+                elif np.allclose(node.op.params, [0.5, 0.5, 0.5]):  # SWAP gate
+                    #           ┌─────┐       ┌────────┐┌───┐
+                    # q_0: ──■──┤ Sdg ├───────┤0       ├┤ H ├
+                    #      ┌─┴─┐└┬───┬┘┌─────┐│  Iswap │└───┘
+                    # q_1: ┤ X ├─┤ H ├─┤ Sdg ├┤1       ├─────
+                    #      └───┘ └───┘ └─────┘└────────┘
+                    if self.isa_type == ISAType.CX:
+                        mini_dag = DAGCircuit()
+                        q = QuantumRegister(2)
+                        mini_dag.add_qreg(q)
+                        mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
+                        mini_dag.apply_operation_back(CXGate(), [q[1], q[0]])
+                        mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
+                        dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+                    elif self.isa_type == ISAType.StabilizerISA:
+                        mini_dag = DAGCircuit()
+                        q = QuantumRegister(2)
+                        mini_dag.add_qreg(q)
+                        mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
+                        mini_dag.apply_operation_back(SdgGate(), [q[0]])
+                        mini_dag.apply_operation_back(HGate(), [q[1]])
+                        mini_dag.apply_operation_back(SdgGate(), [q[1]])
+                        mini_dag.apply_operation_back(iSwapGate(), [q[0], q[1]])
+                        mini_dag.apply_operation_back(HGate(), [q[0]])
+                        dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
+                else:
+                    raise ValueError("Only support Clifford2Q canonical gates")
+
+        dag = Optimize1qGatesDecomposition(basis=["rz", "sx"]).run(dag)
+        dag = self.replace_clifford_rz_with_s_z(dag)
+        return dag
+
+    def replace_clifford_rz_with_s_z(self, dag: DAGCircuit):
+        """Replace Rz(π/2) with S, Rz(-π/2) with Sdg, Rz(±π) with Z."""
+        for node in dag.op_nodes():
+            if isinstance(node.op, RZGate):
+                theta = node.op.params[0]
+                if fuzzy_equal(theta, pi) or fuzzy_equal(theta, -pi):
+                    mini_dag = DAGCircuit()
+                    q = QuantumRegister(1)
+                    mini_dag.add_qreg(q)
+                    mini_dag.apply_operation_back(ZGate(), [q[0]])
+                    dag.substitute_node_with_dag(node, mini_dag, [q[0]])
+                elif fuzzy_equal(theta, pi / 2):
+                    mini_dag = DAGCircuit()
+                    q = QuantumRegister(1)
+                    mini_dag.add_qreg(q)
                     mini_dag.apply_operation_back(SGate(), [q[0]])
-                    mini_dag.apply_operation_back(SGate(), [q[1]])
-                    mini_dag.apply_operation_back(HGate(), [q[1]])
-                    mini_dag.apply_operation_back(CXGate(), [q[1], q[0]])
-                    mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
-                    mini_dag.apply_operation_back(HGate(), [q[0]])
-                    mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[1]])
-                    dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
-                elif isa == 'stab':
+                    dag.substitute_node_with_dag(node, mini_dag, [q[0]])
+                elif fuzzy_equal(theta, -pi / 2):
                     mini_dag = DAGCircuit()
-                    q = QuantumRegister(2)
+                    q = QuantumRegister(1)
                     mini_dag.add_qreg(q)
-                    mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[0]])
-                    mini_dag.apply_operation_back(iSwapGate(), [q[0], q[1]])
-                    mini_dag.apply_operation_back(UGate(-pi, pi / 2, pi / 2), [q[1]])
-                    dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
-            elif np.allclose(node.op.params, [0.5, 0.5, 0.5]):  # SWAP gate
-                #           ┌─────┐       ┌────────┐┌───┐
-                # q_0: ──■──┤ Sdg ├───────┤0       ├┤ H ├
-                #      ┌─┴─┐└┬───┬┘┌─────┐│  Iswap │└───┘
-                # q_1: ┤ X ├─┤ H ├─┤ Sdg ├┤1       ├─────
-                #      └───┘ └───┘ └─────┘└────────┘
-                if isa == 'cx':
-                    mini_dag = DAGCircuit()
-                    q = QuantumRegister(2)
-                    mini_dag.add_qreg(q)
-                    mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
-                    mini_dag.apply_operation_back(CXGate(), [q[1], q[0]])
-                    mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
-                    dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
-                elif isa == 'stab':
-                    mini_dag = DAGCircuit()
-                    q = QuantumRegister(2)
-                    mini_dag.add_qreg(q)
-                    mini_dag.apply_operation_back(CXGate(), [q[0], q[1]])
                     mini_dag.apply_operation_back(SdgGate(), [q[0]])
-                    mini_dag.apply_operation_back(HGate(), [q[1]])
-                    mini_dag.apply_operation_back(SdgGate(), [q[1]])
-                    mini_dag.apply_operation_back(iSwapGate(), [q[0], q[1]])
-                    mini_dag.apply_operation_back(HGate(), [q[0]])
-                    dag.substitute_node_with_dag(node, mini_dag, [q[1], q[0]])
-            else:
-                raise ValueError("Only support Clifford2Q canonical gates")
-
-    dag = Optimize1qGatesDecomposition(basis=["rz", "sx"]).run(dag)
-    dag = _replace_rz(dag)
-    return dag_to_circuit(dag)
-
-
-def _replace_rz(dag):
-    """Replace Rz(π/2) with S, Rz(-π/2) with Sdg, Rz(±π) with Z."""
-    for node in dag.op_nodes():
-        if isinstance(node.op, RZGate):
-            theta = node.op.params[0]
-            if fuzzy_equal(theta, pi) or fuzzy_equal(theta, -pi):
-                mini_dag = DAGCircuit()
-                q = QuantumRegister(1)
-                mini_dag.add_qreg(q)
-                mini_dag.apply_operation_back(ZGate(), [q[0]])
-                dag.substitute_node_with_dag(node, mini_dag, [q[0]])
-            elif fuzzy_equal(theta, pi / 2):
-                mini_dag = DAGCircuit()
-                q = QuantumRegister(1)
-                mini_dag.add_qreg(q)
-                mini_dag.apply_operation_back(SGate(), [q[0]])
-                dag.substitute_node_with_dag(node, mini_dag, [q[0]])
-            elif fuzzy_equal(theta, -pi / 2):
-                mini_dag = DAGCircuit()
-                q = QuantumRegister(1)
-                mini_dag.add_qreg(q)
-                mini_dag.apply_operation_back(SdgGate(), [q[0]])
-                dag.substitute_node_with_dag(node, mini_dag, [q[0]])
-            else:
-                raise ValueError(f"Unsupported RZ gate angle: {theta}. Only ±π, ±π/2 are supported.")
-
-    return dag
+                    dag.substitute_node_with_dag(node, mini_dag, [q[0]])
+                else:
+                    raise ValueError(f"Unsupported RZ gate angle: {theta}. Only ±π, ±π/2 are supported.")
+        return dag

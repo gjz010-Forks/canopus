@@ -30,3 +30,22 @@ square = read_device_topology('../configs/sycamore.graphml')
 write_to_txt(chain, '../configs/chain.txt')
 write_to_txt(hhex, '../configs/hhex.txt')
 write_to_txt(square, '../configs/square.txt')
+
+
+
+
+import sys
+sys.path.append('..')
+
+import canopus
+import uuid
+import os
+
+coupling_map = canopus.utils.gene_chain_coupling_map(10)
+tmp_fname = f'./tmp_{uuid.uuid4().hex}.txt'
+with open(tmp_fname, 'w') as f:
+    f.write('{} {}\n'.format(coupling_map.num_nodes(), coupling_map.num_edges()))
+    for src, dst in coupling_map.graph.to_undirected().edge_list():
+        f.write('{} {}\n'.format(src, dst))
+
+

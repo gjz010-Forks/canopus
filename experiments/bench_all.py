@@ -79,6 +79,6 @@ for fname in fnames:
     if canopus_circ_cost < backend.cost_estimator.eval_circuit_duration(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):
         qasm2.dump(qc_canopus, os.path.join(output_dpath, os.path.basename(fname)))
         console.print(f"Saved to {os.path.join(output_dpath, os.path.basename(fname))}", style="bold red")
-        # console.print(f"Current cost {canopus_circ_cost:.2f} is better than previous cost {backend.cost_estimator.eval_circuit_duration(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):.2f}, saved.", style="bold red")
+        console.print(f"Current cost {canopus_circ_cost:.2f} is better than previous cost {backend.cost_estimator.eval_circuit_duration(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):.2f}, saved.", style="bold red")
     # else:
     #     console.print(f"current cost {canopus_circ_cost:.2f} is not better than previous cost {backend.cost_estimator.eval_circuit_duration(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):.2f}, skipping saving.", style="bold yellow")

@@ -5,6 +5,7 @@ sys.path.append("..")  # Adjust the path to import canopus
 
 import os
 import argparse
+import uuid
 import canopus
 import pytket.qasm
 from qiskit import qasm2, QuantumCircuit
@@ -53,9 +54,8 @@ for fname in fnames:
         coupling_map = canopus.utils.gene_square_coupling_map(qc.num_qubits)
     else:
         raise ValueError(f"Unsupported topology: {args.topology}")
-
+    
     output_fname = os.path.join(output_dpath, os.path.basename(fname))
-
 
     # Try V2fLayout first
     from qiskit.converters import circuit_to_dag

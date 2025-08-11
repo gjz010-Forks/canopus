@@ -46,26 +46,35 @@
 \newcommand{\qiskit}{\textsc{Qiskit}}
 \newcommand{\tket}{\textsc{TKet}}
 
-\newcommand{\Can}{\mathtt{Can}}
-\newcommand{\Uthree}{\mathtt{U3}}
-\newcommand{\XX}{\mathtt{XX}}
-\newcommand{\YY}{\mathtt{YY}}
-\newcommand{\ZZ}{\mathtt{ZZ}}
-\newcommand{\CNOT}{\mathtt{CNOT}}
-\newcommand{\iSWAP}{\mathtt{iSWAP}}
-\newcommand{\SQiSW}{\mathtt{\sqrt{iSWAP}}}
+\newcommand{\Can}{\mathrm{Can}}
+\newcommand{\Uthree}{\mathrm{U3}}
+\newcommand{\XX}{\mathrm{XX}}
+\newcommand{\YY}{\mathrm{YY}}
+\newcommand{\ZZ}{\mathrm{ZZ}}
+\newcommand{\CX}{\mathrm{CX}}
+\newcommand{\CNOT}{\mathrm{CNOT}}
+\newcommand{\iSWAP}{\mathrm{iSWAP}}
+\newcommand{\SQiSW}{\mathrm{\sqrt{iSWAP}}}
+\newcommand{\ECP}{\mathrm{ECP}}
+\newcommand{\SWAP}{\mathrm{SWAP}}
+\newcommand{\CPhase}{\mathrm{CPhase}}
+\newcommand{\pSWAP}{\mathrm{pSWAP}}
+
 
 \newcommand{\CXISA}{\code{CX}}
 \newcommand{\HetISA}{\code{Het}}
 \newcommand{\ZZPhaseISA}{\code{ZZPhase}}
 \newcommand{\ZZPhaseWithMirrorISA}{\code{ZZPhase\_}}
 \newcommand{\SQiSWISA}{\code{SQiSW}}
+\newcommand{\iSWAPISA}{\code{iSWAP}}
 \newcommand{\SQiSWWithMirrorISA}{\code{SQiSW\_}}
 \newcommand{\CanISA}{\code{Can}}
 
 
 \newtheorem{theorem}{Theorem}\Crefname{theorem}{Theorem}{Theorems}  % 定理编号形如 "1.1", "1.2"
 \newtheorem{definition}{Definition}\Crefname{definition}{Definition}{Definitions}  % 定义编号形如 "1.1", "1.2"
+\newtheorem{lemma}{Lemma}\Crefname{lemma}{Lemma}{Lemmas}  % 引理编号形如 "1.1", "1.2"
+\newtheorem{corollary}{Corollary}\Crefname{corollary}{Corollary}{Corollaries}  % 推论编号形如 "1.1", "1.2"
 \newtheorem*{takeaways}{Takeaways}
 
 
@@ -82,8 +91,8 @@
 
 % \AtBeginEnvironment{takeaways}{\normalfont} % 内容强制正体
 
-% \SetAlFnt{\small}
-% \SetAlCapFnt{\small}
+\SetAlFnt{\small} % TODO: use \footnotesize or \small
+\SetAlCapFnt{\small}
 % \SetCommentSty{textit}
 
 % \hypersetup{hidelinks}
@@ -101,7 +110,14 @@
 
 
 \begin{abstract}
-  We propose \canopus\ (\fullNameOfCanopus), a qubit mapping/routing framework tailored to advanced quantum ISAs adaptive to versatile hardware architectures.
+  Qubit mapping/routing is critical for executing quantum circuits NISQ and fault-tolerant hardware. Existing scalable methods typically impose several times the routing overhead, especially in circuit depth or duration, due to the disconnect between simplified routing models (e.g., three-$ \CX $-unrolled SWAP insertion) and hardware-native gate properties. This gap severely limits compiler optimization potential and thus practical circuit execution performance.
+
+  Recent advances in quantum hardware have enabled high-precision implementations of diverse instruction set architectures (ISAs) beyond standard $\CX$-based gates. Advanced ISAs such as $\SQiSW$ and $\ZZ(\theta)$ offer superior circuit synthesis capabilities while retaining hardware-native noise resilience. However, there are neither systematic compiler optimization strategies tailored to these advanced ISAs nor comprehensive cross-ISA evaluation to unlock their potential.
+  %  of diverse, complex or heterogeneous ISAs.
+
+  To address this, we propose \canopus, a unified qubit mapping/routing framework tailored to diverse quantum ISAs. With the canonical representation of two-qubit gates, \canopus\ revolves around qubit routing to perform deep co-optimization in an ISA-aware approach. %, leading to significantly lower routing overhead not as costly as previously thought.  
+  \canopus\ utilizes the canonical forms of arbitrary basis gates and monodromy polytope theory to model the synthesis cost for better $ \SWAP $ search during routing. Commutation relations between two-qubit gates can be formalized through the canonical representation in our findings, providing a generalized approach to capturing commutative optimizations. Experiments show that \canopus\ consistently results in 30\%-40\% reduction of routing overhead compared to state-of-the-art methods across versatile ISAs and topologies. Our work also presents a coherent method for co-exploration of program patterns, quantum ISAs, and hardware topologies. Our framework can be extended to integrate more fine-grain hardware information such as qubit-specific basis gate fidelities. We have for the first time demonstrated that advanced quantum ISAs can be efficiently utilized within a unified routing framework, paving the way for more effective co-design of quantum software and hardware.
+
 \end{abstract}
 
 
@@ -135,7 +151,6 @@
 \appendix
 \input{sections/appendix_A}
 \input{sections/appendix_B}
-\input{sections/appendix_C}
 
 
 \end{document}

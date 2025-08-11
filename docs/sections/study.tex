@@ -1,6 +1,28 @@
 \section{Case Studies}\label{sec:studies}
 
-\subsection{QFT kernel}
+\subsection{QFT kernel}\label{sec:qft_study}
+
+
+\begin{table}[tbp]
+    \centering
+    \caption{Qubit routing comparison for the QFT kernel.}
+    \label{tab:qft_example}
+    \begin{footnotesize}
+        \input{tables/qft_example.tex}    
+    \end{footnotesize}
+
+\end{table}
+
+
+\begin{figure}[tbp]
+    \centering
+    \subfigure[Mapping \code{qft\_6} by \toqm.]{
+        \includegraphics[width=0.485\columnwidth]{figures/qft6_toqm.pdf}
+    }\subfigure[Mapping \code{qft\_6} by \canopus.]{
+        \includegraphics[width=0.485\columnwidth]{figures/qft6_canopus.pdf}
+    }
+    \caption{\ZY{Re-draw this figure} Mapping/routing comparison for the QFT kernel. For convenient visualization, only $ \CPhase $ and $ \SWAP $ gates are shown. (a) \toqm\ generates a sub-optimal mapping scheme, with 2Q depth of 10. (b) \canopus\ generates the optimal scheme in a perfect butterfly structure, with 2Q depth of 9.}
+\end{figure}
 
 \subsection{Co-exploration of routing and ISA selection}
 % TODO: 什么样的电路pattern适合什么样的ISA（以及ISA实现方式）？

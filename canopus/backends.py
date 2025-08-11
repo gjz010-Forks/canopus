@@ -143,7 +143,7 @@ class SynthCostEstimator:
                 gate_duration = self.cx_cost
             elif node.op.name == 'iswap':
                 gate_duration = self.iswap_cost
-            elif node.op.name == 'rzz':
+            elif node.op.name == 'rzz' or node.op.name == 'rzx':
                 gate_duration = self.cx_cost * node.op.params[0] / half_pi
             elif node.op.name == 'xx_plus_yy':
                 gate_duration = self.iswap_cost * (-node.op.params[0]) / 2 / half_pi
@@ -158,7 +158,7 @@ class SynthCostEstimator:
             for predecessor in dag.op_predecessors(node):
                 if predecessor.num_qubits == 2:
                     pred_q0, pred_q1 = sort_two_ints(qubit_indices[predecessor.qargs[0]],
-                                                     qubit_indices[predecessor.qargs[1]])
+                                                     qubit_indices[predecessor.qargs[1]])                    
                     if not (node.op.name.startswith('can') and
                             predecessor.op.name.startswith('can') and
                             (q0, q1) != (pred_q0, pred_q1) and

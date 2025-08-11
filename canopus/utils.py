@@ -9,7 +9,8 @@ import numpy as np
 import rustworkx as rx
 from pytket import OpType
 from math import pi
-from typing import Union, Tuple
+from collections import Counter
+from typing import Union, Tuple, Dict
 from rich.console import Console
 from prettytable import PrettyTable
 from pytket.utils.stats import gate_counts
@@ -57,10 +58,9 @@ def synth_cost_by_zzphase(a, b, c):
     return cost
 
 
-
 @lru_cache(maxsize=1)
 def get_sqisw_coverage():
-    gate_set = [iSwapGate().power(1/2), iSwapGate()]
+    gate_set = [iSwapGate().power(1 / 2), iSwapGate()]
     costs = [0.75, 1.5]
     cov = gates_to_coverage(*gate_set, costs=costs)
     return cov
@@ -272,6 +272,29 @@ def qiskit_to_tket(qc: qiskit.QuantumCircuit) -> pytket.Circuit:
 def qc2mat(qc: qiskit.QuantumCircuit) -> np.ndarray:
     from qiskit.quantum_info import Operator
     return Operator(qc.reverse_bits()).data
+
+
+def is_canonical_normalized(qc: qiskit.QuantumCircuit) -> bool:
+    for instr in qc.data:
+        if isinstance(instr.operation, CanonicalGate):
+            if not check_weyl_coord(*instr.operation.params):
+                return False
+    return True
+
+
+def canonical_statistics(qc: qiskit.QuantumCircuit) -> Dict[Tuple[float, float, float], int]:
+    can_params = []
+    for instr in qc.data:
+        if isinstance(instr.operation, CanonicalGate):
+            can_params.append(tuple(instr.operation.params))
+    return Counter(can_params)
+
+def infidelity(u: np.ndarray, v: np.ndarray) -> float:
+    """Infidelity between two matrices"""
+    if u.shape != v.shape:
+        raise ValueError('u and v must have the same shape.')
+    d = u.shape[0]
+    return 1 - np.abs(np.trace(u.conj().T @ v)) / d
 
 
 def remove_1q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:

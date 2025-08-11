@@ -9,7 +9,7 @@ def filter_vf2layout(result):
 
 
 ISA_TYPES = ['cx', 'zzphase', 'sqisw', 'can_xx', 'can_xy', 'zzphase_', 'sqisw_', 'het']
-COMPILERS = ['sabre', 'toqm', 'bqskit', 'canopus']
+COMPILERS = ['sabre', 'toqm', 'bqskit', 'canopus', 'canopus_nocomm']
 
 
 def display_result(compiler: str, filter_isomorphism: bool = True):
