@@ -22,14 +22,14 @@ if __name__ == "__main__":
     console.rule("TK2-rebased circuit:")
     tk2_circ = canopus.rebase_to_tk2(qc)
     print(tk2_circ.draw())
-    print('Pulse-level circuit duration:', evaluator.eval_circuit_duration(tk2_circ))
+    print('Pulse-level circuit duration:', evaluator.eval_circuit_cost(tk2_circ))
 
     qc_sqisw = rebase_to_sqisw(qc)
     console.rule("SQiSW-based circuit:")
     print(qc_sqisw.draw())
-    print('Pulse-level circuit duration:', evaluator.eval_circuit_duration(qc_sqisw))
+    print('Pulse-level circuit duration:', evaluator.eval_circuit_cost(qc_sqisw))
 
     qc_zzphase = rebase_to_zzphase(qc)
     console.rule("ZZPhase-based circuit (qiskit-optimal decomposition):")
     print(qc_zzphase.draw())
-    print('Pulse-level circuit duration:', evaluator.eval_circuit_duration(qc_zzphase))
+    print('Pulse-level circuit duration:', evaluator.eval_circuit_cost(qc_zzphase))

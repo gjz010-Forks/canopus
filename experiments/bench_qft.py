@@ -29,11 +29,11 @@ if qc.num_qubits < 7:
 
 # print(qiskit_to_tket(qc).get_commands())
 
-coupling_map = CouplingMap.from_line(num_qubits=qc.num_qubits)
-# coupling_map = CouplingMap.from_grid(np.ceil(np.sqrt(qc.num_qubits)).astype(int), np.ceil(np.sqrt(qc.num_qubits)).astype(int))
+coupling_map = gene_chain_coupling_map(qc.num_qubits)
+# coupling_map = gene_hhex_coupling_map(qc.num_qubits)
 backend = CanopusBackend(coupling_map, 'cx', 'xx')
 
-console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc)))
+console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc)))
 
 console.rule('SABRE mapping')
 start = time.perf_counter()
@@ -41,8 +41,9 @@ pm = PassManager(SabreMapping(backend, seed=123))
 qc_sabre = pm.run(qc)
 end = time.perf_counter()
 print(qc_sabre)
-console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc_sabre)))
+console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_sabre)))
 console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
+print_circ_info(rebase_to_canonical(qc_sabre))
 
 console.rule('Canopus mapping')
 start = time.perf_counter()
@@ -50,8 +51,10 @@ pm = PassManager(CanopusMapping(backend, seed=123))
 qc_canopus = pm.run(qc)
 end = time.perf_counter()
 print(qc_canopus)
-console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc_canopus)))
+console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_canopus)))
 console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
+print_circ_info(rebase_to_canonical(qc_canopus))
+
 
 #
 # from regulus.transforms import mirror

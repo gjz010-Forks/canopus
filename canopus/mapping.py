@@ -110,7 +110,7 @@ class BidirectionalMapping(TransformationPass):
         best_routed_dag = None
         best_initial_layout = None
         best_final_layout = None
-        best_metric = float('inf')
+        best_metric = None
 
         # logger.info(f"开始SABRE映射, 布局试验次数: {self.layout_trials}")
 
@@ -124,7 +124,7 @@ class BidirectionalMapping(TransformationPass):
                 raise ValueError(f"Unsupported initial layout method: {self.init_layout_method}")
             # logger.info(f'Initial layout for trial {trial + 1} ...')
             routed_dag, initial_layout, final_layout = self._bidirectional_route(dag, initial_layout, trial_seed)
-            if self._eval_dagcircuit_cost(routed_dag) < best_metric:
+            if best_metric is None or self._eval_dagcircuit_cost(routed_dag) < best_metric:
                 best_routed_dag, best_initial_layout, best_final_layout = routed_dag, initial_layout, final_layout
                 best_metric = self._eval_dagcircuit_cost(routed_dag)
                 # logger.info(f"LayoutTrial {trial + 1}: Found better layout with best_metric={best_metric}")
@@ -164,19 +164,20 @@ class BidirectionalMapping(TransformationPass):
             results.append((routed_dag, initial_layout, final_layout))
 
         # best_result_idx = np.argmin([res[0].count_ops()['swap'] for res in results])
-        best_result_idx = np.argmin([self._eval_dagcircuit_cost(res[0]) for res in results])
+        costs = [self._eval_dagcircuit_cost(res[0]) for res in results]
+        best_result_idx = min(enumerate(costs), key=lambda x: x[1])[0]
         return results[best_result_idx]
 
     def _route(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
         best_routed_dag = None
-        best_metric = float('inf')
         best_final_layout = None
+        best_metric = None
 
         for trial in range(self.trials):
             trial_seed = None if seed is None else seed + trial
             routed_dag, final_layout = self._route_one_trial(dag, initial_layout, trial_seed)
             metric = self._eval_dagcircuit_cost(routed_dag)
-            if metric < best_metric:
+            if best_metric is None or metric < best_metric:
                 best_routed_dag = routed_dag
                 best_final_layout = final_layout
                 best_metric = metric
@@ -211,16 +212,17 @@ class BidirectionalMapping(TransformationPass):
 class CanopusMapping(BidirectionalMapping):
     def __init__(self, backend: CanopusBackend, seed=None,
                  max_iterations=5, trials=None, layout_trials=None,
-                 comm_opt=True, init_layout_method='random'):
+                 comm_opt=True, init_layout_method='random', depth_driven=False):
         super().__init__(backend, seed, max_iterations, trials, layout_trials, init_layout_method)
-        self.depth_driven_rate = None
+        # self.depth_driven_rate = None
         self.average_degree = average_degree(self.coupling_map.graph)
         # self.w_degree = self.average_degree / (1.5 + self.average_degree) * np.log2(self.coupling_map.size()) / 1.5 # * 2 # 如果乘上2，可以对QFT做到optimal routing
         self.w_degree = self.average_degree / (2 + self.average_degree)  # 经验发现，这种设置效果还不错
         self.comm_opt = comm_opt
+        self.depth_driven = depth_driven
 
     def _eval_dagcircuit_cost(self, dag):
-        return self.backend.cost_estimator.eval_dagcircuit_duration(dag)
+        return self.backend.cost_estimator.eval_dagcircuit_cost(dag)
 
     def _route_one_trial(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
         """Given the DAG and initial layout, perform SABRE routing. Return the routed DAG and the final layout."""
@@ -490,8 +492,11 @@ class CanopusMapping(BidirectionalMapping):
         #     c2 = 0
         w_decay = max(self.qubit_decays[swap[0]], self.qubit_decays[swap[1]])
         
-        # return w_decay * (c1 + EXT_WEIGHT * c2)
-        return w_decay * (c1 + EXT_WEIGHT * c2 + c_depth)
+
+
+        if self.depth_driven:
+            return w_decay * (c1 + EXT_WEIGHT * c2 + c_depth)
+        return w_decay * (c1 + EXT_WEIGHT * c2 + (c_depth + gate_duration) * 0.5)
 
     def _avg_dist(self, nodes, layout: Layout):
         if nodes:

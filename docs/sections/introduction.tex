@@ -1,13 +1,5 @@
 \section{Introduction}\label{sec:introduction}
 
-Advanced ISAs---$\Can$~\cite{chen2024one}, $\SQiSW$~\cite{huang2023quantum}
-
-
-\canopus\ (\fullNameOfCanopus) is a qubit mapping and routing framework that is tailored to advanced quantum ISAs, such as $\Can$~\cite{chen2024one} and $\SQiSW$~\cite{huang2023quantum}, which are adaptive to versatile hardware architectures. \canopus\ is designed to optimize the placement of qubits and the routing of quantum gates, taking into account the specific requirements of these advanced ISAs.
-
-
-
-
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\columnwidth,trim={0 0.5cm 0 0},clip]{figures/motivation.pdf}
@@ -15,6 +7,77 @@ Advanced ISAs---$\Can$~\cite{chen2024one}, $\SQiSW$~\cite{huang2023quantum}
     %  \canopus\ exhibits a ISA-aware and deep co-optimized to achieve lower routing overhead.
     \label{fig:motivation}
 \end{figure}
+
+
+Quantum computing is a revolutionary computational paradigm leveraging quantum mechanics principles like superposition and entanglement of qubit states~\cite{nielsen2010quantum}. It has been rapiedly growing in recent decades due to its potential speedups in task such as integer factorization~\cite{shor1994algorithms}, solving linear equations~\cite{harrow2009quantum}, and microscale system simulation~\cite{lloyd1996universal}. 
+
+
+The holistic benchmarks of quantum computers such as quantum volume~\cite{cross2019validating} are predicated on concurrent advancements in both hardware and software. Recently lots of systematic techniques regarding compiler optimizations and architectural supports have been presented to approach the ceiling of quantum hardware performance. Quantum compiler is essential in this process. It translates high-level programs into executable single-qubit (1Q) and two-qubit (2Q) gates on realistic quantum hardware. This involves several critical stages: (1) compiling programs into basic quantum gates, (2) perform hardware-agnostic (logical-level) circuit optimization, (3) resolve backend topology constraints via qubit placement and routing, and (4) converting circuits to native gates for final optimization and gate scheduling. The typical optimization goal of quantum compilers is to lower the 2Q gate count and circuit depth, given that 2Q gates exhibit much longer duration and higher error rate than 1Q gates. For mainstream quantum platforms like superconducting~\cite{linke2017experimental}, 2Q gates can only operate between the near-neighbor physical qubit pairs. Thus ...
+
+
+
+%  of diverse, complex or heterogeneous ISAs.
+
+
+has prevented the community from leveraging their full capabilities and exploring cross-ISA hardware-software co-design
+
+
+Consequently, 
+  
+
+  However, there are neither systematic compiler optimization strategies tailored to these advanced ISAs nor comprehensive cross-ISA evaluation to unlock their potential.
+
+
+
+This gap severely limits compiler optimization potential and thus practical circuit execution performance.
+
+
+
+Previous solutions to the qubit mapping/routing problem, ... CX-based routing model ...
+
+$ \SWAP_{q_0,q_1}=\CX_{q_0,q_1}\CX_{q_1,q_0}\CX_{q_0,q_1} $
+
+
+
+physical-qubit connectivity constraints, such as the 2D square topology on Google's hardware~\cite{arute2019quantum} and the 2D heavy-hexagon topology on IBM's hardware~\cite{chamberland2020topological}
+
+For instance, Google ... IBM ... 
+
+namely ...
+
+only near-neighbor physical qubit paris can interact with each that to realize 
+
+
+connectivity ... 
+
+
+typical practice is to ...
+
+dynamically remap ...
+
+
+
+
+% ... qubit routing ... overhead ... 仍然制约
+
+
+% .... 硬件发展。。。。 新型的ISA提出。。。
+
+
+
+% Advanced ISAs---$\Can$~\cite{chen2024one}, $\SQiSW$~\cite{huang2023quantum}
+
+
+
+
+
+
+
+\canopus\ (\fullNameOfCanopus) is a qubit mapping and routing framework that is tailored to advanced quantum ISAs, such as $\Can$~\cite{chen2024one} and $\SQiSW$~\cite{huang2023quantum}, which are adaptive to versatile hardware architectures. \canopus\ is designed to optimize the placement of qubits and the routing of quantum gates, taking into account the specific requirements of these advanced ISAs.
+
+
+
+
 
 
 
@@ -29,3 +92,10 @@ Advanced ISAs---$\Can$~\cite{chen2024one}, $\SQiSW$~\cite{huang2023quantum}
 
 
 % include the development of a comprehensive qubit mapping and routing framework that is adaptable to various quantum ISAs, as well as the integration of advanced synthesis techniques to improve compilation efficiency.
+
+
+LLVM-style optimization strategy
+
+
+Our framework can be extended to integrate more fine-grain hardware information such as qubit-specific basis gate fidelities.
+

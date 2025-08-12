@@ -31,16 +31,16 @@ if __name__ == "__main__":
 
     console.rule("TK2-rebased circuit:")
     print(canopus.rebase_to_tk2(qc).draw())
-    print('Pulse-level circuit duration:', evaluator.eval_circuit_duration(qc))
+    print('Pulse-level circuit duration:', evaluator.eval_circuit_cost(qc))
 
     console.rule("SQiSW-based circuit:")
     qc_sqisw = rebase_to_sqisw(qc)
     print(qc_sqisw.draw())
-    print('Pulse-level circuit duration:', evaluator.eval_circuit_duration(qc_sqisw))
+    print('Pulse-level circuit duration:', evaluator.eval_circuit_cost(qc_sqisw))
     assert compare_unitaries(canopus.utils.qc2mat(qc), canopus.utils.qc2mat(qc_sqisw))
 
     circ_zzphase = rebase_to_zzphase(qc)
     console.rule("ZZPhase-based circuit:")
     print(circ_zzphase.draw())
-    print('Pulse-level circuit duration:', evaluator.eval_circuit_duration(circ_zzphase))
+    print('Pulse-level circuit duration:', evaluator.eval_circuit_cost(circ_zzphase))
     assert compare_unitaries(canopus.utils.qc2mat(qc), canopus.utils.qc2mat(circ_zzphase))

@@ -128,8 +128,8 @@ for qldpc in bench_qldpc_codes:
     # coupling_map = gene_hhex_coupling_map(qc.num_qubits)
     backend = CanopusBackend(coupling_map, 'het', 'xx')
 
-    console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc)))
-    console.print('Pulse duration CX ISA: {:.4f}'.format(cx_synth_cost_estimator.eval_circuit_duration(qc)))
+    console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_cost(qc)))
+    console.print('Pulse duration CX ISA: {:.4f}'.format(cx_synth_cost_estimator.eval_circuit_cost(qc)))
     if False:
         console.rule('SABRE mapping')
         start = time.perf_counter()
@@ -138,7 +138,7 @@ for qldpc in bench_qldpc_codes:
         end = time.perf_counter()
         qc_sabre_print = remove_1q_gates(qc_sabre)
         # print(qc_sabre_print)
-        console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc_sabre)))
+        console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_cost(qc_sabre)))
         console.print('Time taken for Sabre mapping: {:.4f} seconds'.format(end - start))
 
     if False:
@@ -149,7 +149,7 @@ for qldpc in bench_qldpc_codes:
         end = time.perf_counter()
         qc_canopus_print = remove_1q_gates(qc_canopus)
         # print(qc_canopus_print)
-        console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc_canopus)))
+        console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_cost(qc_canopus)))
         console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
 
 

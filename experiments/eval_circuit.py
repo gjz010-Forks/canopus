@@ -29,4 +29,4 @@ else:
 
 backend = canopus.CanopusBackend(coupling_map, args.isa, args.coupling)
 print(f"Processing {args.input} with ISA {args.isa} on topology {args.topology}")
-print('Circuit cost: {:.2f}'.format(backend.cost_estimator.eval_circuit_duration(qc)))
+print('Circuit cost: {:.2f}'.format(backend.cost_estimator.eval_circuit_cost(qc)))

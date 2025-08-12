@@ -1,19 +1,17 @@
-───────────────── Processing ./output/logical/tk2/qft_n18.qasm ─────────────────
-+----------------------------------------------------------+
-|                Logical-level optimization                |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    252    |     153      |   56  |    33    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'can': 153, 'u': 99})
-Circuit cost: 66.00
-+----------------------------------------------------------+
-|                      Mapped circuit                      |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    630    |     531      |  153  |   116    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'swap': 378, 'can': 153, 'u': 99})
-Circuit cost: 182.33; Routing overhead: 2.76
+Skipping ./output/canopus_num/chain/zzphase/bigadder_n18.qasm, already 
+processed.
+Skipping ./output/canopus_num/chain/zzphase/bv_n19.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/gcm_n13.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/ising_n26.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/knn_n25.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/multiplier_n15.qasm, already 
+processed.
+Skipping ./output/canopus_num/chain/zzphase/qec9xz_n17.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/qft_n18.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/qpeexact_n16.qasm, already 
+processed.
+Skipping ./output/canopus_num/chain/zzphase/qram_n20.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/sat_n11.qasm, already processed.
+Skipping ./output/canopus_num/chain/zzphase/swap_test_n25.qasm, already 
+processed.
+Skipping ./output/canopus_num/chain/zzphase/wstate_n27.qasm, already processed.

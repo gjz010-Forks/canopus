@@ -16,7 +16,7 @@ for fname in fnames:
     worst_metric = 0
     for isa in ISA_TYPES:
         qc = QuantumCircuit.from_qasm_file(os.path.join(dpath, isa, fname))
-        metric = estimator.eval_circuit_duration(qc)
+        metric = estimator.eval_circuit_cost(qc)
         if metric > worst_metric:
             print(f"Updating {fname} with metric {metric} for ISA {isa}")
             worst_metric = metric

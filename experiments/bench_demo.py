@@ -57,7 +57,7 @@ coupling_map = gene_chain_coupling_map(qc.num_qubits)
 # coupling_map = gene_hhex_coupling_map(qc.num_qubits)
 backend = CanopusBackend(coupling_map, 'sqisw', 'xx')
 
-console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc)))
+console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc)))
 
 console.rule('SABRE mapping')
 start = time.perf_counter()
@@ -65,7 +65,7 @@ pm = PassManager(SabreMapping(backend, seed=123))
 qc_sabre = pm.run(qc)
 end = time.perf_counter()
 print(qc_sabre)
-console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc_sabre)))
+console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_sabre)))
 console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
 
 qasm2.dump(qc_sabre, 'demo_can_sabre.qasm')
@@ -78,10 +78,10 @@ pm = PassManager(CanopusMapping(backend, seed=123))
 qc_canopus = pm.run(qc)
 end = time.perf_counter()
 print(qc_canopus)
-console.print('Pulse duration: {:.4f}'.format(backend.cost_estimator.eval_circuit_duration(qc_canopus)))
+console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_canopus)))
 console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
 
-qasm2.dump(qc_canopus, 'demo_can.qasm')
+# qasm2.dump(qc_canopus, 'demo_can.qasm')
 
 
 # from regulus.transforms import mirror

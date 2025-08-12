@@ -16,7 +16,7 @@ def get_result(qc, coupling_map, isa, coupling_type=None):
     backend = canopus.CanopusBackend(coupling_map, isa, coupling_type)
     qc = canopus.rebase_to_tk2(qc)
     qc_mapped = PassManager(canopus.CanopusMapping(backend)).run(qc)
-    return np.round(backend.cost_estimator.eval_circuit_duration(qc_mapped), 3)
+    return np.round(backend.cost_estimator.eval_circuit_cost(qc_mapped), 3)
 
 
 qc_demo = qasm2.loads("""

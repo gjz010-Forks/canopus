@@ -1,20 +1,13 @@
-───────────────── Processing ./output/logical/tk2/qft_n18.qasm ─────────────────
-+----------------------------------------------------------+
-|                Logical-level optimization                |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    252    |     153      |   56  |    33    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'can': 153, 'u': 99})
-Circuit cost: 66.00
-+----------------------------------------------------------+
-|                      Mapped circuit                      |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    477    |     378      |  119  |    91    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'swap': 225, 'can': 153, 'u': 99})
-Circuit cost: 132.00; Routing overhead: 2.00
-Saved to ./output/canopus_nocomm/hhex/sqisw/qft_n18.qasm
+Skipping ./output/canopus_num/hhex/sqisw/bigadder_n18.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/bv_n19.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/gcm_n13.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/ising_n26.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/knn_n25.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/multiplier_n15.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/qec9xz_n17.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/qft_n18.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/qpeexact_n16.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/qram_n20.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/sat_n11.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/swap_test_n25.qasm, already processed.
+Skipping ./output/canopus_num/hhex/sqisw/wstate_n27.qasm, already processed.

@@ -1,19 +1,13 @@
-───────────────── Processing ./output/logical/tk2/qft_n18.qasm ─────────────────
-+----------------------------------------------------------+
-|                Logical-level optimization                |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    252    |     153      |   56  |    33    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'can': 153, 'u': 99})
-Circuit cost: 66.00
-+----------------------------------------------------------+
-|                      Mapped circuit                      |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    377    |     278      |   94  |    74    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'can': 153, 'swap': 125, 'u': 99})
-Circuit cost: 88.92; Routing overhead: 1.35
+Skipping ./output/canopus_num/square/het/bigadder_n18.qasm, already processed.
+Skipping ./output/canopus_num/square/het/bv_n19.qasm, already processed.
+Skipping ./output/canopus_num/square/het/gcm_n13.qasm, already processed.
+Skipping ./output/canopus_num/square/het/ising_n26.qasm, already processed.
+Skipping ./output/canopus_num/square/het/knn_n25.qasm, already processed.
+Skipping ./output/canopus_num/square/het/multiplier_n15.qasm, already processed.
+Skipping ./output/canopus_num/square/het/qec9xz_n17.qasm, already processed.
+Skipping ./output/canopus_num/square/het/qft_n18.qasm, already processed.
+Skipping ./output/canopus_num/square/het/qpeexact_n16.qasm, already processed.
+Skipping ./output/canopus_num/square/het/qram_n20.qasm, already processed.
+Skipping ./output/canopus_num/square/het/sat_n11.qasm, already processed.
+Skipping ./output/canopus_num/square/het/swap_test_n25.qasm, already processed.
+Skipping ./output/canopus_num/square/het/wstate_n27.qasm, already processed.

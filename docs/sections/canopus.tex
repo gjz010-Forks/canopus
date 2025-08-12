@@ -51,7 +51,8 @@ In practice, there is a $ w_{\mathrm{decay}} $ decay factor applied to $H$, whic
 
 The heuristic cost function in \canopus\ is defined as:
 \begin{align}
-    H = w_d\, \Delta_{\mathrm{depth}} + c_0 (\Delta_{\mathrm{Avg}\{\mathrm{dist}[i,j]\}_F} + k_E \, \Delta_{\mathrm{Avg}\{\mathrm{dist}[i,j]\}_E})
+    H  =\,  & c_{g}  +  w_d\, \Delta_{\mathrm{depth}} \notag\\
+    & + c_{\mathrm{swap}} (\Delta_{\mathrm{Avg}\{\mathrm{dist}[i,j]\}_F} + k_E \, \Delta_{\mathrm{Avg}\{\mathrm{dist}[i,j]\}_E})
 \end{align}
 
 

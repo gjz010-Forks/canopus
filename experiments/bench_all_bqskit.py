@@ -89,17 +89,17 @@ for fname in fnames:
     qc_opt = bqskit_to_qiskit(circ_opt)
     qc_opt = canopus.rebase_to_canonical(qc_opt)
 
-    logic_circ_cost = cx_synth_cost_estimator.eval_circuit_duration(qc)
+    logic_circ_cost = cx_synth_cost_estimator.eval_circuit_cost(qc)
     print_circ_info(qc, title='Logical-level optimization')
     console.print(f"Gate counts: {qc.count_ops()}")
     console.print(f"Circuit cost: {logic_circ_cost:.2f}")
 
     cost_estimator = canopus.SynthCostEstimator(args.isa) # ISA-specific cost estimator
-    bqskit_circ_cost = cost_estimator.eval_circuit_duration(qc_opt)
+    bqskit_circ_cost = cost_estimator.eval_circuit_cost(qc_opt)
     print_circ_info(qc_opt, title='Mapped circuit')
     console.print(f"Gate counts: {qc_opt.count_ops()}")
     console.print(f"Circuit cost: {bqskit_circ_cost:.2f}; Routing overhead: {bqskit_circ_cost / logic_circ_cost:.2f}")
 
-    if bqskit_circ_cost < cost_estimator.eval_circuit_duration(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):
+    if bqskit_circ_cost < cost_estimator.eval_circuit_cost(QuantumCircuit.from_qasm_file(os.path.join(output_dpath, os.path.basename(fname)))):
         qasm2.dump(qc_opt, os.path.join(output_dpath, os.path.basename(fname)))
         console.print(f"Saved to {os.path.join(output_dpath, os.path.basename(fname))}", style="bold red")

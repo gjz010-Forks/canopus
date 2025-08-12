@@ -49,14 +49,14 @@ for fname in fnames:
     else:
         raise ValueError(f"Unsupported topology: {args.topology}")
 
-    logic_circ_cost = cx_synth_cost_estimator.eval_circuit_duration(qc)
+    logic_circ_cost = cx_synth_cost_estimator.eval_circuit_cost(qc)
     print_circ_info(qc, title='Logical-level optimization')
     console.print(f"Gate counts: {qc.count_ops()}")
     console.print(f"Circuit cost: {logic_circ_cost:.2f}")
 
     backend = canopus.CanopusBackend(coupling_map)
     qc_sabre = PassManager(canopus.SabreMapping(backend)).run(qc)
-    sabre_circ_cost = cx_synth_cost_estimator.eval_circuit_duration(qc_sabre)
+    sabre_circ_cost = cx_synth_cost_estimator.eval_circuit_cost(qc_sabre)
     print_circ_info(qc_sabre, title='Mapped circuit')
     console.print(f"Gate counts: {qc_sabre.count_ops()}")
     console.print(f"Circuit cost: {sabre_circ_cost:.2f}; Routing overhead: {sabre_circ_cost / logic_circ_cost:.2f}")

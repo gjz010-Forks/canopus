@@ -48,7 +48,7 @@ The unit costs for the involved basis gates are set as:
         \CX: 1,\, \ZZ(\pi/t): 2/t,\, \SQiSW: 0.75,\\
         \iSWAP: 1.5,\, \ECP: 1.25,\, \pSWAP(\pi/t): 2-1/t
     \end{array}
-    \right\}
+    \right\}\label{eq:cost}
 \end{align}
 \ZY{Plot a weyl chamber to illustrate the cost settings}
 
@@ -65,7 +65,7 @@ We select a set of medium-size benchmarks from QASMBench~\cite{li2023qasmbench} 
 
 \begin{table}[tbp]
     \centering
-    \caption{Benchmarks information. These metrics are collected from the circuits after logical-level optimization by \tket, thus including only $\Can$ and $\Uthree$ gates. Circuit cost (Duration $T$) is calculated in \CXISA\ ISA.}
+    \caption{Benchmarks information. These metrics are collected from the circuits after logical-level optimization by \tket, thus including only $\Can$ and $\Uthree$ gates. Circuit cost ($ \countCost $ and $ \depthCost $) is calculated in \CXISA\ ISA.}
     
     \label{tab:benchmark}
     % \setlength{\tabcolsep}{2.5pt}
@@ -85,6 +85,37 @@ We select a set of medium-size benchmarks from QASMBench~\cite{li2023qasmbench} 
 
 
 \subsection{Circuit duration reduction}
+
+
+
+
+
+\begin{table*}[tbp]
+    \centering
+    \caption{Routing overhead $ \countCost $ for different compilers across different topologies and quantum ISAs.}
+    \setlength{\tabcolsep}{1.8pt}
+    % \fontsize{4.6}{5.0}\selectfont
+    \begin{scriptsize}
+        \input{tables/routing_overhead_count.tex}
+    \end{scriptsize}
+
+\end{table*}
+
+
+\begin{table*}[tbp]
+    \centering
+    \caption{Routing overhead $ \depthCost $ for different compilers across different topologies and quantum ISAs.}
+    \setlength{\tabcolsep}{1.8pt}
+    % \fontsize{4.6}{5.0}\selectfont
+    \begin{scriptsize}
+        \input{tables/routing_overhead_depth.tex}
+    \end{scriptsize}
+
+\end{table*}
+
+
+
+
 
 
 

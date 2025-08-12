@@ -111,16 +111,17 @@ class SynthCostEstimator:
         self._cached_gate_costs[a, b, c] = cost
         return cost
 
-    def eval_circuit_duration(self, qc: QuantumCircuit):
-        """Evaluate the pulse-level duration of a Qiskit QuantumCircuit instance."""
-        return self.eval_dagcircuit_duration(circuit_to_dag(qc))
+    def eval_circuit_cost(self, qc: QuantumCircuit) -> Tuple[float, float]:
+        """Evaluate the circuit cost (both gate count and circuit depth) in pulse-level duration of a Qiskit QuantumCircuit instance."""
+        return self.eval_dagcircuit_cost(circuit_to_dag(qc))
 
-    def eval_dagcircuit_duration(self, dag: DAGCircuit):
-        """Evaluate the pulse-level duration of a Qiskit DAGCircuit instance."""
+    def eval_dagcircuit_cost(self, dag: DAGCircuit) -> Tuple[float, float]:
+        """Evaluate the circuit cost (both gate count and circuit depth) in pulse-level duration of a Qiskit DAGCircuit instance."""
         qubit_indices = {qarg: q for q, qarg in enumerate(dag.qubits)}
         wire_durations = {q: 0.0 for q in range(dag.num_qubits())}
         last_mapped_layer: Dict[Tuple[int, int], DAGNode] = {}
         commutative_pairs: Dict[Tuple[int, int], Tuple[int, int]] = {}
+        count_cost = 0.0
 
         for node in dag.topological_op_nodes():
             if node.num_qubits == 1:
@@ -150,6 +151,7 @@ class SynthCostEstimator:
             else:
                 raise ValueError(f"Unsupported operation type: {node.op.name}")
 
+            count_cost += gate_duration
             current_duration = max(wire_durations[q0], wire_durations[q1]) + gate_duration
             wire_durations[q0] = current_duration
             wire_durations[q1] = current_duration
@@ -187,7 +189,9 @@ class SynthCostEstimator:
             # only add 2Q gates to last_mapped_layer
             last_mapped_layer[q0, q1] = node
 
-        return max(wire_durations.values())
+        depth_cost = max(wire_durations.values())
+
+        return count_cost, depth_cost
 
     def _try_update_wire_durations_by_commutation(self, pair, node, commutative_pairs, wire_durations):
         if pair in commutative_pairs:

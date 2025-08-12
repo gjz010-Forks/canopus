@@ -1,20 +1,15 @@
-───────────────── Processing ./output/logical/tk2/qft_n18.qasm ─────────────────
-+----------------------------------------------------------+
-|                Logical-level optimization                |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    252    |     153      |   56  |    33    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'can': 153, 'u': 99})
-Circuit cost: 66.00
-+----------------------------------------------------------+
-|                      Mapped circuit                      |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     18     |    348    |     249      |   85  |    63    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'can': 153, 'u': 99, 'swap': 96})
-Circuit cost: 102.75; Routing overhead: 1.56
-Saved to ./output/canopus_nocomm/square/sqisw/qft_n18.qasm
+Skipping ./output/canopus_num/square/sqisw/bigadder_n18.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/bv_n19.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/gcm_n13.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/ising_n26.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/knn_n25.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/multiplier_n15.qasm, already 
+processed.
+Skipping ./output/canopus_num/square/sqisw/qec9xz_n17.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/qft_n18.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/qpeexact_n16.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/qram_n20.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/sat_n11.qasm, already processed.
+Skipping ./output/canopus_num/square/sqisw/swap_test_n25.qasm, already 
+processed.
+Skipping ./output/canopus_num/square/sqisw/wstate_n27.qasm, already processed.

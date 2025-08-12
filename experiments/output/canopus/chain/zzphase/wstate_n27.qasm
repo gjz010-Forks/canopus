@@ -1,7 +1,6 @@
 OPENQASM 2.0;
 include "qelib1.inc";
-gate ryy(param0) q0,q1 { rx(pi/2) q0; rx(pi/2) q1; cx q0,q1; rz(param0) q1; cx q0,q1; rx(-pi/2) q0; rx(-pi/2) q1; }
-gate can(param0,param1,param2) q0,q1 { rxx(pi/2) q0,q1; ryy(0) q0,q1; rzz(0) q0,q1; }
+gate can(param0,param1,param2) q0,q1 { u(3*pi/2,0,3*pi/2) q1; u(pi/2,3*pi/2,pi/2) q0; cx q1,q0; u(3*pi/2,3*pi/2,pi/2) q1; u(pi,0,pi) q0; cx q1,q0; u(pi/2,0,pi/2) q1; u(0,3*pi/2,pi/2) q0; cx q1,q0; }
 qreg q[27];
 u(7*pi/2,pi,pi/2) q[0];
 u(pi/2,4.906047307179586,pi/2) q[1];

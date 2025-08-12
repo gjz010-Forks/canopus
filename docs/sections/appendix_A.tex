@@ -29,54 +29,13 @@ as a \emph{canonical} gate. Two 2Q gates $ U $ and $ V $ are considered \emph{lo
     \item $(a,b,c)\sim (a-1, b, c)$;
     \item $(1/2, b, c) \sim (1/2, b, -c)$.
 \end{enumerate}
-Note that we align the conventional that canonical coefficient $ (a,b,c) $ differs from Weyl coordinate $ (x,y,z) $ by a $ \frac{\pi}{2} $ factor. Unless otherwise specified, the canonical coefficients of gates in quantum ISAs and circuits are confined to $ \frac{1}{2}\geq a \geq b \geq \lvert c\rvert $. While for the Weyl chamber visualization by means of \code{weylchamber}, we assume the Weyl coordinates are confined to $\left\{\frac{\pi}{4}\geq x \geq y \geq z\geq 0\right\} \cup \left\{\frac{\pi}{4} \geq \frac{\pi}{2}-x \geq y \geq z \geq 0\right\}$, as illustrated by \Cref{fig:weyl_chamber}. Conversion of Weyl coordinates for different conventions is not simple according to the equivalence rules above.
-
+Note that we align the conventional that canonical coefficient $ (a,b,c) $ differs from Weyl coordinate $ (x,y,z) $ by a $ \frac{\pi}{2} $ factor. Unless otherwise specified, the canonical coefficients of gates in quantum ISAs and circuits are confined to $ \frac{1}{2}\geq a \geq b \geq \lvert c\rvert $. While for the Weyl chamber visualization by means of \code{weylchamber}~\cite{weylchamber}, we assume the Weyl coordinates are confined to $\left\{\frac{\pi}{4}\geq x \geq y \geq z\geq 0\right\} \cup \left\{\frac{\pi}{4} \geq \frac{\pi}{2}-x \geq y \geq z \geq 0\right\}$, as illustrated by \Cref{fig:weyl_chamber}. Conversion of Weyl coordinates for different conventions is not simple according to the equivalence rules above.
 
 
 
 
 
 \subsection{Quantum ISA and the synthesis capability}
-
-
-
-
-\subsection{2Q gate mirroring}
-
-% TODO: 
-
-
-Mirroring formula:
-
-
-
-% \begin{align}
-%     \mathrm{SWAP}\cdot\mathrm{Can}(a,b,c)
-%     \sim \left(x+\frac{1}{2}, y+\frac{1}{2}, z+\frac{1}{2}\right)
-%     \sim \left(x+\frac{1}{2}-1,y+\frac{1}{2}-1,z+\frac{1}{2}-1\right)
-%     \sim  \left\{
-%     \begin{cases}{ll}
-%     \left(\frac{1}{2}-z, \frac{1}{2}-y, x - \frac{1}{2}\right), \textrm{ if } z\geq 0 \\
-%     \left(\frac{1}{2} + z, \frac{1}{2}-y, \frac{1}{2} - x\right), \textrm{ if } z < 0
-%     \end{cases}
-%     \right.
-% \end{align}
-
-\begin{align}
-    \mathrm{SWAP} \cdot \mathrm{Can}(a,b,c)
-    & \sim \left(x+\frac{1}{2}, y+\frac{1}{2}, z+\frac{1}{2}\right) 
-    & \sim \left(x+\frac{1}{2}-1, y+\frac{1}{2}-1, z+\frac{1}{2}-1\right) 
-    & \sim
-    \begin{cases}
-        \left(\frac{1}{2}-z, \frac{1}{2}-y, x - \frac{1}{2}\right), & \text{if } z \geq 0 \\
-        \left(\frac{1}{2} + z, \frac{1}{2}-y, \frac{1}{2} - x\right), & \text{if } z < 0
-    \end{cases}
-\end{align}
-
-
-\subsection{Coverage sets for the selected ISAs used in ...}
-
-
 
 
 \begin{figure}[tbp]
@@ -97,15 +56,12 @@ Mirroring formula:
 \end{figure}
 
 
-
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\textwidth]{figures/coverage/coverage_sqisw_with_mirror_minimal.pdf}
     \caption{Coverage set for \SQiSWWithMirrorISA\ ISA.}
     \label{fig:coverage_sqisw_with_mirror}
 \end{figure}
-
-
 
 
 \begin{figure}[tbp]
@@ -131,7 +87,6 @@ Mirroring formula:
 
 
 
-
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\textwidth]{figures/coverage/coverage_het_minimal_1.pdf}\vspace{-1.5em}
@@ -142,6 +97,61 @@ Mirroring formula:
     \label{fig:coverage_het}
 \end{figure}
 
+
+
+
+
+
+A quantum ISA typically includes qubit initialization, a universal gate set, and measurement. It serves as an interface between software and hardware by mapping high-level semantics of quantum programs to low-level native quantum operations or pulse sequences on hardware. The universal gate set, especially specified by its 2Q basis gates, is the key component of a quantum ISA that dominates its hardware-implementation accuracy and cost, as well as software-expressivity sufficiency.
+
+$ \mathrm{CX} $ or $ \mathrm{CNOT} $ is the most popular basis gate provides by hardware vendors and considered by various quantum compiler optimization methods. The superconducting Cross-Resonance gate~\cite{rigetti2010fully} and ion-trapped Mølmer-Sørensen gate~\cite{bruzewicz2019trapped} are both $ \CX $-equivalent gates with the same canonical form $ \Can\bigl(\frac{1}{2},0,0\bigr) $. In the superconducting platforms with $ XY $-coupled Hamiltonian like Google's Sycamore~\cite{arute2019quantum}, $ \iSWAP\sim\Can\bigl(\frac{1}{2},\frac{1}{2},0\bigr) $ is another representative native 2Q basis gate and could be less sensitive to leakage error than the native $ \mathrm{CZ} $ gate. Recent experimental advances demonstrate that more basis gates could be implemented natively and calibrated in high precision~\cite{chen2025efficient,wei2024native,yale2025realization}. Particularly, some basis gates like $ \SQiSW\sim\Can\bigl( \frac{1}{4},\frac{1}{4},0 \bigr) $ and fractional $ \ZZ(\theta)\sim\Can\bigl(a,0,0\bigr) $ gates offers more promising ISA selections as they exhibit shorter gate duration, higher gate accuracy, and stronger synthesis capability.
+
+The synthesis capability or computational power of basis gates can be geometrically illustrated by monodrome polytopes within the Weyl chamber. The coverage set for \CXISA\ depicted in \Cref{fig:coverage_cx} implies that
+\begin{enumerate}
+    \item One $ \CX $ gate is required to synthesize 2Q gates $\sim \Can\bigl(\frac{1}{2},0,0\bigr) $, i.e., $ \CX $-equivalent gates $ (V_1\otimes V_2) \CX (V_3\otimes V_4) $;
+    \item Two $ \CX $ gates are required to synthesize 2Q gates $\sim \Can(a, b, 0) $, i.e., $ (V_1\otimes V_2) \CX (V_3\otimes V_4) \CX (V_5\otimes V_6) $;
+    \item Three $ \CX $ gates are required to synthesize 2Q gates $ \sim \Can(a,b,c) $, i.e., $ (V_1\otimes V_2) \CX (V_3\otimes V_4) \CX (V_5\otimes V_6) \CX (V_7\otimes V_8) $.
+\end{enumerate}
+We assume the cost of one $ \CX $ gate is $ 1.0 $, polytopes in different colors denotes the minimal circuit cost (duration) for the coverage set if synthesized by $ \CX $ and arbitrary 1Q gates. That is, on average, the number of $ \CX $ gates required to synthesize arbitrary 2Q gates is $ 3 $. In contrast, the number for \SQiSWISA\ ISA is $ 2.21 $~\cite{huang2023quantum}.
+
+Monodromy polytope theory~\cite{peterson2020fixed} provides a framework for determining the synthesis coverage set and circuit cost (in 2Q depth) for any set of basis gates with specified costs, while the specific gate decomposition process is left to the synthesizer to complete. For the selected ISAs in \Cref{tab:isa_setting} with the basis gate costs assumed in \Cref{eq:cost}, \Cref{fig:coverage_cx,fig:coverage_sqisw,fig:coverage_sqisw_with_mirror,fig:coverage_zzphase,fig:coverage_zzphase_with_mirror,fig:coverage_het} describes their coverage sets, respectively. With the enrichment of quantum ISA (e.g., combining gate families, involving mirror gates) and heterogeneous basis gate cost settings, the coverage set reveals a richer variety of convex polyhedra. That implies more optimization effects for the ISA-ware routing mechanism in \canopus. 
+
+
+\subsection{2Q gate mirroring}
+
+The mirror symmetry of a 2Q gate $ U $ is defined as the composition of the original gate and a $ \SWAP $ gate~\cite{proctor2022measuring}, i.e., $ \mathrm{SWAP} \cdot U $. For example, $ \CX $ and $ \iSWAP $ is a typical pair of mirror gates as shown below.
+\begin{center}
+    \begin{quantikz}[row sep=0.2cm, column sep=0.2cm, align equals at=1.5]
+        & \ctrl{1} & \swap{1} & \ghost{S^\dagger}\qw \\
+        & \targ{} & \targX{} & \ghost{S^\dagger}\qw
+    \end{quantikz} = \begin{quantikz}[row sep=0.2cm, column sep=0.2cm, align equals at=1.5]
+        & \gate{S^\dagger} & \qw & \gate[2]{\mathrm{iSWAP}} & \gate{H} & \qw \\
+        & \gate{H} & \gate{S^\dagger} & & \qw & \qw
+    \end{quantikz}
+\end{center}
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[height=0.25\textwidth]{figures/facet_mirroring.pdf}
+    \caption{Morrir symmetry for $ \Can(a,b,0) $ and $ \Can(\frac{1}{2},b',c') $ gate families.}
+    \label{fig:mirroring}
+\end{figure}
+
+
+In general, the mirroring rule for Canonical coefficients is described as
+\begin{align}
+    \mathrm{SWAP} \cdot \mathrm{Can}(a,b,c)
+    & \sim \left(a+\frac{1}{2}, b+\frac{1}{2}, c+\frac{1}{2}\right) 
+    & \sim \left(a+\frac{1}{2}-1, b+\frac{1}{2}-1, c+\frac{1}{2}-1\right) 
+    & \sim
+    \begin{cases}
+        \left(\frac{1}{2}-c, \frac{1}{2}-b, a - \frac{1}{2}\right), & \text{if } c \geq 0 \\
+        \left(\frac{1}{2} + c, \frac{1}{2}-b, \frac{1}{2} - a\right), & \text{if } c < 0
+    \end{cases}.
+\end{align}
+
+The mirror pair of $ \CX $ and $ \iSWAP $ is a specical case implying that a \CXISA-\iSWAPISA\ combination ISA could result in lower overhead in routing-synthesis collaborative optimization. \citet{yale2024noise} once considers inserting $ \SWAP $ gates to get mirrored gates with lower synthesis overhead compared to the original gates, given the all-to-all topology and continuous $ \ZZ(\theta) $ gate set on ion-trapped hardware. \citet{mckinney2024mirage} discusses that integrating $ \SQiSW $'s mirror gate, i.e, $ \ECP\sim\Can\bigl(\frac{1}{4},\frac{1}{4},0\bigr) $ gate, into the powerful \SQiSWISA\ ISA, could further improve the ISA's synthesis capability and end-to-end routing-synthesis co-optimization on limited topologies.
 
 
 
