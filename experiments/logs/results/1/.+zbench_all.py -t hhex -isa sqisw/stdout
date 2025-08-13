@@ -1,13 +1,31 @@
-Skipping ./output/canopus_num/hhex/sqisw/bigadder_n18.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/bv_n19.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/gcm_n13.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/ising_n26.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/knn_n25.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/multiplier_n15.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/qec9xz_n17.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/qft_n18.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/qpeexact_n16.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/qram_n20.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/sat_n11.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/swap_test_n25.qasm, already processed.
-Skipping ./output/canopus_num/hhex/sqisw/wstate_n27.qasm, already processed.
+────────────── Processing ./output/logical/tk2/bigadder_n18.qasm ───────────────
++----------------------------------------------------------+
+|                Logical-level optimization                |
++------------+-----------+--------------+-------+----------+
+| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
++------------+-----------+--------------+-------+----------+
+|     18     |    295    |     114      |  150  |    79    |
++------------+-----------+--------------+-------+----------+
+Gate counts: OrderedDict({'u': 181, 'can': 114})
+Circuit cost: (130.0, 88.0)
++----------------------------------------------------------+
+|                      Mapped circuit                      |
++------------+-----------+--------------+-------+----------+
+| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
++------------+-----------+--------------+-------+----------+
+|     18     |    352    |     171      |  191  |   112    |
++------------+-----------+--------------+-------+----------+
+Gate counts: OrderedDict({'u': 181, 'can': 114, 'swap': 57})
+Circuit cost: (239.25, 148.5)
+Routing overhead (Count): 1.84; Routing Overhead (Depth): 1.69
+Saved to ./output/canopus_num/hhex/sqisw/bigadder_n18.qasm
+───────────────── Processing ./output/logical/tk2/bv_n19.qasm ──────────────────
++----------------------------------------------------------+
+|                Logical-level optimization                |
++------------+-----------+--------------+-------+----------+
+| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
++------------+-----------+--------------+-------+----------+
+|     19     |     38    |      18      |   20  |    18    |
++------------+-----------+--------------+-------+----------+
+Gate counts: OrderedDict({'u': 20, 'can': 18})
+Circuit cost: (18.0, 18.0)

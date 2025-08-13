@@ -1,14 +1,10 @@
-Skipping ./output/canopus_num/chain/sqisw/bigadder_n18.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/bv_n19.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/gcm_n13.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/ising_n26.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/knn_n25.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/multiplier_n15.qasm, already 
-processed.
-Skipping ./output/canopus_num/chain/sqisw/qec9xz_n17.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/qft_n18.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/qpeexact_n16.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/qram_n20.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/sat_n11.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/swap_test_n25.qasm, already processed.
-Skipping ./output/canopus_num/chain/sqisw/wstate_n27.qasm, already processed.
+────────────── Processing ./output/logical/tk2/bigadder_n18.qasm ───────────────
++----------------------------------------------------------+
+|                Logical-level optimization                |
++------------+-----------+--------------+-------+----------+
+| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
++------------+-----------+--------------+-------+----------+
+|     18     |    295    |     114      |  150  |    79    |
++------------+-----------+--------------+-------+----------+
+Gate counts: OrderedDict({'u': 181, 'can': 114})
+Circuit cost: (130.0, 88.0)

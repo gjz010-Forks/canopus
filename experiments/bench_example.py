@@ -9,7 +9,7 @@ from canopus.utils import *
 from qiskit.transpiler import CouplingMap, PassManager
 from pytket.utils import compare_unitaries
 from qiskit import qasm2
-
+import pytket.qasm
 
 # configure logging
 # logging.basicConfig(
@@ -19,38 +19,13 @@ from qiskit import qasm2
 # )
 
 
-qc = qasm2.loads("""
-OPENQASM 2.0;
-include "qelib1.inc";
-qreg q[6];
-h q[0];
-h q[2];
-h q[5];
-z q[0];
-cx q[1],q[2];
-cx q[4],q[5];
-cx q[0],q[1];
-cx q[2],q[3];
-h q[2];
-h q[3];
-cx q[1],q[2];
-cx q[3],q[5];
-z q[3];
-cx q[3],q[4];
-cx q[0],q[3];
-""")
 
-circ = qiskit_to_tket(qc)
-circ = rebase_to_tk2(circ)
+circ = pytket.qasm.circuit_from_qasm('./output/logical/tk2/sat_n11.qasm')
 qc = tket_to_qiskit(circ)
 
 console.rule('Original circuit')
 
-print(qc)
-
-assert compare_unitaries(circ.get_unitary(), qc2mat(qc))
-
-print(qiskit_to_tket(qc).get_commands())
+# print(qc)
 
 coupling_map = gene_chain_coupling_map(qc.num_qubits)
 # coupling_map = gene_square_coupling_map(qc.num_qubits)
@@ -59,25 +34,24 @@ backend = CanopusBackend(coupling_map, 'sqisw', 'xx')
 
 console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc)))
 
-console.rule('SABRE mapping')
-start = time.perf_counter()
-pm = PassManager(SabreMapping(backend, seed=123))
-qc_sabre = pm.run(qc)
-end = time.perf_counter()
-print(qc_sabre)
-console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_sabre)))
-console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
+# console.rule('SABRE mapping')
+# start = time.perf_counter()
+# pm = PassManager(SabreMapping(backend, seed=123))
+# qc_sabre = pm.run(qc)
+# end = time.perf_counter()
+# # print(qc_sabre)
+# console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_sabre)))
+# console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
 
-qasm2.dump(qc_sabre, 'demo_can_sabre.qasm')
 
 
 
 console.rule('Canopus mapping')
 start = time.perf_counter()
-pm = PassManager(CanopusMapping(backend, seed=123, max_iterations=8))
+pm = PassManager(CanopusMapping(backend, seed=123))
 qc_canopus = pm.run(qc)
 end = time.perf_counter()
-print(qc_canopus)
+# print(qc_canopus)
 console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc_canopus)))
 console.print('Time taken for Canopus mapping: {:.4f} seconds'.format(end - start))
 

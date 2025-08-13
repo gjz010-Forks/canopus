@@ -30,7 +30,7 @@ if qc.num_qubits < 7:
 # print(qiskit_to_tket(qc).get_commands())
 
 coupling_map = gene_chain_coupling_map(qc.num_qubits)
-# coupling_map = gene_hhex_coupling_map(qc.num_qubits)
+# coupling_map = gene_square_coupling_map(qc.num_qubits)
 backend = CanopusBackend(coupling_map, 'cx', 'xx')
 
 console.print('Pulse duration: {}'.format(backend.cost_estimator.eval_circuit_cost(qc)))

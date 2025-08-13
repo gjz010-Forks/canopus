@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 sys.path.append('../')
 import canopus
@@ -25,7 +26,7 @@ import sympy
 import argparse
 
 
-def canopus_pass(qc, topology, isa, max_iterations=10):
+def canopus_pass(qc, topology, isa, max_iterations=10, depth_driven=False):
     if topology == "chain":
         coupling_map = canopus.utils.gene_chain_coupling_map(qc.num_qubits)
     elif topology == "hhex":
@@ -36,7 +37,7 @@ def canopus_pass(qc, topology, isa, max_iterations=10):
         raise ValueError(f"Unsupported topology: {topology}")
     
     backend = canopus.CanopusBackend(coupling_map, isa)
-    qc_mapped = PassManager(canopus.CanopusMapping(backend, max_iterations = max_iterations)).run(qc)
+    qc_mapped = PassManager(canopus.CanopusMapping(backend, max_iterations = max_iterations, depth_driven=depth_driven)).run(qc)
     return qc_mapped
 
 
@@ -476,7 +477,7 @@ def transformer_syndrome_extraction_circuit(qc_pre_stim, log_to_phys_initial, lo
     return stim_circ
     
 if __name__ == "__main__":
-    shots = 10000
+    shots = 1000000
     
     
     config = argparse.ArgumentParser()
@@ -623,7 +624,7 @@ if __name__ == "__main__":
     np.random.seed(123)
     console.rule('Original Circuit')
     
-    console.print(f"Pulse duration before mapping (cx_isa): {cx_cost_est.eval_circuit_duration(qc) :.4f}")
+    console.print(f"Pulse duration before mapping (cx_isa): {cx_cost_est.eval_circuit_cost(qc)}")
     
     # routing by Sabre
     console.rule('SABRE mapping')
@@ -632,23 +633,26 @@ if __name__ == "__main__":
     end = time.perf_counter()
     # rebase to Canonical format
     qc_sabre_rebase_tk2 = canopus.rebase_to_tk2(qc_sabre)
-    
-    console.print(f"Pulse duration Sabre mapping (cx_isa): {cx_cost_est.eval_circuit_duration(qc_sabre_rebase_tk2):.4f}, stab_isa: {stab_isa_cost_est.eval_circuit_duration(qc_sabre_rebase_tk2):.4f}")
+    # console.print(f"before rebase {cx_cost_est.eval_circuit_cost(canopus.rebase_to_canonical(qc_sabre))}, after rebase {cx_cost_est.eval_circuit_cost(qc_sabre_rebase_tk2)}", style='red bold')
+
+    console.print(f"Pulse duration Sabre mapping (cx_isa): {cx_cost_est.eval_circuit_cost(qc_sabre_rebase_tk2)}, stab_isa: {stab_isa_cost_est.eval_circuit_cost(qc_sabre_rebase_tk2)}")
     console.print(f'Time taken for Sabre mapping (cx_isa): {(end - start):.4f} seconds')
     
     # Routing by Canopus
     console.rule('Canopus mapping')
     start_cx = time.perf_counter()
-    qc_canopus_cx = canopus_pass(qc, "square", 'cx', max_iterations=config.max_iterations)
+    qc_canopus_cx = canopus_pass(qc, config.topology, 'cx', max_iterations=config.max_iterations, depth_driven=False)
     end_cx = time.perf_counter()
     start_stab = time.perf_counter()
-    qc_canopus_stab = canopus_pass(qc, "square", 'stab', max_iterations=config.max_iterations)
+    qc_canopus_stab = canopus_pass(qc, config.topology, 'stab', max_iterations=config.max_iterations, depth_driven=False)
     end_stab = time.perf_counter()
     # rebase to Canonical format
     qc_canopus_cx_rebase_tk2 = canopus.rebase_to_tk2(qc_canopus_cx)
+    # console.print(f"before rebase {cx_cost_est.eval_circuit_cost(canopus.rebase_to_canonical(qc_canopus_cx))}, after rebase {cx_cost_est.eval_circuit_cost(qc_canopus_cx_rebase_tk2)}", style='red bold')
     qc_canopus_stab_rebase_tk2 = canopus.rebase_to_tk2(qc_canopus_stab)
+    # console.print(f"before rebase {stab_isa_cost_est.eval_circuit_cost(canopus.rebase_to_canonical(qc_canopus_stab))}, after rebase {stab_isa_cost_est.eval_circuit_cost(qc_canopus_stab_rebase_tk2)}", style='red bold')
 
-    console.print(f"Pulse duration Canopus mapping (cx_isa): {cx_cost_est.eval_circuit_duration(qc_canopus_cx_rebase_tk2):.4f}, stab_isa: {stab_isa_cost_est.eval_circuit_duration(qc_canopus_stab_rebase_tk2):.4f}")
+    console.print(f"Pulse duration Canopus mapping (cx_isa): {cx_cost_est.eval_circuit_cost(qc_canopus_cx_rebase_tk2)}, stab_isa: {stab_isa_cost_est.eval_circuit_cost(qc_canopus_stab_rebase_tk2)}")
     console.print(f'Time taken for Canopus mapping (cx_isa): {(end_cx - start_cx):.4f} seconds, stab_isa: {(end_stab - start_stab):.4f} seconds')
     
     console.rule('Get circuit [initial | final] layout')
@@ -674,14 +678,20 @@ if __name__ == "__main__":
     qc_sabre_stab_pre_stim = canopus.synthesis.synthesize_clifford_circuit(qc_sabre_rebase_tk2, isa='stab')
     qc_canopus_cx_pre_stim = canopus.synthesis.synthesize_clifford_circuit(qc_canopus_cx_rebase_tk2)
     qc_canopus_stab_pre_stim = canopus.synthesis.synthesize_clifford_circuit(qc_canopus_stab_rebase_tk2, isa='stab')
+
+    qasm2.dump(qc_sabre_cx_pre_stim, 'qc_sabre_cx_pre_stim.qasm')
+    qasm2.dump(qc_sabre_stab_pre_stim, 'qc_sabre_stab_pre_stim.qasm')
+    qasm2.dump(qc_canopus_cx_pre_stim, 'qc_canopus_cx_pre_stim.qasm')
+    qasm2.dump(qc_canopus_stab_pre_stim, 'qc_canopus_stab_pre_stim.qasm')
+    
     
     # print(qc_canopus_stab_pre_stim)
     # print(qc_canopus_cx_pre_stim)
     # print(qc_canopus_stab_pre_stim)
     
     console.rule('Benchmark Circuit Duration and Gate Count')
-    print(f"Sabre, cx_duration: {cx_cost_est.eval_circuit_duration(qc_sabre_rebase_tk2):.4f}, stab_duration: {stab_isa_cost_est.eval_circuit_duration(qc_sabre_rebase_tk2):.4f}")
-    print(f"Canopus CX, cx_duration: {cx_cost_est.eval_circuit_duration(qc_canopus_cx_rebase_tk2):.4f}, stab_duration: {stab_isa_cost_est.eval_circuit_duration(qc_canopus_cx_rebase_tk2):.4f}")
+    print(f"Sabre, cx_duration: {cx_cost_est.eval_circuit_cost(qc_sabre_rebase_tk2)}, stab_duration: {stab_isa_cost_est.eval_circuit_cost(qc_sabre_rebase_tk2)}")
+    print(f"Canopus CX, cx_duration: {cx_cost_est.eval_circuit_cost(qc_canopus_cx_rebase_tk2)}, stab_duration: {stab_isa_cost_est.eval_circuit_cost(qc_canopus_stab_rebase_tk2)}")
 
     print("Sabre CX:", qc_sabre_cx_pre_stim.count_ops())
     print("Sabre Stab:", qc_sabre_stab_pre_stim.count_ops())

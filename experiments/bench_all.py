@@ -46,9 +46,9 @@ fnames = [os.path.join(benchmark_dpath, fname) for fname in natsorted(os.listdir
 cx_synth_cost_estimator = canopus.SynthCostEstimator('cx')
 
 for fname in fnames:
-    if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
-        console.print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
-        continue
+    # if os.path.exists(os.path.join(output_dpath, os.path.basename(fname))):
+    #     console.print(f"Skipping {os.path.join(output_dpath, os.path.basename(fname))}, already processed.")
+    #     continue
 
     console.rule(f"Processing {fname}")
 
