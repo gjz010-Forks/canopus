@@ -10,11 +10,12 @@ import rustworkx as rx
 from pytket import OpType
 from math import pi
 from collections import Counter
-from typing import Union, Tuple, Dict
+from typing import Union, Tuple, Dict, List, Callable
 from rich.console import Console
 from prettytable import PrettyTable
 from pytket.utils.stats import gate_counts
 from qiskit.transpiler import Layout, CouplingMap
+from qiskit.circuit import CircuitInstruction
 from functools import lru_cache
 from qiskit.synthesis import TwoQubitWeylDecomposition
 from qiskit.circuit.library import RZZGate, iSwapGate, CXGate, XXPlusYYGate
@@ -295,6 +296,62 @@ def infidelity(u: np.ndarray, v: np.ndarray) -> float:
         raise ValueError('u and v must have the same shape.')
     d = u.shape[0]
     return 1 - np.abs(np.trace(u.conj().T @ v)) / d
+
+
+def front_layer_from_circuit(qc: qiskit.QuantumCircuit, predicate: Callable = None) -> List[CircuitInstruction]:
+    """
+    Obtain the front layer of the circuit
+    """
+    if predicate is None:
+        predicate = lambda _: True
+    front_layer = []
+    qubits_to_indices = {q: i for i, q in enumerate(qc.qubits)}
+    visited_qubits = set()
+    n = qc.num_qubits
+    instructions = qc.data
+    for instr in instructions:
+        if predicate(instr) and not any(qubits_to_indices[q] in visited_qubits for q in instr.qubits):
+            front_layer.append(instr)
+        visited_qubits.update([qubits_to_indices[q] for q in instr.qubits])
+        if len(visited_qubits) == n:
+            break
+    return front_layer
+
+
+def layer_circuit(qc: qiskit.QuantumCircuit, fuse_1q: bool = False) -> List[List[CircuitInstruction]]:
+    """If fuse_1q=True, 1Q gates will be divided into its near-neighbor 2Q layer ASAP"""
+    layers = []
+    instructions = qc.data.copy()
+    qreg = qc.qregs[0]
+
+    # Extract all first-layer 1Q gates
+    if fuse_1q:
+        front_layer = []
+        while front_layer_1q := front_layer_from_circuit(qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg), lambda instr: instr.operation.num_qubits == 1):
+            front_layer.extend(front_layer_1q)
+            for instr in front_layer_1q:
+                instructions.remove(instr)
+        layers.append(front_layer)
+
+    # Extract front-layer iteratively
+    while instructions:
+        front_layer = front_layer_from_circuit(qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg))
+        for instr in front_layer:
+            instructions.remove(instr)
+        if fuse_1q:
+            while front_layer_1q := front_layer_from_circuit(qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg), lambda instr: instr.operation.num_qubits == 1):
+                front_layer.extend(front_layer_1q)
+                for instr in front_layer_1q:
+                    instructions.remove(instr)
+        layers.append(front_layer)
+
+    if fuse_1q:
+        first_layer = layers[0] + layers[1]
+        layers.pop(0)
+        layers.pop(0)
+        layers.insert(0, first_layer)
+
+    return layers
 
 
 def remove_1q_gates(qc: qiskit.QuantumCircuit) -> qiskit.QuantumCircuit:
@@ -633,3 +690,23 @@ Manhattan_Edges = [
     (71, 69)]
 
 Manhattan = CouplingMap(Manhattan_Edges)
+
+
+
+# def to_pydag(qc: qiskit.QuantumCircuit) -> rx.PyDAG:
+#     """Convert a qiskit.QuantumCircuit to a rustworkx.PyDAG instance, for better complexity than qiskit built-in circuit_to_dag"""
+#     dag = rx.PyDAG(multigraph=False)
+#     ops = qc.data
+#     dag.add_nodes_from(ops)
+#     op_to_idx = {dag[idx] for idx in dag.node_indices()}
+#     while ops:
+#         op = ops.pop(0)
+#         qargs = set(op.qubits)
+#         for op_opt in ops:  # traverse the subsequent optional gates
+#             qargs_opt = set(op_opt.qubits)
+#             if dependent_qubits := qargs_opt & qargs:
+#                 dag.add_edge(op_to_idx[op], op_to_idx[op_opt], {'qubits': list(dependent_qubits)})
+#                 qargs -= qargs_opt
+#             if not qargs:
+#                 break
+#     return dag

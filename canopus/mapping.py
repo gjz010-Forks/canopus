@@ -223,7 +223,7 @@ class CanopusMapping(BidirectionalMapping):
         self.depth_driven = depth_driven
 
     def _eval_dagcircuit_cost(self, dag):
-        count_cost, depth_cost = self.backend.cost_estimator.eval_dagcircuit_cost(dag)
+        count_cost, depth_cost = self.backend.cost_estimator.eval_dagcircuit_cost(dag, comm_opt=self.comm_opt)
         if self.depth_driven:
             return depth_cost, count_cost
         return count_cost, depth_cost

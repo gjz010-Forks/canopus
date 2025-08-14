@@ -212,7 +212,8 @@ comp_square_depth = pd.DataFrame({
 
 
 def get_avg(col):
-    return gmean([val for val in col if val > 1])
+    return gmean(col)
+    # return gmean([val for val in col if val > 1])
 
 colors = ['\cellcolor{brown!15}', '\cellcolor{brown!30}', '\cellcolor{brown!45}', '\cellcolor{brown!60}']
 

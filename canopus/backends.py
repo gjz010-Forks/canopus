@@ -111,11 +111,11 @@ class SynthCostEstimator:
         self._cached_gate_costs[a, b, c] = cost
         return cost
 
-    def eval_circuit_cost(self, qc: QuantumCircuit) -> Tuple[float, float]:
+    def eval_circuit_cost(self, qc: QuantumCircuit, comm_opt: bool = True) -> Tuple[float, float]:
         """Evaluate the circuit cost (both gate count and circuit depth) in pulse-level duration of a Qiskit QuantumCircuit instance."""
-        return self.eval_dagcircuit_cost(circuit_to_dag(qc))
+        return self.eval_dagcircuit_cost(circuit_to_dag(qc), comm_opt)
 
-    def eval_dagcircuit_cost(self, dag: DAGCircuit) -> Tuple[float, float]:
+    def eval_dagcircuit_cost(self, dag: DAGCircuit, comm_opt: bool = True) -> Tuple[float, float]:
         """Evaluate the circuit cost (both gate count and circuit depth) in pulse-level duration of a Qiskit DAGCircuit instance."""
         qubit_indices = {qarg: q for q, qarg in enumerate(dag.qubits)}
         wire_durations = {q: 0.0 for q in range(dag.num_qubits())}
@@ -132,7 +132,8 @@ class SynthCostEstimator:
                 if (q0, q1) in last_mapped_layer:
                     node_ = last_mapped_layer[q0, q1]
                     if node_.op.name.startswith('can'):
-                        self._try_update_wire_durations_by_commutation((q0, q1), node_, commutative_pairs, wire_durations)
+                        if comm_opt:
+                            self._try_update_wire_durations_by_commutation((q0, q1), node_, commutative_pairs, wire_durations)
                         gate_duration = self.eval_gate_cost(*mirror_weyl_coord(*node_.op.params)) - self.eval_gate_cost(*node_.op.params)
                     else:
                         gate_duration = self.swap_cost
@@ -160,16 +161,20 @@ class SynthCostEstimator:
             for predecessor in dag.op_predecessors(node):
                 if predecessor.num_qubits == 2:
                     pred_q0, pred_q1 = sort_two_ints(qubit_indices[predecessor.qargs[0]],
-                                                     qubit_indices[predecessor.qargs[1]])                    
-                    if not (node.op.name.startswith('can') and
-                            predecessor.op.name.startswith('can') and
-                            (q0, q1) != (pred_q0, pred_q1) and
-                            only_xx_rot(*node.op.params) and
-                            only_xx_rot(*predecessor.op.params)):
+                                                     qubit_indices[predecessor.qargs[1]])
+                    if comm_opt:           
+                        if not (node.op.name.startswith('can') and
+                                predecessor.op.name.startswith('can') and
+                                (q0, q1) != (pred_q0, pred_q1) and
+                                only_xx_rot(*node.op.params) and
+                                only_xx_rot(*predecessor.op.params)):
+                            last_mapped_layer.pop((pred_q0, pred_q1), None)
+                            commutative_pairs.pop((pred_q0, pred_q1), None)
+                        else:
+                            commutative_pairs[pred_q0, pred_q1] = (q0, q1)
+                    else:
                         last_mapped_layer.pop((pred_q0, pred_q1), None)
                         commutative_pairs.pop((pred_q0, pred_q1), None)
-                    else:
-                        commutative_pairs[pred_q0, pred_q1] = (q0, q1)
                 else:
                     # 往前追溯 single-qubit predecessor 的前序节点 (pred_predecessor 必然是 two-qubit gate)
                     if pred_predecessor := next(dag.op_predecessors(predecessor), None):

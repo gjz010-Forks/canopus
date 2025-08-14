@@ -13,11 +13,11 @@ Circuit cost: (130.0, 88.0)
 +------------+-----------+--------------+-------+----------+
 | num_qubits | num_gates | num_2q_gates | depth | depth_2q |
 +------------+-----------+--------------+-------+----------+
-|     18     |    351    |     170      |  194  |   115    |
+|     18     |    356    |     175      |  194  |   115    |
 +------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 181, 'can': 114, 'swap': 56})
-Circuit cost: (204.0, 130.0)
-Routing overhead (Count): 1.57; Routing Overhead (Depth): 1.48
+Gate counts: OrderedDict({'u': 181, 'can': 114, 'swap': 61})
+Circuit cost: (214.0, 128.5)
+Routing overhead (Count): 1.65; Routing Overhead (Depth): 1.46
 ───────────────── Processing ./output/logical/tk2/bv_n19.qasm ──────────────────
 +----------------------------------------------------------+
 |                Logical-level optimization                |
@@ -33,31 +33,12 @@ Circuit cost: (18.0, 18.0)
 +------------+-----------+--------------+-------+----------+
 | num_qubits | num_gates | num_2q_gates | depth | depth_2q |
 +------------+-----------+--------------+-------+----------+
-|     19     |     56    |      36      |   38  |    36    |
+|     19     |     54    |      34      |   36  |    34    |
 +------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 20, 'can': 18, 'swap': 18})
-Circuit cost: (36.0, 39.0)
-Routing overhead (Count): 2.00; Routing Overhead (Depth): 2.17
-───────────────── Processing ./output/logical/tk2/gcm_n13.qasm ─────────────────
-+----------------------------------------------------------+
-|                Logical-level optimization                |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     13     |    909    |     377      |  661  |   376    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 532, 'can': 377})
-Circuit cost: (511.0, 510.0)
-+----------------------------------------------------------+
-|                      Mapped circuit                      |
-+------------+-----------+--------------+-------+----------+
-| num_qubits | num_gates | num_2q_gates | depth | depth_2q |
-+------------+-----------+--------------+-------+----------+
-|     13     |    1100   |     568      |  866  |   532    |
-+------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 532, 'can': 377, 'swap': 191})
-Circuit cost: (592.5, 537.5)
-Routing overhead (Count): 1.16; Routing Overhead (Depth): 1.05
+Gate counts: OrderedDict({'u': 20, 'can': 18, 'swap': 16})
+Circuit cost: (29.0, 31.0)
+Routing overhead (Count): 1.61; Routing Overhead (Depth): 1.72
+Saved to ./output/canopus/chain/sqisw_/bv_n19.qasm
 ──────────────── Processing ./output/logical/tk2/ising_n26.qasm ────────────────
 +----------------------------------------------------------+
 |                Logical-level optimization                |
@@ -93,11 +74,11 @@ Circuit cost: (84.0, 62.0)
 +------------+-----------+--------------+-------+----------+
 | num_qubits | num_gates | num_2q_gates | depth | depth_2q |
 +------------+-----------+--------------+-------+----------+
-|     25     |    262    |     117      |  141  |    90    |
+|     25     |    261    |     116      |  143  |    92    |
 +------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 145, 'can': 72, 'swap': 45})
-Circuit cost: (129.0, 99.5)
-Routing overhead (Count): 1.54; Routing Overhead (Depth): 1.60
+Gate counts: OrderedDict({'u': 145, 'can': 72, 'swap': 44})
+Circuit cost: (130.0, 107.0)
+Routing overhead (Count): 1.55; Routing Overhead (Depth): 1.73
 ───────────── Processing ./output/logical/tk2/multiplier_n15.qasm ──────────────
 +----------------------------------------------------------+
 |                Logical-level optimization                |
@@ -133,12 +114,11 @@ Circuit cost: (32.0, 12.0)
 +------------+-----------+--------------+-------+----------+
 | num_qubits | num_gates | num_2q_gates | depth | depth_2q |
 +------------+-----------+--------------+-------+----------+
-|     17     |    119    |      75      |   32  |    27    |
+|     17     |    121    |      77      |   32  |    27    |
 +------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 44, 'swap': 43, 'can': 32})
-Circuit cost: (82.0, 33.5)
-Routing overhead (Count): 2.56; Routing Overhead (Depth): 2.79
-Saved to ./output/canopus/chain/sqisw_/qec9xz_n17.qasm
+Gate counts: OrderedDict({'swap': 45, 'u': 44, 'can': 32})
+Circuit cost: (89.0, 36.5)
+Routing overhead (Count): 2.78; Routing Overhead (Depth): 3.04
 ───────────────── Processing ./output/logical/tk2/qft_n18.qasm ─────────────────
 +----------------------------------------------------------+
 |                Logical-level optimization                |
@@ -174,11 +154,11 @@ Circuit cost: (260.0, 86.0)
 +------------+-----------+--------------+-------+----------+
 | num_qubits | num_gates | num_2q_gates | depth | depth_2q |
 +------------+-----------+--------------+-------+----------+
-|     16     |    478    |     366      |  154  |   112    |
+|     16     |    482    |     370      |  161  |   127    |
 +------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'swap': 239, 'can': 127, 'u': 112})
-Circuit cost: (515.5, 157.0)
-Routing overhead (Count): 1.98; Routing Overhead (Depth): 1.83
+Gate counts: OrderedDict({'swap': 243, 'can': 127, 'u': 112})
+Circuit cost: (489.0, 163.0)
+Routing overhead (Count): 1.88; Routing Overhead (Depth): 1.90
 Saved to ./output/canopus/chain/sqisw_/qpeexact_n16.qasm
 ──────────────── Processing ./output/logical/tk2/qram_n20.qasm ─────────────────
 +----------------------------------------------------------+
@@ -220,7 +200,6 @@ Circuit cost: (252.0, 204.0)
 Gate counts: OrderedDict({'u': 263, 'can': 210, 'swap': 172})
 Circuit cost: (444.5, 302.5)
 Routing overhead (Count): 1.76; Routing Overhead (Depth): 1.48
-Saved to ./output/canopus/chain/sqisw_/sat_n11.qasm
 ────────────── Processing ./output/logical/tk2/swap_test_n25.qasm ──────────────
 +----------------------------------------------------------+
 |                Logical-level optimization                |
@@ -236,11 +215,11 @@ Circuit cost: (84.0, 62.0)
 +------------+-----------+--------------+-------+----------+
 | num_qubits | num_gates | num_2q_gates | depth | depth_2q |
 +------------+-----------+--------------+-------+----------+
-|     25     |    244    |      99      |  127  |    76    |
+|     25     |    241    |      96      |  125  |    74    |
 +------------+-----------+--------------+-------+----------+
-Gate counts: OrderedDict({'u': 145, 'can': 72, 'swap': 27})
-Circuit cost: (96.0, 73.5)
-Routing overhead (Count): 1.14; Routing Overhead (Depth): 1.19
+Gate counts: OrderedDict({'u': 145, 'can': 72, 'swap': 24})
+Circuit cost: (90.0, 68.0)
+Routing overhead (Count): 1.07; Routing Overhead (Depth): 1.10
 Saved to ./output/canopus/chain/sqisw_/swap_test_n25.qasm
 ─────────────── Processing ./output/logical/tk2/wstate_n27.qasm ────────────────
 +----------------------------------------------------------+
