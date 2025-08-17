@@ -1,51 +1,54 @@
-import pytket
-import qiskit
+import os
 import pickle
 import warnings
-import os
-import pytket.qasm
-import qiskit.qasm2
-import numpy as np
-import rustworkx as rx
-from pytket import OpType
-from math import pi
 from collections import Counter
-from typing import Union, Tuple, Dict, List, Callable
-from rich.console import Console
-from prettytable import PrettyTable
-from pytket.utils.stats import gate_counts
-from qiskit.transpiler import Layout, CouplingMap
-from qiskit.circuit import CircuitInstruction
 from functools import lru_cache
+from math import pi
+from typing import Callable, Dict, List, Tuple, Union
+
+import numpy as np
+import pytket
+import pytket.qasm
+import qiskit
+import qiskit.qasm2
+import qiskit.quantum_info as qi
+import rustworkx as rx
+from accel_utils import canonical_unitary, check_weyl_coord, optimal_can_gate_duration, sort_two_ints
+from monodromy.coverage import coverage_lookup_cost, gates_to_coverage
+from prettytable import PrettyTable
+from pytket import OpType
+from pytket.utils.stats import gate_counts
+from qiskit.circuit import CircuitInstruction
+from qiskit.circuit.library import CXGate, RZZGate, XXPlusYYGate, iSwapGate
 from qiskit.synthesis import TwoQubitWeylDecomposition
-from qiskit.circuit.library import RZZGate, iSwapGate, CXGate, XXPlusYYGate
+from qiskit.transpiler import CouplingMap, Layout
+from rich.console import Console
+
 from canopus.basics import CanonicalGate, half_pi
-from accel_utils import sort_two_ints, check_weyl_coord, canonical_unitary, optimal_can_gate_duration
-from monodromy.coverage import gates_to_coverage, coverage_lookup_cost
 
 console = Console()
 
 CX_AshN_Time_XY = optimal_can_gate_duration(0.5, 0, 0, 1, 1, 0)
 SQiSW_AshN_Time_XY = optimal_can_gate_duration(0.25, 0.25, 0, 1, 1, 0)
 
-Coverage_Dumped_Dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'configs')
-ZZPhase_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'zzphase_coverage.pkl')
-ZZPhase_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'zzphase_with_mirror_coverage.pkl')
-SQiSW_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'sqisw_coverage.pkl')
-SQiSW_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'sqisw_with_mirror_coverage.pkl')
-Het_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'het_isa_coverage.pkl')
-Stabilizer_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, 'stabilizer_isa_coverage.pkl')
+Coverage_Dumped_Dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "configs")
+ZZPhase_Coverage_File = os.path.join(Coverage_Dumped_Dir, "zzphase_coverage.pkl")
+ZZPhase_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, "zzphase_with_mirror_coverage.pkl")
+SQiSW_Coverage_File = os.path.join(Coverage_Dumped_Dir, "sqisw_coverage.pkl")
+SQiSW_With_Mirror_Coverage_File = os.path.join(Coverage_Dumped_Dir, "sqisw_with_mirror_coverage.pkl")
+Het_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, "het_isa_coverage.pkl")
+Stabilizer_ISA_Coverage_File = os.path.join(Coverage_Dumped_Dir, "stabilizer_isa_coverage.pkl")
 
 
 @lru_cache(maxsize=1)
 def get_zzphase_coverage():
     if os.path.exists(ZZPhase_Coverage_File):
-        with open(ZZPhase_Coverage_File, 'rb') as f:
+        with open(ZZPhase_Coverage_File, "rb") as f:
             return pickle.load(f)
     gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2)]
     costs = [1 / 3, 1 / 2, 1]
     cov = gates_to_coverage(*gate_set, costs=costs)
-    with open(ZZPhase_Coverage_File, 'wb') as f:
+    with open(ZZPhase_Coverage_File, "wb") as f:
         pickle.dump(cov, f)
     return cov
 
@@ -79,18 +82,30 @@ def get_cx_coverage():
 def get_zzphase_with_mirror_coverage():
     """Get the coverage set for the ZZ phase gate with mirror symmetry."""
     if os.path.exists(ZZPhase_With_Mirror_Coverage_File):
-        with open(ZZPhase_With_Mirror_Coverage_File, 'rb') as f:
+        with open(ZZPhase_With_Mirror_Coverage_File, "rb") as f:
             return pickle.load(f)
-    gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2), CanonicalGate(0.5, 0.5, 1 / 3),
-                CanonicalGate(0.5, 0.5, 1 / 4), CanonicalGate(0.5, 0.5, 0)]
+    gate_set = [
+        RZZGate(pi / 6),
+        RZZGate(pi / 4),
+        RZZGate(pi / 2),
+        CanonicalGate(0.5, 0.5, 1 / 3),
+        CanonicalGate(0.5, 0.5, 1 / 4),
+        CanonicalGate(0.5, 0.5, 0),
+    ]
     cx_cost = 1
     iswap_cost = 1.5  # optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0) / CX_AshN_Time_XY == 1
     swap_cost = 2  # optimal_can_gate_duration(0.5, 0.5, 0.5, 1, 1, 0) / CX_AshN_Time_XY == 1.5
-    costs = [cx_cost / 3, cx_cost / 2, cx_cost,
-             swap_cost - (swap_cost - iswap_cost) / 3, (iswap_cost + swap_cost) / 2, iswap_cost]
-    names = ['RZZ_π_6', 'RZZ_π_4', 'RZZ_π_2', 'pSWAP_π_6', 'pSWAP_π_4', 'pSWAP_π_2']
+    costs = [
+        cx_cost / 3,
+        cx_cost / 2,
+        cx_cost,
+        swap_cost - (swap_cost - iswap_cost) / 3,
+        (iswap_cost + swap_cost) / 2,
+        iswap_cost,
+    ]
+    names = ["RZZ_π_6", "RZZ_π_4", "RZZ_π_2", "pSWAP_π_6", "pSWAP_π_4", "pSWAP_π_2"]
     cov = gates_to_coverage(*gate_set, costs=costs, names=names)
-    with open(ZZPhase_With_Mirror_Coverage_File, 'wb') as f:
+    with open(ZZPhase_With_Mirror_Coverage_File, "wb") as f:
         pickle.dump(cov, f)
     return cov
 
@@ -105,7 +120,7 @@ def synth_cost_by_zzphase_with_mirror(a, b, c):
 @lru_cache(maxsize=1)
 def get_sqisw_with_mirror_coverage():
     if os.path.exists(SQiSW_With_Mirror_Coverage_File):
-        with open(SQiSW_With_Mirror_Coverage_File, 'rb') as f:
+        with open(SQiSW_With_Mirror_Coverage_File, "rb") as f:
             return pickle.load(f)
     gate_set = [iSwapGate().power(0.5), iSwapGate(), CanonicalGate(0.5, 0.25, 0.25), CXGate()]
     # costs = [
@@ -116,7 +131,7 @@ def get_sqisw_with_mirror_coverage():
     # ]
     costs = [0.75, 1.5, 1.25, 1]
     cov = gates_to_coverage(*gate_set, costs=costs)
-    with open(SQiSW_With_Mirror_Coverage_File, 'wb') as f:
+    with open(SQiSW_With_Mirror_Coverage_File, "wb") as f:
         pickle.dump(cov, f)
     return cov
 
@@ -131,12 +146,12 @@ def synth_cost_by_sqisw_with_mirror(a, b, c):
 @lru_cache(maxsize=1)
 def get_het_isa_coverage():
     if os.path.exists(Het_ISA_Coverage_File):
-        with open(Het_ISA_Coverage_File, 'rb') as f:
+        with open(Het_ISA_Coverage_File, "rb") as f:
             return pickle.load(f)
     gate_set = [RZZGate(pi / 6), RZZGate(pi / 4), RZZGate(pi / 2), iSwapGate().power(0.5), iSwapGate()]
     costs = [1 / 3, 1 / 2, 1, 0.75, 1.5]
     cov = gates_to_coverage(*gate_set, costs=costs)
-    with open(Het_ISA_Coverage_File, 'wb') as f:
+    with open(Het_ISA_Coverage_File, "wb") as f:
         pickle.dump(cov, f)
     return cov
 
@@ -151,12 +166,12 @@ def synth_cost_by_het_isa(a, b, c):
 @lru_cache(maxsize=1)
 def get_stabilizer_isa_coverage():
     if os.path.exists(Stabilizer_ISA_Coverage_File):
-        with open(Stabilizer_ISA_Coverage_File, 'rb') as f:
+        with open(Stabilizer_ISA_Coverage_File, "rb") as f:
             return pickle.load(f)
     gate_set = [iSwapGate(), CXGate()]
     costs = [1, 1]
     cov = gates_to_coverage(*gate_set, costs=costs)
-    with open(Stabilizer_ISA_Coverage_File, 'wb') as f:
+    with open(Stabilizer_ISA_Coverage_File, "wb") as f:
         pickle.dump(cov, f)
     return cov
 
@@ -171,9 +186,23 @@ def synth_cost_by_stabilizer_isa(a, b, c):
 def tket_to_qiskit(circ: pytket.Circuit) -> qiskit.QuantumCircuit:
     """The self-implemented conversion function holds the high-level semantics of some customized Gate instances"""
     if set(gate_counts(circ).keys()).issubset(
-            {OpType.X, OpType.Y, OpType.Z, OpType.H, OpType.S, OpType.T, OpType.Sdg, OpType.Tdg,
-             OpType.TK1, OpType.U3, OpType.SWAP,
-             OpType.TK2, OpType.ISWAP, OpType.ZZPhase}):
+        {
+            OpType.X,
+            OpType.Y,
+            OpType.Z,
+            OpType.H,
+            OpType.S,
+            OpType.T,
+            OpType.Sdg,
+            OpType.Tdg,
+            OpType.TK1,
+            OpType.U3,
+            OpType.SWAP,
+            OpType.TK2,
+            OpType.ISWAP,
+            OpType.ZZPhase,
+        }
+    ):
         qc = qiskit.QuantumCircuit(circ.n_qubits, circ.n_bits)
         for cmd in circ.get_commands():
             if cmd.op.type == OpType.X:
@@ -211,8 +240,7 @@ def tket_to_qiskit(circ: pytket.Circuit) -> qiskit.QuantumCircuit:
                 q0, q1 = sort_two_ints(cmd.qubits[0].index[0], cmd.qubits[1].index[0])
                 qc.append(CanonicalGate(*cmd.op.params), [q0, q1])
     else:
-        warnings.warn(
-            '!!!!!! Unsupported pytket circuit type: {} for native conversion'.format(set(gate_counts(circ).keys())))
+        warnings.warn(f"Unsupported pytket circuit type: {set(gate_counts(circ).keys())} for native conversion")
         qc = qiskit.QuantumCircuit.from_qasm_str(pytket.qasm.circuit_to_qasm_str(circ))
 
     return qc
@@ -220,47 +248,65 @@ def tket_to_qiskit(circ: pytket.Circuit) -> qiskit.QuantumCircuit:
 
 def qiskit_to_tket(qc: qiskit.QuantumCircuit) -> pytket.Circuit:
     """The self-implemented conversion function holds the high-level semantics of some customized Gate instances"""
-    # return 
+    # return
     circ = pytket.Circuit(qc.num_qubits, qc.num_clbits)
     if set(qc.count_ops().keys()).issubset(
-            {'x', 'y', 'z', 'h', 's', 't', 'sdg', 'tdg', 'u3', 'u',
-             'cx', 'swap', 'can', 'iswap', 'rzz', 'rzx', 'xx_plus_yy'}):
+        {
+            "x",
+            "y",
+            "z",
+            "h",
+            "s",
+            "t",
+            "sdg",
+            "tdg",
+            "u3",
+            "u",
+            "cx",
+            "swap",
+            "can",
+            "iswap",
+            "rzz",
+            "rzx",
+            "xx_plus_yy",
+        }
+    ):
         for instr in qc.data:
             qubits = [q._index for q in (instr.qubits)]
-            if instr.operation.name == 'can':
+            if instr.operation.name == "can":
                 q0, q1 = sort_two_ints(qubits[0], qubits[1])
                 circ.TK2(*instr.operation.params, q0, q1)
-            elif instr.operation.name == 'swap':
+            elif instr.operation.name == "swap":
                 circ.SWAP(*qubits)
-            elif instr.operation.name == 'cx':
+            elif instr.operation.name == "cx":
                 circ.CX(*qubits)
-            elif instr.operation.name == 'rzx':
+            elif instr.operation.name == "rzx":
                 circ.H(qubits[1])
                 circ.ZZPhase(instr.operation.params[0] / pi, *qubits)
                 circ.H(qubits[1])
-            elif instr.operation.name == 'rzz':
+            elif instr.operation.name == "rzz":
                 circ.ZZPhase(instr.operation.params[0] / pi, *qubits)
-            elif instr.operation.name == 'iswap':
+            elif instr.operation.name == "iswap":
                 circ.ISWAPMax(*qubits)
-            elif instr.operation.name == 'xx_plus_yy':
+            elif instr.operation.name == "xx_plus_yy":
                 circ.ISWAP((-instr.operation.params[0] / pi), *qubits)
-            elif instr.operation.name == 'x':
+            elif instr.operation.name == "x":
                 circ.X(*qubits)
-            elif instr.operation.name == 'y':
+            elif instr.operation.name == "y":
                 circ.Y(*qubits)
-            elif instr.operation.name == 'z':
+            elif instr.operation.name == "z":
                 circ.Z(*qubits)
-            elif instr.operation.name == 'h':
+            elif instr.operation.name == "h":
                 circ.H(*qubits)
-            elif instr.operation.name == 's':
+            elif instr.operation.name == "s":
                 circ.S(*qubits)
-            elif instr.operation.name == 'sdg':
+            elif instr.operation.name == "sdg":
                 circ.Sdg(*qubits)
-            elif instr.operation.name == 't':
+            elif instr.operation.name == "t":
                 circ.T(*qubits)
-            elif instr.operation.name == 'tdg':
+            elif instr.operation.name == "tdg":
                 circ.Tdg(*qubits)
-            elif instr.operation.name == 'u' or instr.operation.name == 'u3':
+            elif instr.operation.name == "u" or instr.operation.name == "u3":
                 theta, phi, lam = np.array(instr.operation.params)
                 # circ.U3(theta / pi, phi / pi, lam / pi, *qubits)
                 circ.TK1(phi / pi + 0.5, theta / pi, lam / pi - 0.5, *qubits)
@@ -271,8 +317,7 @@ def qiskit_to_tket(qc: qiskit.QuantumCircuit) -> pytket.Circuit:
 
 
 def qc2mat(qc: qiskit.QuantumCircuit) -> np.ndarray:
-    from qiskit.quantum_info import Operator
-    return Operator(qc.reverse_bits()).data
+    return qi.Operator(qc.reverse_bits()).data
 
 
 def is_canonical_normalized(qc: qiskit.QuantumCircuit) -> bool:
@@ -290,10 +335,11 @@ def canonical_statistics(qc: qiskit.QuantumCircuit) -> Dict[Tuple[float, float, 
             can_params.append(tuple(instr.operation.params))
     return Counter(can_params)
 
+
 def infidelity(u: np.ndarray, v: np.ndarray) -> float:
     """Infidelity between two matrices"""
     if u.shape != v.shape:
-        raise ValueError('u and v must have the same shape.')
+        raise ValueError("u and v must have the same shape.")
     d = u.shape[0]
     return 1 - np.abs(np.trace(u.conj().T @ v)) / d
 
@@ -327,7 +373,10 @@ def layer_circuit(qc: qiskit.QuantumCircuit, fuse_1q: bool = False) -> List[List
     # Extract all first-layer 1Q gates
     if fuse_1q:
         front_layer = []
-        while front_layer_1q := front_layer_from_circuit(qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg), lambda instr: instr.operation.num_qubits == 1):
+        while front_layer_1q := front_layer_from_circuit(
+            qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg),
+            lambda instr: instr.operation.num_qubits == 1,
+        ):
             front_layer.extend(front_layer_1q)
             for instr in front_layer_1q:
                 instructions.remove(instr)
@@ -339,7 +388,10 @@ def layer_circuit(qc: qiskit.QuantumCircuit, fuse_1q: bool = False) -> List[List
         for instr in front_layer:
             instructions.remove(instr)
         if fuse_1q:
-            while front_layer_1q := front_layer_from_circuit(qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg), lambda instr: instr.operation.num_qubits == 1):
+            while front_layer_1q := front_layer_from_circuit(
+                qiskit.QuantumCircuit.from_instructions(instructions, qubits=qreg),
+                lambda instr: instr.operation.num_qubits == 1,
+            ):
                 front_layer.extend(front_layer_1q)
                 for instr in front_layer_1q:
                     instructions.remove(instr)
@@ -403,7 +455,7 @@ def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=No
         depth = circ.depth()
         depth_nonlocal = circ.depth(lambda instr: instr.operation.num_qubits > 1)
     else:
-        raise ValueError('Unsupported circuit type {}'.format(type(circ)))
+        raise ValueError(f"Unsupported circuit type {type(circ)}")
 
     # use prettytable
     table = PrettyTable()
@@ -425,7 +477,7 @@ def canonical_coordinate(u: np.ndarray) -> Tuple[float, float, float]:
         (a, b, c) ~ e^{- i \frac{\pi}{2}(a XX + b YY + c ZZ)} where 0.5 ≥ a ≥ b ≥ |c|
     """
     decomp = TwoQubitWeylDecomposition(u)
-    return decomp.a / half_pi, decomp.b / half_pi, - decomp.c / half_pi
+    return decomp.a / half_pi, decomp.b / half_pi, -decomp.c / half_pi
 
 
 def match_global_phase(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -470,13 +522,6 @@ def is_equiv_unitary(u: np.ndarray, v: np.ndarray) -> bool:
     """Distinguish whether two unitary operators are equivalent, regardless of the global phase."""
     u, v = match_global_phase(u, v)
     return np.allclose(u, v, atol=1e-8)
-
-
-def replace_close_to_zero_with_zero(arr) -> np.ndarray:
-    arr = np.array(arr)
-    close_to_zero = np.isclose(arr, 0)
-    arr[close_to_zero] = 0
-    return tuple(arr)
 
 
 def gene_chain_coupling_map(size):
@@ -687,10 +732,10 @@ Manhattan_Edges = [
     (70, 25),
     (25, 70),
     (69, 71),
-    (71, 69)]
+    (71, 69),
+]
 
 Manhattan = CouplingMap(Manhattan_Edges)
-
 
 
 # def to_pydag(qc: qiskit.QuantumCircuit) -> rx.PyDAG:

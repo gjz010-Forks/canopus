@@ -1,27 +1,43 @@
 from enum import Enum
-from typing import Dict, Tuple, Union
-from qiskit import QuantumCircuit
-from qiskit.transpiler import CouplingMap
-from qiskit.dagcircuit import DAGCircuit, DAGNode
-from qiskit.converters import dag_to_circuit, circuit_to_dag
 from functools import cached_property
+from typing import Dict, Tuple, Union
+
+from accel_utils import (
+    mirror_weyl_coord,
+    only_xx_rot,
+    optimal_can_gate_duration,
+    sort_two_ints,
+    synth_cost_by_cx,
+    synth_cost_by_sqisw,
+)
+from qiskit import QuantumCircuit
+from qiskit.converters import circuit_to_dag
+from qiskit.dagcircuit import DAGCircuit, DAGNode
+from qiskit.transpiler import CouplingMap
+
 from canopus.basics import half_pi
-from accel_utils import *
-from canopus.utils import *
+from canopus.utils import (
+    synth_cost_by_het_isa,
+    synth_cost_by_sqisw_with_mirror,
+    synth_cost_by_stabilizer_isa,
+    synth_cost_by_zzphase,
+    synth_cost_by_zzphase_with_mirror,
+)
 
 CX_AshN_Time_XX = optimal_can_gate_duration(0.5, 0, 0, 1, 0, 0)
 CX_AshN_Time_XY = optimal_can_gate_duration(0.5, 0.5, 0, 1, 1, 0)
 
 
 class ISAType(Enum):
-    CX = 'cx'
-    ZZPhase = 'zzphase'
-    SQiSW = 'sqisw'
-    Canonical = 'can'
-    ZZPhaseWithMirror = 'zzphase_'
-    SQiSWWithMirror = 'sqisw_'
-    HetISA = 'het'  # CX-family and iSWAP-family heterogeneous ISA
-    StabilizerISA = 'stab'
+    CX = "cx"
+    ZZPhase = "zzphase"
+    SQiSW = "sqisw"
+    Canonical = "can"
+    ZZPhaseWithMirror = "zzphase_"
+    SQiSWWithMirror = "sqisw_"
+    HetISA = "het"  # CX-family and iSWAP-family heterogeneous ISA
+    StabilizerISA = "stab"
+
 
 class CouplingType(Enum):
     XX = "xx"
@@ -30,8 +46,12 @@ class CouplingType(Enum):
 
 
 class CanopusBackend:
-    def __init__(self, coupling_map: CouplingMap = None, isa_type: Union[ISAType, str] = None,
-                 coupling_type: Union[CouplingType, str] = None):
+    def __init__(
+        self,
+        coupling_map: CouplingMap = None,
+        isa_type: Union[ISAType, str] = None,
+        coupling_type: Union[CouplingType, str] = None,
+    ):
         self.coupling_map = coupling_map
 
         if isa_type is None or isinstance(isa_type, ISAType):
@@ -52,7 +72,7 @@ class SynthCostEstimator:
 
     def __init__(self, isa_type: Union[ISAType, str] = None, coupling_type: Union[CouplingType, str] = None):
         # coupling_type 只有在 Can ISA 中才有用
-        if isa_type is None: # default to CX ISA
+        if isa_type is None:  # default to CX ISA
             self.isa_type = ISAType.CX
         elif isinstance(isa_type, ISAType):
             self.isa_type = isa_type
@@ -128,26 +148,30 @@ class SynthCostEstimator:
                 continue
 
             q0, q1 = sort_two_ints(qubit_indices[node.qargs[0]], qubit_indices[node.qargs[1]])
-            if node.op.name == 'swap':
+            if node.op.name == "swap":
                 if (q0, q1) in last_mapped_layer:
                     node_ = last_mapped_layer[q0, q1]
-                    if node_.op.name.startswith('can'):
+                    if node_.op.name.startswith("can"):
                         if comm_opt:
-                            self._try_update_wire_durations_by_commutation((q0, q1), node_, commutative_pairs, wire_durations)
-                        gate_duration = self.eval_gate_cost(*mirror_weyl_coord(*node_.op.params)) - self.eval_gate_cost(*node_.op.params)
+                            self._try_update_wire_durations_by_commutation(
+                                (q0, q1), node_, commutative_pairs, wire_durations
+                            )
+                        gate_duration = self.eval_gate_cost(*mirror_weyl_coord(*node_.op.params)) - self.eval_gate_cost(
+                            *node_.op.params
+                        )
                     else:
                         gate_duration = self.swap_cost
                 else:
                     gate_duration = self.swap_cost
-            elif node.op.name.startswith('can'):
+            elif node.op.name.startswith("can"):
                 gate_duration = self.eval_gate_cost(*node.op.params)
-            elif node.op.name == 'cx':
+            elif node.op.name == "cx":
                 gate_duration = self.cx_cost
-            elif node.op.name == 'iswap':
+            elif node.op.name == "iswap":
                 gate_duration = self.iswap_cost
-            elif node.op.name == 'rzz' or node.op.name == 'rzx':
+            elif node.op.name == "rzz" or node.op.name == "rzx":
                 gate_duration = self.cx_cost * node.op.params[0] / half_pi
-            elif node.op.name == 'xx_plus_yy':
+            elif node.op.name == "xx_plus_yy":
                 gate_duration = self.iswap_cost * (-node.op.params[0]) / 2 / half_pi
             else:
                 raise ValueError(f"Unsupported operation type: {node.op.name}")
@@ -160,14 +184,17 @@ class SynthCostEstimator:
             # update last_mapped_layer and commutative_pairs
             for predecessor in dag.op_predecessors(node):
                 if predecessor.num_qubits == 2:
-                    pred_q0, pred_q1 = sort_two_ints(qubit_indices[predecessor.qargs[0]],
-                                                     qubit_indices[predecessor.qargs[1]])
-                    if comm_opt:           
-                        if not (node.op.name.startswith('can') and
-                                predecessor.op.name.startswith('can') and
-                                (q0, q1) != (pred_q0, pred_q1) and
-                                only_xx_rot(*node.op.params) and
-                                only_xx_rot(*predecessor.op.params)):
+                    pred_q0, pred_q1 = sort_two_ints(
+                        qubit_indices[predecessor.qargs[0]], qubit_indices[predecessor.qargs[1]]
+                    )
+                    if comm_opt:
+                        if not (
+                            node.op.name.startswith("can")
+                            and predecessor.op.name.startswith("can")
+                            and (q0, q1) != (pred_q0, pred_q1)
+                            and only_xx_rot(*node.op.params)
+                            and only_xx_rot(*predecessor.op.params)
+                        ):
                             last_mapped_layer.pop((pred_q0, pred_q1), None)
                             commutative_pairs.pop((pred_q0, pred_q1), None)
                         else:
@@ -180,14 +207,15 @@ class SynthCostEstimator:
                     if pred_predecessor := next(dag.op_predecessors(predecessor), None):
                         if pred_predecessor.op.num_qubits == 1:
                             if pred_predecessor := next(dag.op_predecessors(pred_predecessor), None):
-
-                                pred_pred_q0, pred_pred_q1 = sort_two_ints(qubit_indices[pred_predecessor.qargs[0]],
-                                                                        qubit_indices[pred_predecessor.qargs[1]])
+                                pred_pred_q0, pred_pred_q1 = sort_two_ints(
+                                    qubit_indices[pred_predecessor.qargs[0]], qubit_indices[pred_predecessor.qargs[1]]
+                                )
                                 last_mapped_layer.pop((pred_pred_q0, pred_pred_q1), None)
                                 commutative_pairs.pop((pred_pred_q0, pred_pred_q1), None)
-                        else:                   
-                            pred_pred_q0, pred_pred_q1 = sort_two_ints(qubit_indices[pred_predecessor.qargs[0]],
-                                                                    qubit_indices[pred_predecessor.qargs[1]])
+                        else:
+                            pred_pred_q0, pred_pred_q1 = sort_two_ints(
+                                qubit_indices[pred_predecessor.qargs[0]], qubit_indices[pred_predecessor.qargs[1]]
+                            )
                             last_mapped_layer.pop((pred_pred_q0, pred_pred_q1), None)
                             commutative_pairs.pop((pred_pred_q0, pred_pred_q1), None)
 
@@ -216,7 +244,8 @@ class SynthCostEstimator:
                 wire_durations[q0] = wire_durations[q1]
             else:
                 raise ValueError(
-                    f"(This case should not occur) Unexpected commutative pair: {q0}, {q1} vs {q0_}, {q1_}")
+                    f"(This case should not occur) Unexpected commutative pair: {q0}, {q1} vs {q0_}, {q1_}"
+                )
 
 
 def disp_last_mapped_layer(last_mapped_layer):
@@ -230,9 +259,9 @@ def disp_last_mapped_layer(last_mapped_layer):
     qc = QuantumCircuit(num_qubits)
     for pair, node in last_mapped_layer.items():
         gname, params = node.op.name, node.op.params
-        if gname.startswith('can'):
+        if gname.startswith("can"):
             qc.append(CanonicalGate(*params), pair)
-        elif gname == 'swap':
+        elif gname == "swap":
             qc.swap(*pair)
         else:
             raise ValueError(f"Unknown gate name: {gname}")

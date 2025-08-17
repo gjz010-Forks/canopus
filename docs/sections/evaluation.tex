@@ -108,6 +108,10 @@ We select a set of twelve medium-size benchmarks from QASMBench~\cite{li2023qasm
 
 
 
+\subsection{Mirroring and combination effects for ISA design}
+
+
+
 
 
 
@@ -162,9 +166,11 @@ We select a set of twelve medium-size benchmarks from QASMBench~\cite{li2023qasm
 
 \subsection{Co-exploration of routing and ISA selection}
 
+The real-machine experiment in \Cref{sec:qft_study} showcases how our method can help achieve superior compilation results and thus higher program fidelities for QFT kernels using the standard \CXISA\ ISA ($ \CZ $ on \code{ibm\_torino}). However, extending this validation to alternative ISAs is currently challenging due to the scarcity of quantum processors equipped with well-calibrated heterogeneous gate sets. For instance, while IBM has proposed fractional gates, i.e., the continuous $ \ZZ(\theta) $ gate set~\cite{ibmFractionalGates}, their implementation details and calibration procedures are not publicly disclosed. To our knowledge, the $ \ZZ(\theta) $ gates have the same duration as $ \CZ $ on IBM's Heron QPUs regardless of the rotation angle, and their error rates are consistently more than double that of $ \CZ $. This performance is far from the ideal assumptions of \ZZPhaseISA. Fortunately, a path forward is emerging with the recently proposed AshN gate scheme~\cite{chen2024one} that enables directly implementing any basis gates with the optimal gate durations. It is also experimentally evinced on transmon qubits by \citet{chen2025efficient}, where multiple basis gates are calibrated in high fidelities that aligns with our cost model as well. This development may enable comprehensive, real-machine co-exploration of programs, ISAs, and hardware topologies in the near future.
 
 
-\subsection{Breakdown analysis for commutative optimization}
+
+\subsection{Breakdown analysis}
 
 
 In this section, we analyze individual factors in the improvement brought by \canopus, mainly about the commutative optimization mechanism and the heuristic depth-cost weight factor.
@@ -184,21 +190,6 @@ In this section, we analyze individual factors in the improvement brought by \ca
 
 
 Note that the ...
-
-
-
-
-
-\subsection{Real-system experiments}
-
-\ZY{Fractional gate IBM}
-
-\ZY{QFT or QV test?}
-
-
-\subsection{For specific gate scheme}
-
-\ZY{For AshN gate scheme}
 
 
 

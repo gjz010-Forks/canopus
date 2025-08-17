@@ -1,61 +1,88 @@
+from typing import Union
+
 import cirq
 import numpy as np
 import pytket
-import qiskit
 import pytket.passes
+import qiskit
+import qiskit.quantum_info as qi
+from accel_utils import canonical_unitary, check_weyl_coord, fuzzy_equal, fuzzy_less
 from pytket import circuit_library
 from pytket.circuit import OpType
 from pytket.extensions.cirq import cirq_to_tk
 from pytket.utils.stats import gate_counts
-from qiskit.synthesis import XXDecomposer, TwoQubitWeylDecomposition
+from qiskit import QuantumCircuit, QuantumRegister
+from qiskit.circuit.library import (
+    CXGate,
+    HGate,
+    RXGate,
+    RYGate,
+    RZGate,
+    RZXGate,
+    RZZGate,
+    SdgGate,
+    SGate,
+    UGate,
+    UnitaryGate,
+    XXPlusYYGate,
+    ZGate,
+    iSwapGate,
+)
 from qiskit.converters import circuit_to_dag
-from qiskit.circuit.library import *
-from qiskit.transpiler.passes import Optimize1qGatesDecomposition
-from canopus.basics import *
-from canopus.utils import tket_to_qiskit, qiskit_to_tket
-from canopus.backends import ISAType
-from accel_utils import canonical_unitary, fuzzy_equal, fuzzy_less, check_weyl_coord
-from typing import Union
-from qiskit.transpiler import PassManager, TransformationPass, passes
 from qiskit.dagcircuit import DAGCircuit
+from qiskit.synthesis import TwoQubitWeylDecomposition, XXDecomposer
+from qiskit.transpiler import PassManager, TransformationPass, passes
+from qiskit.transpiler.passes import Optimize1qGatesDecomposition
+
+from canopus.backends import ISAType
+from canopus.basics import CanonicalGate, X, Y, Z, half_pi, pi
+from canopus.utils import qiskit_to_tket, tket_to_qiskit
 
 xx_decomposer = XXDecomposer(euler_basis="U3")
 CirqQubitPair = cirq.LineQubit.range(2)
 
 
 def rebase_to_canonical(qc: QuantumCircuit) -> QuantumCircuit:
-    return PassManager([
-        passes.Collect2qBlocks(),
-        passes.ConsolidateBlocks(force_consolidate=True),
-        CanonicalSynthesis(),
-        passes.Decompose('unitary'),  # convert 1Q unitary to U3
-        passes.Optimize1qGatesDecomposition(basis=['u'])  # consolidate successive U3 gates
-    ]).run(qc)
+    return PassManager(
+        [
+            passes.Collect2qBlocks(),
+            passes.ConsolidateBlocks(force_consolidate=True),
+            CanonicalSynthesis(),
+            passes.Decompose("unitary"),  # convert 1Q unitary to U3
+            passes.Optimize1qGatesDecomposition(basis=["u"]),  # consolidate successive U3 gates
+        ]
+    ).run(qc)
 
 
 def normalize_canonical(qc: QuantumCircuit) -> QuantumCircuit:
-    return PassManager([
-        CanonicalSynthesis(),
-        passes.Optimize1qGatesDecomposition(basis=['u'])  # consolidate successive U3 gates
-    ]).run(qc)
+    return PassManager(
+        [
+            CanonicalSynthesis(),
+            passes.Optimize1qGatesDecomposition(basis=["u"]),  # consolidate successive U3 gates
+        ]
+    ).run(qc)
 
 
 def rebase_to_sqisw(qc: QuantumCircuit) -> QuantumCircuit:
-    return PassManager([
-        passes.Collect2qBlocks(),
-        passes.ConsolidateBlocks(force_consolidate=True),
-        SQiSWSynthesis(),
-        passes.Optimize1qGatesDecomposition(basis=['u'])
-    ]).run(qc)
+    return PassManager(
+        [
+            passes.Collect2qBlocks(),
+            passes.ConsolidateBlocks(force_consolidate=True),
+            SQiSWSynthesis(),
+            passes.Optimize1qGatesDecomposition(basis=["u"]),
+        ]
+    ).run(qc)
 
 
 def rebase_to_zzphase(qc: QuantumCircuit) -> QuantumCircuit:
-    return PassManager([
-        passes.Collect2qBlocks(),
-        passes.ConsolidateBlocks(force_consolidate=True),
-        ZZPhaseSynthesis(),
-        passes.Optimize1qGatesDecomposition(basis=['u'])
-    ]).run(qc)
+    return PassManager(
+        [
+            passes.Collect2qBlocks(),
+            passes.ConsolidateBlocks(force_consolidate=True),
+            ZZPhaseSynthesis(),
+            passes.Optimize1qGatesDecomposition(basis=["u"]),
+        ]
+    ).run(qc)
 
 
 class CanonicalSynthesis(TransformationPass):
@@ -64,10 +91,12 @@ class CanonicalSynthesis(TransformationPass):
 
     def run(self, dag: DAGCircuit):
         for node in dag.op_nodes():
-            if (hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary') or (isinstance(node.op, CanonicalGate) and not check_weyl_coord(*node.op.params)):
+            if (hasattr(node.op, "to_matrix") and node.num_qubits == 2 and node.op.name == "unitary") or (
+                isinstance(node.op, CanonicalGate) and not check_weyl_coord(*node.op.params)
+            ):
                 # decompose 2Q unitary to canonical gate sandwiched by 1Q gates
                 decomp = TwoQubitWeylDecomposition(node.op.to_matrix())
-                a, b, c = decomp.a / half_pi, decomp.b / half_pi, - decomp.c / half_pi
+                a, b, c = decomp.a / half_pi, decomp.b / half_pi, -decomp.c / half_pi
 
                 B0 = Z @ decomp.K2l
                 B1 = decomp.K2r
@@ -101,7 +130,7 @@ class SQiSWSynthesis(TransformationPass):
     def run(self, dag: DAGCircuit):
         cirq_qubit_pair = cirq.LineQubit.range(2)
         for node in dag.op_nodes():
-            if hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary':
+            if hasattr(node.op, "to_matrix") and node.num_qubits == 2 and node.op.name == "unitary":
                 mini_dag = DAGCircuit()
                 q = QuantumRegister(2)
                 mini_dag.add_qreg(q)
@@ -126,7 +155,7 @@ class SQiSWSynthesis(TransformationPass):
                         else:
                             mini_dag.apply_operation_back(RYGate(theta), [q[1]])
                     elif isinstance(op.gate, cirq.ISwapPowGate):
-                        theta = - op.gate.exponent * pi
+                        theta = -op.gate.exponent * pi
                         mini_dag.apply_operation_back(XXPlusYYGate(theta), [q[0], q[1]])
                     else:
                         raise ValueError(f"Unsupported gate type: {type(op.gate)}")
@@ -141,18 +170,35 @@ class ZZPhaseSynthesis(TransformationPass):
 
     def run(self, dag: DAGCircuit):
         for node in dag.op_nodes():
-            if hasattr(node.op, 'to_matrix') and node.num_qubits == 2 and node.op.name == 'unitary':
-                mini_qc = xx_decomposer(node.op.to_matrix(),
-                                        # basis_fidelity=0.995, approximate=True,
-                                        approximate=False)
+            if hasattr(node.op, "to_matrix") and node.num_qubits == 2 and node.op.name == "unitary":
+                mini_qc = xx_decomposer(
+                    node.op.to_matrix(),
+                    # basis_fidelity=0.995, approximate=True,
+                    approximate=False,
+                )
                 mini_dag = circuit_to_dag(mini_qc)
+                mini_dag = self._replace_rzx_with_rzz(mini_dag)
+                dag.substitute_node_with_dag(node, mini_dag, mini_dag.qubits)
+
+        return dag
+
+    def _replace_rzx_with_rzz(self, dag):
+        for node in dag.op_nodes():
+            if isinstance(node.op, RZXGate):
+                mini_dag = DAGCircuit()
+                q = QuantumRegister(2)
+                mini_dag.add_qreg(q)
+                mini_dag.apply_operation_back(HGate(), [q[1]])
+                mini_dag.apply_operation_back(RZZGate(*node.op.params), [q[0], q[1]])
+                mini_dag.apply_operation_back(HGate(), [q[1]])
                 dag.substitute_node_with_dag(node, mini_dag, mini_dag.qubits)
 
         return dag
 
 
-def logical_optimize(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[
-    pytket.Circuit, qiskit.QuantumCircuit]:
+def logical_optimize(
+    circ: Union[pytket.Circuit, qiskit.QuantumCircuit],
+) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _logical_optimize(circ)
     elif isinstance(circ, qiskit.QuantumCircuit):
@@ -169,7 +215,9 @@ def _logical_optimize(circ: pytket.Circuit) -> pytket.Circuit:
     return circ
 
 
-def rebase_to_sqisw_by_tket(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
+def rebase_to_sqisw_by_tket(
+    circ: Union[pytket.Circuit, qiskit.QuantumCircuit],
+) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _rebase_to_sqisw(circ)
     elif isinstance(circ, qiskit.QuantumCircuit):
@@ -178,8 +226,9 @@ def rebase_to_sqisw_by_tket(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) 
         raise TypeError(f"Unsupported circuit type: {type(circ)}. Expected pytket.Circuit or qiskit.QuantumCircuit.")
 
 
-def rebase_to_zzphase_by_tket(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]) -> Union[
-    pytket.Circuit, qiskit.QuantumCircuit]:
+def rebase_to_zzphase_by_tket(
+    circ: Union[pytket.Circuit, qiskit.QuantumCircuit],
+) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _rebase_to_zzphase(circ)
     elif isinstance(circ, qiskit.QuantumCircuit):
@@ -188,8 +237,9 @@ def rebase_to_zzphase_by_tket(circ: Union[pytket.Circuit, qiskit.QuantumCircuit]
         raise TypeError(f"Unsupported circuit type: {type(circ)}. Expected pytket.Circuit or qiskit.QuantumCircuit.")
 
 
-def rebase_to_tk2(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], optimize: bool = True) -> Union[
-    pytket.Circuit, qiskit.QuantumCircuit]:
+def rebase_to_tk2(
+    circ: Union[pytket.Circuit, qiskit.QuantumCircuit], optimize: bool = True
+) -> Union[pytket.Circuit, qiskit.QuantumCircuit]:
     if isinstance(circ, pytket.Circuit):
         return _rebase_to_tk2(circ, optimize)
     elif isinstance(circ, qiskit.QuantumCircuit):
@@ -200,22 +250,24 @@ def rebase_to_tk2(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], optimize: 
 
 def _rebase_to_sqisw(circ: pytket.Circuit) -> pytket.Circuit:
     assert set(gate_counts(circ).keys()).issubset({OpType.TK1, OpType.TK2}), "Unsupported gate types {}".format(
-        gate_counts(circ).keys())
+        gate_counts(circ).keys()
+    )
     circ = circ.copy()
-    pytket.passes.RebaseCustom({OpType.ISWAP, OpType.TK1},
-                               tk2_replacement=_tk2_to_sqisw,
-                               tk1_replacement=circuit_library.TK1_to_U3).apply(circ)
+    pytket.passes.RebaseCustom(
+        {OpType.ISWAP, OpType.TK1}, tk2_replacement=_tk2_to_sqisw, tk1_replacement=circuit_library.TK1_to_U3
+    ).apply(circ)
     pytket.passes.SquashTK1().apply(circ)
     return circ
 
 
 def _rebase_to_zzphase(circ: pytket.Circuit) -> pytket.Circuit:
     assert set(gate_counts(circ).keys()).issubset({OpType.TK1, OpType.TK2}), "Unsupported gate types {}".format(
-        gate_counts(circ).keys())
+        gate_counts(circ).keys()
+    )
     circ = circ.copy()
-    pytket.passes.RebaseCustom({OpType.ZZPhase, OpType.TK1},
-                               tk2_replacement=_tk2_to_zzphase,
-                               tk1_replacement=circuit_library.TK1_to_U3).apply(circ)
+    pytket.passes.RebaseCustom(
+        {OpType.ZZPhase, OpType.TK1}, tk2_replacement=_tk2_to_zzphase, tk1_replacement=circuit_library.TK1_to_U3
+    ).apply(circ)
     pytket.passes.SquashTK1().apply(circ)
     return circ
 
@@ -248,7 +300,7 @@ def _tk2_to_zzphase(a, b, c) -> pytket.Circuit:
     return qiskit_to_tket(qc)
 
 
-def synthesize_clifford_circuit(qc: QuantumCircuit, isa='cx') -> QuantumCircuit:
+def synthesize_clifford_circuit(qc: QuantumCircuit, isa="cx") -> QuantumCircuit:
     """
     Synthesize Clifford circuit by means of native CX or iSWAP gates.
 
@@ -263,7 +315,7 @@ def synthesize_clifford_circuit(qc: QuantumCircuit, isa='cx') -> QuantumCircuit:
 
 
 class CliffordSynthesis(TransformationPass):
-    def __init__(self, isa='cx'):
+    def __init__(self, isa="cx"):
         super().__init__()
         self.isa_type = ISAType(isa)
 

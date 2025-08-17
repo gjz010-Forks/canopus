@@ -8,7 +8,6 @@
 [build-system]
 requires = ["setuptools"]
 
-
 # ==============================================================================
 # PROJECT METADATA (PEP 621)
 #
@@ -68,8 +67,7 @@ classifiers = [
 dependencies = [
     "pytket~=2.4.1",
     "qiskit~=1.4.3",
-    "cirq~=1.5.0",
-    "rustworkx~=0.16.0"
+    "cirq~=1.5.0"
 ]
 
 # ==============================================================================
@@ -132,7 +130,7 @@ module-name = "canopus._accel"
 [tool.ruff]
 # The Python source directories to check.
 src = ["canopus"]
-line-length = 88
+line-length = 120
 
 [tool.ruff.lint]
 # Select the rule sets to enable.
