@@ -2,11 +2,11 @@
 # BUILD SYSTEM CONFIGURATION
 #
 # This section is mandatory. It tells pip and other build frontends how to
-# build your project. For Rust/Python mixed projects, 'maturin' is the
-# recommended build backend.
+# build your project. For pure Python projects, use setuptools.
 # ==============================================================================
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 # ==============================================================================
 # PROJECT METADATA (PEP 621)
@@ -64,11 +64,15 @@ classifiers = [
 ]
 
 # Runtime dependencies. These are packages required for your project to run.
-dependencies = [
-    "pytket~=2.4.1",
-    "qiskit~=1.4.3",
-    "cirq~=1.5.0"
-]
+
+
+# ==============================================================================
+# SETUPTOOLS CONFIGURATION
+# ==============================================================================
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["canopus*"]
+exclude = ["tests*", "examples*", "docs*"]
 
 # ==============================================================================
 # OPTIONAL DEPENDENCIES / EXTRAS
@@ -105,22 +109,6 @@ Repository = "https://github.com/Youngcius/canopus"
 # ==============================================================================
 # [project.scripts]
 # your-cli-command = "your_package.cli:main"
-
-# ==============================================================================
-# MATURIN CONFIGURATION (for the Rust Extension)
-#
-# This section tells maturin how to build and place your Rust extension module.
-# ==============================================================================
-[tool.maturin]
-# This directive tells maturin to compile the Rust code in this project
-# and make it available as a submodule of the 'canopus' Python package.
-# The last part of the path ('_accel') should match the `[lib].name` in your Cargo.toml.
-#
-# Example: If your Python package is in a folder named `my_package`
-# and your Rust lib name is `_internal`, you should set:
-# module-name = "my_package._internal"
-module-name = "canopus._accel"
-
 
 # ==============================================================================
 # DEVELOPMENT TOOLS CONFIGURATION

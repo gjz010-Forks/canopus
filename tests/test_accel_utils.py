@@ -3,8 +3,8 @@ from accel_utils import *
 import numpy as np
 import cirq
 from canopus.basics import *
-from ashn.utils import canonical_decompose
 from scipy.stats import unitary_group
+from canopus.utils import canonical_decompose
 
 
 def test_canonical_unitary():

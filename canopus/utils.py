@@ -7,13 +7,14 @@ from math import pi
 from typing import Callable, Dict, List, Tuple, Union
 
 import numpy as np
+import cirq
 import pytket
 import pytket.qasm
 import qiskit
 import qiskit.qasm2
 import qiskit.quantum_info as qi
 import rustworkx as rx
-from accel_utils import canonical_unitary, check_weyl_coord, optimal_can_gate_duration, sort_two_ints
+from accel_utils import canonical_unitary, check_weyl_coord, optimal_can_gate_duration, sort_two_ints, fuzzy_less
 from monodromy.coverage import coverage_lookup_cost, gates_to_coverage
 from prettytable import PrettyTable
 from pytket import OpType
@@ -24,7 +25,8 @@ from qiskit.synthesis import TwoQubitWeylDecomposition
 from qiskit.transpiler import CouplingMap, Layout
 from rich.console import Console
 
-from canopus.basics import CanonicalGate, half_pi
+from canopus.basics import CanonicalGate, half_pi, X, Y, Z
+
 
 console = Console()
 
@@ -479,6 +481,33 @@ def canonical_coordinate(u: np.ndarray) -> Tuple[float, float, float]:
     """
     decomp = TwoQubitWeylDecomposition(u)
     return decomp.a / half_pi, decomp.b / half_pi, -decomp.c / half_pi
+
+
+def canonical_decompose(u: np.ndarray, return_weyl_coord: bool = True) -> Tuple[
+    Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray],
+    Tuple[float, float, float]]:
+    r"""
+    Decompose a 4x4 unitary matrix into two pairs of single-qubit gates and three interaction coefficients.
+    - If return_weyl_coord is True: returned coord is Weyl coordinate defined in 
+        (x, y, z) ~ e^{-i (x XX + y YY + z ZZ)} where (x, y, z) ∈ {π/4 ≥ x ≥ y ≥ |z| ≥ 0}
+    - If return_weyl_coord is False: returned coord is KAK coefficients defined in 
+        (x, y, z) ~ e^{i (x XX + y YY + z ZZ)} where (x, y, z) ∈ {π/4 ≥ x ≥ y ≥ |z| ≥ 0}
+    """
+    res = cirq.kak_decomposition(u)
+    coord = res.interaction_coefficients
+    b1, b2 = res.single_qubit_operations_before
+    a1, a2 = res.single_qubit_operations_after
+    if return_weyl_coord:
+        coord = (coord[0], coord[1], -coord[2])
+        a1 = a1 @ Z
+        b1 = Z @ b1
+        if np.isclose(coord[0], np.pi / 4) and fuzzy_less(coord[2], 0):
+            coord = (coord[0], coord[1], -coord[2])
+            a1 = a1 @ X
+            a2 = a2 @ Z
+            b2 = Y @ b2
+
+    return (a1, a2), (b1, b2), coord
 
 
 def match_global_phase(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:

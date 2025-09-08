@@ -36,9 +36,9 @@ class CanonicalGate(Gate):
     def __init__(
             self,
             a: ParameterValueType, b: ParameterValueType, c: ParameterValueType,
-            label: Optional[str] = None, *, duration=None, unit="dt",
+            label: Optional[str] = None
     ):
-        super().__init__("can", 2, [a, b, c], label=label, duration=duration, unit=unit)
+        super().__init__("can", 2, [a, b, c], label=label)
         self.is_xx_rot = only_xx_rot(a, b, c)
 
     def inverse(self, annotated: bool = False):
