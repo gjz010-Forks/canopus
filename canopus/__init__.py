@@ -18,5 +18,6 @@ from .synthesis import (
     rebase_to_sqisw,
     rebase_to_tk2,
     rebase_to_zzphase,
+    rebase_to_custom,
     synthesize_clifford_circuit,
 )

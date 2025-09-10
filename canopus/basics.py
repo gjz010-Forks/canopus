@@ -2,7 +2,6 @@ import qiskit.quantum_info as qi
 from math import pi
 from qiskit.circuit import QuantumRegister, QuantumCircuit
 from qiskit.circuit.gate import Gate
-from typing import Optional
 from qiskit.circuit.parameterexpression import ParameterValueType
 from accel_utils import canonical_unitary, only_xx_rot
 
@@ -36,7 +35,7 @@ class CanonicalGate(Gate):
     def __init__(
             self,
             a: ParameterValueType, b: ParameterValueType, c: ParameterValueType,
-            label: Optional[str] = None
+            label: str | None = None
     ):
         super().__init__("can", 2, [a, b, c], label=label)
         self.is_xx_rot = only_xx_rot(a, b, c)

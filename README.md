@@ -31,7 +31,7 @@ First, run `cd accel && make install` to install Rust-accelerated `accel_utils` 
 
 - `python route_demo.py` to test the routing effect by Sabre and Canopus on a demo circuit
 - `python route_qft.py <n>` to test the routing effect by Sabre and Canopus for the n-qubit QFT kernel
-- `python rebase_random_unitary.py` to test the limitedly implemented rebase passes
+- `python rebase_random_unitary.py` to test the rebase passes for arbitrary ISAs
 
 
 ### Evaluation artifact

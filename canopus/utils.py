@@ -1,24 +1,26 @@
 import os
 import pickle
-import warnings
 from collections import Counter
 from functools import lru_cache
 from math import pi
-from typing import Callable, Dict, List, Tuple, Union
+from typing import Callable
 
 import numpy as np
 import cirq
+import bqskit
 import pytket
 import pytket.qasm
 import qiskit
 import qiskit.qasm2
 import qiskit.quantum_info as qi
 import rustworkx as rx
+from bqskit.ir import gates as bqskit_gates
 from accel_utils import canonical_unitary, check_weyl_coord, optimal_can_gate_duration, sort_two_ints, fuzzy_less
 from monodromy.coverage import coverage_lookup_cost, gates_to_coverage
 from prettytable import PrettyTable
 from pytket import OpType
 from pytket.utils.stats import gate_counts
+from qiskit.circuit import Gate
 from qiskit.circuit import CircuitInstruction
 from qiskit.circuit.library import CXGate, RZZGate, XXPlusYYGate, iSwapGate
 from qiskit.synthesis import TwoQubitWeylDecomposition
@@ -66,7 +68,7 @@ def synth_cost_by_zzphase(a, b, c):
 
 @lru_cache(maxsize=1)
 def get_sqisw_coverage():
-    gate_set = [iSwapGate().power(1 / 2), iSwapGate()]
+    gate_set = [iSwapGate().power(0.5), iSwapGate()]
     costs = [0.75, 1.5]
     cov = gates_to_coverage(*gate_set, costs=costs)
     return cov
@@ -331,7 +333,7 @@ def is_canonical_normalized(qc: qiskit.QuantumCircuit) -> bool:
     return True
 
 
-def canonical_statistics(qc: qiskit.QuantumCircuit) -> Dict[Tuple[float, float, float], int]:
+def canonical_statistics(qc: qiskit.QuantumCircuit) -> dict[tuple[float, float, float], int]:
     can_params = []
     for instr in qc.data:
         if isinstance(instr.operation, CanonicalGate):
@@ -347,7 +349,7 @@ def infidelity(u: np.ndarray, v: np.ndarray) -> float:
     return 1 - np.abs(np.trace(u.conj().T @ v)) / d
 
 
-def front_layer_from_circuit(qc: qiskit.QuantumCircuit, predicate: Callable = None) -> List[CircuitInstruction]:
+def front_layer_from_circuit(qc: qiskit.QuantumCircuit, predicate: Callable = None) -> list[CircuitInstruction]:
     """
     Obtain the front layer of the circuit
     """
@@ -367,7 +369,7 @@ def front_layer_from_circuit(qc: qiskit.QuantumCircuit, predicate: Callable = No
     return front_layer
 
 
-def layer_circuit(qc: qiskit.QuantumCircuit, fuse_1q: bool = False) -> List[List[CircuitInstruction]]:
+def layer_circuit(qc: qiskit.QuantumCircuit, fuse_1q: bool = False) -> list[list[CircuitInstruction]]:
     """If fuse_1q=True, 1Q gates will be divided into its near-neighbor 2Q layer ASAP"""
     layers = []
     instructions = qc.data.copy()
@@ -443,7 +445,7 @@ def replace_close_to_zero_with_zero(arr) -> np.ndarray:
     return arr
 
 
-def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=None):
+def print_circ_info(circ: pytket.Circuit | qiskit.QuantumCircuit, title=None):
     """Get information of a quantum circuit from its qasm file."""
     if isinstance(circ, pytket.Circuit):
         num_qubits = circ.n_qubits
@@ -469,7 +471,7 @@ def print_circ_info(circ: Union[pytket.Circuit, qiskit.QuantumCircuit], title=No
     print(table)
 
 
-def canonical_coordinate(u: np.ndarray) -> Tuple[float, float, float]:
+def canonical_coordinate(u: np.ndarray) -> tuple[float, float, float]:
     r"""
     Obtain the canonical coordinate of a unitary matrix.
 
@@ -483,9 +485,9 @@ def canonical_coordinate(u: np.ndarray) -> Tuple[float, float, float]:
     return decomp.a / half_pi, decomp.b / half_pi, -decomp.c / half_pi
 
 
-def canonical_decompose(u: np.ndarray, return_weyl_coord: bool = True) -> Tuple[
-    Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray],
-    Tuple[float, float, float]]:
+def canonical_decompose(u: np.ndarray, return_weyl_coord: bool = True) -> tuple[
+    tuple[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray],
+    tuple[float, float, float]]:
     r"""
     Decompose a 4x4 unitary matrix into two pairs of single-qubit gates and three interaction coefficients.
     - If return_weyl_coord is True: returned coord is Weyl coordinate defined in 
@@ -510,7 +512,7 @@ def canonical_decompose(u: np.ndarray, return_weyl_coord: bool = True) -> Tuple[
     return (a1, a2), (b1, b2), coord
 
 
-def match_global_phase(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def match_global_phase(a: np.ndarray, b: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Phases the given matrices so that they agree on the phase of one entry.
 
     To maximize precision, the position with the largest entry from one of the
@@ -600,6 +602,77 @@ def generate_random_layout(qreg, coupling_map, seed=None) -> Layout:
 
 def generate_trivial_layout(qreg, coupling_map) -> Layout:
     return Layout.from_intlist(list(coupling_map.physical_qubits), qreg)
+
+
+def gate_from_qiskit_to_bqskit(g: Gate):
+    """For simplicity, only onsider commong 2Q gates"""
+    from qiskit.circuit.library import CXGate, iSwapGate, RXXGate, RYYGate, RZZGate, XXPlusYYGate
+
+    if isinstance(g, CanonicalGate):
+        return bqskit_gates.FixedCanonicalGate(*(np.array(g.params) * pi))
+    elif isinstance(g, CXGate):
+        return bqskit_gates.CNOTGate()
+    elif isinstance(g, RXXGate):
+        return bqskit_gates.RXXGate(g.params[0] * pi)
+    elif isinstance(g, RYYGate):
+        return bqskit_gates.RYYGate(g.params[0] * pi)
+    elif isinstance(g, RZZGate):
+        return bqskit_gates.RZZGate(g.params[0] * pi)
+    elif isinstance(g, iSwapGate):
+        return bqskit_gates.ISwapGate()
+    elif isinstance(g, XXPlusYYGate) and g.params[0] == - half_pi:
+        return bqskit_gates.SqrtISwapGate()
+    else:
+        raise ValueError(f"Unsupported gate type: {type(g)}")
+
+
+def bqskit_to_qiskit(circ: bqskit.Circuit) -> qiskit.QuantumCircuit:
+    qc = qiskit.QuantumCircuit(2)
+    for op in circ.operations():
+        if isinstance(op.gate, bqskit_gates.XGate):
+            qc.x(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.YGate):
+            qc.y(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.ZGate):
+            qc.z(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.HGate):
+            qc.h(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.SGate):
+            qc.s(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.SdgGate):
+            qc.sdg(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.TGate):
+            qc.t(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.TdgGate):
+            qc.tdg(op.location[0])
+        elif isinstance(op.gate, bqskit_gates.U3Gate):
+            qc.u(*op.params, op.location[0])
+        elif isinstance(op.gate, bqskit_gates.CXGate):
+            qc.cx(op.location[0], op.location[1])
+        elif isinstance(op.gate, bqskit_gates.CZGate):
+            qc.cz(op.location[0], op.location[1])
+        elif isinstance(op.gate, bqskit_gates.RXGate):
+            qc.rx(op.params[0], op.location[0])
+        elif isinstance(op.gate, bqskit_gates.RYGate):
+            qc.ry(op.params[0], op.location[0])
+        elif isinstance(op.gate, bqskit_gates.RZGate):
+            qc.rz(op.params[0], op.location[0])
+        elif isinstance(op.gate, bqskit_gates.RXXGate):
+            qc.rxx(op.params[0], op.location[0], op.location[1])
+        elif isinstance(op.gate, bqskit_gates.RYYGate):
+            qc.ryy(op.params[0], op.location[0], op.location[1])
+        elif isinstance(op.gate, bqskit_gates.RZZGate):
+            qc.rzz(op.params[0], op.location[0], op.location[1])
+        elif isinstance(op.gate, bqskit_gates.ISwapGate):
+            qc.iswap(op.location[0], op.location[1])
+        elif isinstance(op.gate, bqskit_gates.SqrtISwapGate):
+            qc.append(iSwapGate().power(0.5), [op.location[0], op.location[1]])
+        elif isinstance(op.gate, bqskit_gates.FixedCanonicalGate):
+            a, b, c = np.array(op.gate.angles) / pi
+            qc.append(CanonicalGate(a, b, c), [op.location[0], op.location[1]])
+        else:
+            raise ValueError(f"Unsupported gate type: {type(op.gate)}")
+    return qc
 
 
 Manhattan_Edges = [

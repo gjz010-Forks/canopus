@@ -1,6 +1,5 @@
 from enum import Enum
 from functools import cached_property
-from typing import Dict, Tuple, Union
 
 from accel_utils import (
     mirror_weyl_coord,
@@ -49,8 +48,8 @@ class CanopusBackend:
     def __init__(
         self,
         coupling_map: CouplingMap = None,
-        isa_type: Union[ISAType, str] = None,
-        coupling_type: Union[CouplingType, str] = None,
+        isa_type: ISAType | str = None,
+        coupling_type: CouplingType | str = None,
     ):
         self.coupling_map = coupling_map
 
@@ -70,7 +69,7 @@ class CanopusBackend:
 class SynthCostEstimator:
     """Evaluate the synthesis cost of Canonical-based circuits in any specific ISA."""
 
-    def __init__(self, isa_type: Union[ISAType, str] = None, coupling_type: Union[CouplingType, str] = None):
+    def __init__(self, isa_type: ISAType | str = None, coupling_type: CouplingType | str = None):
         # coupling_type 只有在 Can ISA 中才有用
         if isa_type is None:  # default to CX ISA
             self.isa_type = ISAType.CX
@@ -131,16 +130,16 @@ class SynthCostEstimator:
         self._cached_gate_costs[a, b, c] = cost
         return cost
 
-    def eval_circuit_cost(self, qc: QuantumCircuit, comm_opt: bool = True) -> Tuple[float, float]:
+    def eval_circuit_cost(self, qc: QuantumCircuit, comm_opt: bool = True) -> tuple[float, float]:
         """Evaluate the circuit cost (both gate count and circuit depth) in pulse-level duration of a Qiskit QuantumCircuit instance."""
         return self.eval_dagcircuit_cost(circuit_to_dag(qc), comm_opt)
 
-    def eval_dagcircuit_cost(self, dag: DAGCircuit, comm_opt: bool = True) -> Tuple[float, float]:
+    def eval_dagcircuit_cost(self, dag: DAGCircuit, comm_opt: bool = True) -> tuple[float, float]:
         """Evaluate the circuit cost (both gate count and circuit depth) in pulse-level duration of a Qiskit DAGCircuit instance."""
         qubit_indices = {qarg: q for q, qarg in enumerate(dag.qubits)}
         wire_durations = {q: 0.0 for q in range(dag.num_qubits())}
-        last_mapped_layer: Dict[Tuple[int, int], DAGNode] = {}
-        commutative_pairs: Dict[Tuple[int, int], Tuple[int, int]] = {}
+        last_mapped_layer: dict[tuple[int, int], DAGNode] = {}
+        commutative_pairs: dict[tuple[int, int], tuple[int, int]] = {}
         count_cost = 0.0
 
         for node in dag.topological_op_nodes():

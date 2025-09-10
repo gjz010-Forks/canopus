@@ -2,7 +2,6 @@ import logging
 import os
 import random
 from itertools import chain
-from typing import Dict, Tuple
 
 import numpy as np
 from accel_utils import mirror_weyl_coord, sort_two_ints, sort_two_objs
@@ -139,7 +138,7 @@ class BidirectionalMapping(TransformationPass):
 
         return best_routed_dag
 
-    def _bidirectional_route(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout, Layout]:
+    def _bidirectional_route(self, dag, initial_layout, seed) -> tuple[DAGCircuit, Layout, Layout]:
         random.seed(seed)
         np.random.seed(seed)
         results = []
@@ -165,7 +164,7 @@ class BidirectionalMapping(TransformationPass):
         best_result_idx = min(enumerate(costs), key=lambda x: x[1])[0]
         return results[best_result_idx]
 
-    def _route(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
+    def _route(self, dag, initial_layout, seed) -> tuple[DAGCircuit, Layout]:
         best_routed_dag = None
         best_final_layout = None
         best_metric = None
@@ -181,7 +180,7 @@ class BidirectionalMapping(TransformationPass):
 
         return best_routed_dag, best_final_layout
 
-    def _route_one_trial(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
+    def _route_one_trial(self, dag, initial_layout, seed) -> tuple[DAGCircuit, Layout]:
         """Given the DAG and initial layout, perform SABRE routing. Return the routed DAG and the final layout."""
         raise NotImplementedError
 
@@ -227,15 +226,15 @@ class CanopusMapping(BidirectionalMapping):
             return depth_cost, count_cost
         return count_cost, depth_cost
 
-    def _route_one_trial(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
+    def _route_one_trial(self, dag, initial_layout, seed) -> tuple[DAGCircuit, Layout]:
         """Given the DAG and initial layout, perform SABRE routing. Return the routed DAG and the final layout."""
         random.seed(seed)
         np.random.seed(seed)
         layout = initial_layout.copy()
         wire_durations = {p: 0 for p in range(self.canonical_qreg.size)}  # physical qubit wire durations
         required_predecessors = build_required_predecessors(dag)  # number of predecessors for unmapped DAG nodes
-        last_mapped_layer: Dict[Tuple[int, int], DAGNode] = {}
-        commutative_pairs: Dict[Tuple[int, int], Tuple[int, int]] = {}
+        last_mapped_layer: dict[tuple[int, int], DAGNode] = {}
+        commutative_pairs: dict[tuple[int, int], tuple[int, int]] = {}
 
         layouts = [layout.copy()]
         front_layer = dag.front_layer()
@@ -375,7 +374,7 @@ class CanopusMapping(BidirectionalMapping):
 
     def _find_best_swap(
         self, dag, front_layer, last_mapped_layer, commutative_pairs, wire_durations, layout, required_predecessors
-    ) -> Tuple[Qubit, Qubit]:
+    ) -> tuple[Qubit, Qubit]:
         """Return is a tuple of two physical qubit indices"""
         logger.info('Layout._v2p={}'.format({'q{}'.format(self._qubit_indices[v]): p for v, p in layout._v2p.items()}))
         swap_candidates = set()
@@ -462,8 +461,8 @@ class CanopusMapping(BidirectionalMapping):
         commutative_pairs,
         extended_set,
         layout: Layout,
-        swap: Tuple[Qubit, Qubit],
-        wire_durations: Dict[int, float],
+        swap: tuple[Qubit, Qubit],
+        wire_durations: dict[int, float],
         duration: float,
         avg_dist_front=None,
         avg_dist_extended=None,
@@ -531,7 +530,7 @@ class SabreMapping(BidirectionalMapping):
     def _eval_dagcircuit_cost(self, dag):
         return dag.count_ops().get("swap", 0)
 
-    def _route_one_trial(self, dag, initial_layout, seed) -> Tuple[DAGCircuit, Layout]:
+    def _route_one_trial(self, dag, initial_layout, seed) -> tuple[DAGCircuit, Layout]:
         """Given the DAG and initial layout, perform SABRE routing. Return the routed DAG and the final layout."""
         random.seed(seed)
         np.random.seed(seed)
@@ -579,7 +578,7 @@ class SabreMapping(BidirectionalMapping):
 
         return routed_dag, layout
 
-    def _find_best_swap(self, dag, front_layer, layout, required_predecessors) -> Tuple[Qubit, Qubit]:
+    def _find_best_swap(self, dag, front_layer, layout, required_predecessors) -> tuple[Qubit, Qubit]:
         swap_candidates = set()
         qubits = chain.from_iterable([node.qargs for node in front_layer])
         for v in qubits:
@@ -608,7 +607,7 @@ class SabreMapping(BidirectionalMapping):
         swap = swap_candidates[np.random.choice(min_indices)]
         return swap
 
-    def _heuristic_cost(self, front_layer, extended_set, layout: Layout, swap: Tuple[Qubit, Qubit]):
+    def _heuristic_cost(self, front_layer, extended_set, layout: Layout, swap: tuple[Qubit, Qubit]):
         layout = layout.copy()
         layout.swap(*swap)
         c1 = np.mean(
