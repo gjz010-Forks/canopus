@@ -1,6 +1,6 @@
 # 🧭 Canopus: Canonical-Optimized Placement Utility Suite
 
-[![](https://img.shields.io/badge/license-Apache%202.0-green)](./LICENSE) ![](https://img.shields.io/badge/Python-3.8--3.12-blue)  [![a](https://img.shields.io/static/v1?label=arXiv&message=2312.05652&color=red)](https://arxiv.org/abs/2511.04608)
+[![](https://img.shields.io/badge/license-Apache%202.0-green)](./LICENSE) ![](https://img.shields.io/badge/Python-3.8--3.12-blue)  [![a](https://img.shields.io/static/v1?label=arXiv&message=2511.04608&color=red)](https://arxiv.org/abs/2511.04608)
 
 
 **Canopus** (**Can**onical-**O**ptimized **P**lacement **U**tility **S**uite) is a qubit mapping/routing framework tailored to advanced quantum ISAs. Its main function is to optimize the layout and routing of qubits on quantum hardware, handling optimal synthesis with diverse ISAs in a unified approach through two-qubit canonical gate representation, providing guidance for hardware-software co-design.
@@ -10,8 +10,7 @@
 If you make use of this code or the genAshN gate scheme in your work, please cite the following papers:
 
 
-If you make sure of Canopus in your work, please cite the following publication:
-
+If you make sure of Canopus in your work, please cite the following paper:
 
 ```
 @article{yang2025qubit,
